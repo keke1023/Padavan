@@ -1,0 +1,72 @@
+config RT2860V2_AP
+	tristate "Ralink RT3883/RT3662 802.11 AP driver"
+	select WIRELESS_EXT
+	select WEXT_SPY
+	select WEXT_PRIV
+
+config  RT2860V2_AP_LED
+	bool "LED support"
+	depends on RT2860V2_AP
+	default y
+
+config  RT2860V2_AP_LLTD
+	bool "LLTD (Link Layer Topology Discovery Protocol)"
+	depends on RT2860V2_AP
+	default y
+
+config  RT2860V2_AP_WDS
+	bool "WDS support"
+	depends on RT2860V2_AP
+	default y
+
+config  RT2860V2_AP_WMM_ACM
+	bool "WMM ACM"
+	depends on RT2860V2_AP
+	default n
+
+config  RT2860V2_AP_MBSS
+	bool "MBSSID support"
+	depends on RT2860V2_AP
+	default y
+
+config  RT2860V2_AP_MBSS_NEW_MBSSID_MODE
+	bool "New MBSSID mode"
+	depends on RT2860V2_AP_MBSS
+	depends on RALINK_RT3883 || RALINK_RT3352
+	default n
+
+config  RT2860V2_AP_APCLI
+	bool "AP-Client support"
+	depends on RT2860V2_AP
+
+config  RT2860V2_AP_DFS
+	bool "DFS"
+	depends on RT2860V2_AP
+	select RALINK_TIMER_DFS
+	help
+	  Support dynamic freqrency selection
+
+config  RT2860V2_AP_CARRIER
+	bool "Carrier Detect"
+	depends on RT2860V2_AP
+	select RALINK_TIMER_DFS
+	help
+	  Carrier Sense Multi-Access/Collision Detection.
+
+config  RT2860V2_AP_DLS
+	bool "DLS ((Direct-Link Setup) Support"
+	depends on RT2860V2_AP
+
+config  RT2860V2_AP_IDS
+	bool "IDS (Intrusion Detection System) Support"
+	depends on RT2860V2_AP
+
+config  RT2860V2_AP_GREENAP
+	bool "Green AP mode support"
+	depends on RT2860V2_AP
+
+config  RT2860V2_AP_TXBF
+	bool "Tx Beam Forming Support (Only 3883)"
+	depends on RT2860V2_AP
+	depends on RALINK_RT3883
+
