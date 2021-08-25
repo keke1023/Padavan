@@ -1,5 +1,5 @@
 #https://github.com/traviscross/mtr
-SRC_NAME = mtr-0.92
+SRC_NAME = mtr-0.94
 THISDIR = $(shell pwd)
 
 all: config_test
