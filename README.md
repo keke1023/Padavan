@@ -1,8 +1,8 @@
-新增了对xtls的支持，源码来自于xumng123
-https://github.com/xumng123/rt-n56u
-感谢vb1980持续对代码做出的测试和改进，他在原本的基础上新增了对xray的编译，而我之前就直接替换了v2ray的bin，所以是殊途同归啦
-https://github.com/vb1980/Padavan-KVR
-
+新增了对xtls的支持，源码来自于xumng123  
+https://github.com/xumng123/rt-n56u  
+感谢vb1980持续对代码做出的测试和改进，他在原本的基础上新增了对xray的编译，而我之前就直接替换了v2ray的bin，所以是殊途同归啦  
+https://github.com/vb1980/Padavan-KVR  
+  
 # Padavan
 基于hanwckf,chongshengB以及padavanonly的源码整合而来，支持7603/7615/7915的kvr  
 编译方法同其他Padavan源码，主要特点如下：  
