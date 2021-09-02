@@ -4,7 +4,7 @@ https://github.com/xumng123/rt-n56u
 https://github.com/vb1980/Padavan-KVR  
   
 # Padavan
-基于hanwckf,chongshengB以及padavanonly的源码整合而来，支持7603/7615/7915的kvr  
+基于hanwckf,chongshengB以及padavanonly的源码整合而来，支持kvr  
 编译方法同其他Padavan源码，主要特点如下：  
 1.采用padavanonly源码的5.0.4.0无线驱动，支持kvr  
 2.添加了chongshengB源码的所有插件  
@@ -16,8 +16,7 @@ https://github.com/hanwckf/rt-n56u
 https://github.com/chongshengB/rt-n56u  
 https://github.com/padavanonly/rt-n56u  
 https://github.com/immortalwrt/padavan  
-  
-最后编译出的固件对7612无线的支持已知是有问题的，包含7612的机型比如B70是无法正常工作的  
+
 已测试的机型为MSG1500-7615，JCG-Q20，CR660x  
   
 固件默认wifi名称PDCN及PDCN_5G  
