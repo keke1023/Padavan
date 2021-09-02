@@ -1,4 +1,4 @@
-SRC_NAME=libvorbis-1.3.6
+SRC_NAME=libvorbis-1.3.7
 SRC_URL=http://downloads.xiph.org/releases/vorbis/$(SRC_NAME).tar.xz
 
 all: download_test extract_test config_test

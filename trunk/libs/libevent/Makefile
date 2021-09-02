@@ -1,5 +1,5 @@
-SRC_NAME=libevent-2.1.8-stable
-SRC_URL=https://github.com/libevent/libevent/releases/download/release-2.1.8-stable/libevent-2.1.8-stable.tar.gz
+SRC_NAME=libevent-2.1.12-stable
+SRC_URL=https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/$(SRC_NAME).tar.gz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
@@ -12,7 +12,7 @@ download_test:
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
 		tar zxf $(SRC_NAME).tar.gz ; \
-		patch -d $(SRC_NAME) -p1 -i ../no_test.patch ; \
+		patch -d $(SRC_NAME) -p1 -i ../0002-Makefile.am-omit-building-sample-and-test.patch ; \
 	fi )
 
 config_test:
@@ -30,6 +30,7 @@ configure:
 		--disable-static \
 		--enable-shared \
 		--disable-debug-mode \
+		--disable-openssl \
 		--disable-samples \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \

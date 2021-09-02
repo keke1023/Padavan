@@ -1,4 +1,4 @@
-SRC_NAME=parted-3.2
+SRC_NAME=parted-3.3
 SRC_URL=https://ftp.gnu.org/gnu/parted/$(SRC_NAME).tar.xz 
 
 CFLAGS += -ffunction-sections -fdata-sections
@@ -29,8 +29,8 @@ config_test:
 
 configure:
 	( cd $(SRC_NAME) ; \
+	autoreconf -fvi; \
 	PKG_CONFIG_PATH="$(STAGEDIR)/lib/pkgconfig" \
-	LIBS="-liconv" \
 	./configure \
 		--prefix=/usr \
 		--without-readline \

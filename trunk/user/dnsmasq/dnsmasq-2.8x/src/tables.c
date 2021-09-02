@@ -98,7 +98,7 @@ int add_to_ipset(const char *setname, const union all_addr *ipaddr,
   io.pfrio_size = 1;
   if (ioctl(dev, DIOCRADDTABLES, &io))
     {
-      my_syslog(LOG_WARNING, _("IPset: error:%s"), pfr_strerror(errno));
+      my_syslog(LOG_WARNING, _("IPset: error: %s"), pfr_strerror(errno));
       
       return -1;
     }
@@ -108,7 +108,7 @@ int add_to_ipset(const char *setname, const union all_addr *ipaddr,
     my_syslog(LOG_INFO, _("info: table created"));
  
   bzero(&addr, sizeof(addr));
-
+#ifdef HAVE_IPV6
   if (flags & F_IPV6) 
     {
       addr.pfra_af = AF_INET6;
@@ -116,6 +116,7 @@ int add_to_ipset(const char *setname, const union all_addr *ipaddr,
       memcpy(&(addr.pfra_ip6addr), ipaddr, sizeof(struct in6_addr));
     } 
   else 
+#endif
     {
       addr.pfra_af = AF_INET;
       addr.pfra_net = 0x20;

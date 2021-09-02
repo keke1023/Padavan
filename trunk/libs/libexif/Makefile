@@ -1,18 +1,18 @@
-SRC_NAME=libexif-0.6.21
-SRC_URL=https://sourceforge.net/projects/libexif/files/libexif/0.6.21/libexif-0.6.21.tar.bz2
+SRC_NAME=libexif-0.6.22
+SRC_URL=https://github.com/libexif/libexif/releases/download/libexif-0_6_22-release/$(SRC_NAME).tar.xz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
 download_test:
-	( if [ ! -f $(SRC_NAME).tar.bz2 ]; then \
-		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.bz2 $(SRC_URL); \
+	( if [ ! -f $(SRC_NAME).tar.xz ]; then \
+		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.xz $(SRC_URL); \
 	fi )
 
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
-		tar jxf $(SRC_NAME).tar.bz2; \
-		patch -d $(SRC_NAME) -p1 -i ../no-doc-test_update-gettext.patch ; \
+		tar xJf $(SRC_NAME).tar.xz ; \
+		patch -d $(SRC_NAME) -p1 -i ../no_doc_test.patch ; \
 	fi )
 
 config_test:

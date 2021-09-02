@@ -5,11 +5,11 @@ diff -urw flac-1.3.2-ref/Makefile.am flac-1.3.2/Makefile.am
  
  ACLOCAL_AMFLAGS = -I m4
  
--SUBDIRS = doc include m4 man src examples test build objs microbench
+-SUBDIRS = doc include m4 man src test build objs microbench
 +SUBDIRS = include m4 src build objs
  
- EXTRA_DIST = \
- 	COPYING.FDL \
+ if EXAMPLES
+ SUBDIRS += examples
 diff -urw flac-1.3.2-ref/src/Makefile.am flac-1.3.2/src/Makefile.am
 --- flac-1.3.2-ref/src/Makefile.am	2016-12-07 23:10:26.000000000 +0300
 +++ flac-1.3.2/src/Makefile.am	2018-02-12 12:27:12.110668610 +0300

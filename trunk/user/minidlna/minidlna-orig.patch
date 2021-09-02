@@ -1,123 +1,7 @@
-diff -urw minidlna-1.2.1-ref/config.h.in minidlna-1.2.1/config.h.in
---- minidlna-1.2.1-ref/config.h.in	2017-08-24 21:56:41.000000000 +0300
-+++ minidlna-1.2.1/config.h.in	2018-02-15 16:08:16.949369000 +0300
-@@ -3,6 +3,9 @@
- /* Define if building universal (internal helper macro) */
- #undef AC_APPLE_UNIVERSAL_BUILD
- 
-+/* Define to 1 if you want to enable ASUS support */
-+#undef ASUS_SUPPORT
-+
- /* DB path */
- #undef DEFAULT_DB_PATH
- 
-diff -urw minidlna-1.2.1-ref/configure minidlna-1.2.1/configure
---- minidlna-1.2.1-ref/configure	2017-08-24 21:56:41.000000000 +0300
-+++ minidlna-1.2.1/configure	2018-02-15 16:08:12.773369000 +0300
-@@ -624,6 +624,8 @@
- LTLIBOBJS
- STATIC_LDFLAGS
- STATIC_CFLAGS
-+ASUS_SUPPORT_FALSE
-+ASUS_SUPPORT_TRUE
- TIVO_SUPPORT_FALSE
- TIVO_SUPPORT_TRUE
- HAVE_AVAHI_FALSE
-@@ -774,6 +776,7 @@
- with_os_version
- with_os_url
- enable_tivo
-+enable_asus
- enable_netgear
- enable_readynas
- enable_static
-@@ -1415,6 +1418,7 @@
-   --disable-rpath         do not hardcode runtime library paths
-   --disable-nls           do not use Native Language Support
-   --enable-tivo           enable TiVo support
-+  --enable-asus           enable ASUS support
-   --enable-netgear        enable generic NETGEAR device support
-   --enable-readynas       enable NETGEAR ReadyNAS support
-   --enable-static         build a static binary executable
-@@ -10456,6 +10460,55 @@
- fi
- 
- 
-+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable ASUS support" >&5
-+$as_echo_n "checking whether to enable ASUS support... " >&6; }
-+# Check whether --enable-asus was given.
-+if test "${enable_asus+set}" = set; then :
-+  enableval=$enable_asus;
-+	if test "$enableval" = "yes"; then
-+
-+$as_echo "#define ASUS_SUPPORT 1" >>confdefs.h
-+
-+		 if true; then
-+  ASUS_SUPPORT_TRUE=
-+  ASUS_SUPPORT_FALSE='#'
-+else
-+  ASUS_SUPPORT_TRUE='#'
-+  ASUS_SUPPORT_FALSE=
-+fi
-+
-+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
-+$as_echo "yes" >&6; }
-+	else
-+		 if false; then
-+  ASUS_SUPPORT_TRUE=
-+  ASUS_SUPPORT_FALSE='#'
-+else
-+  ASUS_SUPPORT_TRUE='#'
-+  ASUS_SUPPORT_FALSE=
-+fi
-+
-+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-+$as_echo "no" >&6; }
-+	fi
-+
-+else
-+
-+		 if false; then
-+  ASUS_SUPPORT_TRUE=
-+  ASUS_SUPPORT_FALSE='#'
-+else
-+  ASUS_SUPPORT_TRUE='#'
-+  ASUS_SUPPORT_FALSE=
-+fi
-+
-+		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
-+$as_echo "no" >&6; }
-+
-+
-+fi
-+
-+
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking whether to enable generic NETGEAR device support" >&5
- $as_echo_n "checking whether to enable generic NETGEAR device support... " >&6; }
- # Check whether --enable-netgear was given.
-@@ -10827,6 +10880,18 @@
-   as_fn_error $? "conditional \"TIVO_SUPPORT\" was never defined.
- Usually this means the macro was only invoked conditionally." "$LINENO" 5
- fi
-+if test -z "${ASUS_SUPPORT_TRUE}" && test -z "${ASUS_SUPPORT_FALSE}"; then
-+  as_fn_error $? "conditional \"ASUS_SUPPORT\" was never defined.
-+Usually this means the macro was only invoked conditionally." "$LINENO" 5
-+fi
-+if test -z "${ASUS_SUPPORT_TRUE}" && test -z "${ASUS_SUPPORT_FALSE}"; then
-+  as_fn_error $? "conditional \"ASUS_SUPPORT\" was never defined.
-+Usually this means the macro was only invoked conditionally." "$LINENO" 5
-+fi
-+if test -z "${ASUS_SUPPORT_TRUE}" && test -z "${ASUS_SUPPORT_FALSE}"; then
-+  as_fn_error $? "conditional \"ASUS_SUPPORT\" was never defined.
-+Usually this means the macro was only invoked conditionally." "$LINENO" 5
-+fi
- if test -z "${TIVO_SUPPORT_TRUE}" && test -z "${TIVO_SUPPORT_FALSE}"; then
-   as_fn_error $? "conditional \"TIVO_SUPPORT\" was never defined.
- Usually this means the macro was only invoked conditionally." "$LINENO" 5
-diff -urw minidlna-1.2.1-ref/configure.ac minidlna-1.2.1/configure.ac
---- minidlna-1.2.1-ref/configure.ac	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/configure.ac	2018-02-15 16:07:42.109369000 +0300
-@@ -559,6 +559,23 @@
+diff -urw minidlna-1.3.0-ref/configure.ac minidlna-1.3.0/configure.ac
+--- minidlna-1.3.0-ref/configure.ac	2020-12-03 08:55:05.343293200 +0300
++++ minidlna-1.3.0/configure.ac	2020-12-03 08:17:49.173485100 +0300
+@@ -561,6 +561,23 @@
  	]
  )
  
@@ -141,9 +25,126 @@ diff -urw minidlna-1.2.1-ref/configure.ac minidlna-1.2.1/configure.ac
  AC_MSG_CHECKING([whether to enable generic NETGEAR device support])
  AC_ARG_ENABLE(netgear,
  	[  --enable-netgear        enable generic NETGEAR device support],[
-diff -urw minidlna-1.2.1-ref/icons.c minidlna-1.2.1/icons.c
---- minidlna-1.2.1-ref/icons.c	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/icons.c	2018-01-11 14:54:20.000000000 +0300
+diff -urw minidlna-1.3.0-ref/containers.c minidlna-1.3.0/containers.c
+--- minidlna-1.3.0-ref/containers.c	2020-12-03 08:55:05.367624300 +0300
++++ minidlna-1.3.0/containers.c	2020-12-03 08:08:16.116193800 +0300
+@@ -23,25 +23,50 @@
+ #include "containers.h"
+ #include "log.h"
+ 
++const struct container_s containers[] = {
++		{ "0","-1",   "root" },
++		{ MUSIC_ID, "0", "Music" },
++		{ MUSIC_ALL_ID, MUSIC_ID, "All Music" },
++		{ MUSIC_GENRE_ID, MUSIC_ID, "Genre" },
++		{ MUSIC_ARTIST_ID, MUSIC_ID, "Artist" },
++		{ MUSIC_ALBUM_ID, MUSIC_ID, "Album" },
++		{ MUSIC_DIR_ID, MUSIC_ID, "Folders" },
++		{ MUSIC_PLIST_ID, MUSIC_ID, "Playlists" },
++
++		{ VIDEO_ID, "0", "Video" },
++		{ VIDEO_ALL_ID, VIDEO_ID, "All Video" },
++		{ VIDEO_DIR_ID, VIDEO_ID, "Folders" },
++
++		{ IMAGE_ID, "0", "Pictures" },
++		{ IMAGE_ALL_ID, IMAGE_ID, "All Pictures" },
++		{ IMAGE_DATE_ID, IMAGE_ID, "Date Taken" },
++		{ IMAGE_CAMERA_ID, IMAGE_ID, "Camera" },
++		{ IMAGE_DIR_ID, IMAGE_ID, "Folders" },
++
++		{ BROWSEDIR_ID, "0", "Browse Folders" },
++
++		{ 0, 0, 0 }
++};
++
+ #define NINETY_DAYS "7776000"
+ 
+-const char *music_id = MUSIC_ID;
+-const char *music_all_id = MUSIC_ALL_ID;
+-const char *music_genre_id = MUSIC_GENRE_ID;
+-const char *music_artist_id = MUSIC_ARTIST_ID;
+-const char *music_album_id = MUSIC_ALBUM_ID;
+-const char *music_plist_id = MUSIC_PLIST_ID;
+-const char *music_dir_id = MUSIC_DIR_ID;
+-const char *video_id = VIDEO_ID;
+-const char *video_all_id = VIDEO_ALL_ID;
+-const char *video_dir_id = VIDEO_DIR_ID;
+-const char *image_id = IMAGE_ID;
+-const char *image_all_id = IMAGE_ALL_ID;
+-const char *image_date_id = IMAGE_DATE_ID;
+-const char *image_camera_id = IMAGE_CAMERA_ID;
+-const char *image_dir_id = IMAGE_DIR_ID;
++static const char *music_id = MUSIC_ID;
++static const char *music_all_id = MUSIC_ALL_ID;
++static const char *music_genre_id = MUSIC_GENRE_ID;
++static const char *music_artist_id = MUSIC_ARTIST_ID;
++static const char *music_album_id = MUSIC_ALBUM_ID;
++static const char *music_plist_id = MUSIC_PLIST_ID;
++static const char *music_dir_id = MUSIC_DIR_ID;
++static const char *video_id = VIDEO_ID;
++static const char *video_all_id = VIDEO_ALL_ID;
++static const char *video_dir_id = VIDEO_DIR_ID;
++static const char *image_id = IMAGE_ID;
++static const char *image_all_id = IMAGE_ALL_ID;
++static const char *image_date_id = IMAGE_DATE_ID;
++static const char *image_camera_id = IMAGE_CAMERA_ID;
++static const char *image_dir_id = IMAGE_DIR_ID;
+ 
+-struct magic_container_s magic_containers[] =
++const struct magic_container_s magic_containers[] =
+ {
+ 	/* Alternate root container */
+ 	{ NULL,
+@@ -124,7 +149,7 @@
+ 	{ NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0 }
+ };
+ 
+-struct magic_container_s *
++const struct magic_container_s *
+ in_magic_container(const char *id, int flags, const char **real_id)
+ {
+ 	size_t len;
+@@ -154,7 +179,7 @@
+ 	return NULL;
+ }
+ 
+-struct magic_container_s *
++const struct magic_container_s *
+ check_magic_container(const char *id, int flags)
+ {
+ 	int i;
+diff -urw minidlna-1.3.0-ref/containers.h minidlna-1.3.0/containers.h
+--- minidlna-1.3.0-ref/containers.h	2020-12-03 08:55:05.424228800 +0300
++++ minidlna-1.3.0/containers.h	2020-12-03 08:08:16.117626900 +0300
+@@ -16,6 +16,14 @@
+  * along with MiniDLNA. If not, see <http://www.gnu.org/licenses/>.
+  */
+ 
++struct container_s {
++	const char *object_id;
++	const char *parent_id;
++	const char *name;
++};
++
++extern const struct container_s containers[];
++
+ struct magic_container_s {
+ 	const char *name;
+ 	const char *objectid_match;
+@@ -30,7 +38,7 @@
+ 	int required_flags;
+ };
+ 
+-extern struct magic_container_s magic_containers[];
++extern const struct magic_container_s magic_containers[];
+ 
+-struct magic_container_s *in_magic_container(const char *id, int flags, const char **real_id);
+-struct magic_container_s *check_magic_container(const char *id, int flags);
++const struct magic_container_s *in_magic_container(const char *id, int flags, const char **real_id);
++const struct magic_container_s *check_magic_container(const char *id, int flags);
+diff -urw minidlna-1.3.0-ref/icons.c minidlna-1.3.0/icons.c
+--- minidlna-1.3.0-ref/icons.c	2020-12-03 08:55:05.465273400 +0300
++++ minidlna-1.3.0/icons.c	2020-12-03 08:17:49.179260400 +0300
 @@ -18,7 +18,668 @@
   * along with MiniDLNA. If not, see <http://www.gnu.org/licenses/>.
   */
@@ -814,65 +815,92 @@ diff -urw minidlna-1.2.1-ref/icons.c minidlna-1.2.1/icons.c
  /* NG_Icon_48x48.png */
  unsigned char
  png_sm[] =   "\x89\x50\x4e\x47\x0d\x0a\x1a\x0a\x00\x00\x00\x0d\x49\x48\x44\x52\x00\x00\x00\x30\x00\x00\x00\x30"
-diff -urw minidlna-1.2.1-ref/image_utils.c minidlna-1.2.1/image_utils.c
---- minidlna-1.2.1-ref/image_utils.c	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/image_utils.c	2018-01-12 20:00:24.000000000 +0300
-@@ -822,6 +822,7 @@
+diff -urw minidlna-1.3.0-ref/image_utils.c minidlna-1.3.0/image_utils.c
+--- minidlna-1.3.0-ref/image_utils.c	2020-12-03 08:55:05.503290100 +0300
++++ minidlna-1.3.0/image_utils.c	2020-12-03 08:35:25.690683000 +0300
+@@ -822,7 +822,8 @@
  	if((data = malloc(row_stride)) == NULL)
  	{
  		DPRINTF(E_WARN, L_METADATA, "malloc failed\n");
+-		free(dst.buf);
 +		if (dst.buf)
- 		free(dst.buf);
++			free(dst.buf);
  		jpeg_destroy_compress(&cinfo);
  		return NULL;
-diff -urw minidlna-1.2.1-ref/libav.h minidlna-1.2.1/libav.h
---- minidlna-1.2.1-ref/libav.h	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/libav.h	2018-01-12 19:02:17.000000000 +0300
-@@ -211,9 +211,11 @@
+ 	}
+diff -urw minidlna-1.3.0-ref/libav.h minidlna-1.3.0/libav.h
+--- minidlna-1.3.0-ref/libav.h	2020-12-03 08:55:05.410490700 +0300
++++ minidlna-1.3.0/libav.h	2020-12-03 08:23:41.857303400 +0300
+@@ -211,7 +211,7 @@
  static inline int
  lav_is_thumbnail_stream(AVStream *s, uint8_t **data, int *size)
  {
 -#if LIBAVFORMAT_VERSION_INT >= ((54<<16)+(6<<8))
-+#if LIBAVFORMAT_VERSION_INT >= ((54<<16)+(7<<8))
-+//#if LIBAVFORMAT_VERSION_INT >= ((54<<16)+(6<<8))
++#if LIBAVFORMAT_VERSION_INT >= ((54<<16)+(25<<8))
  	if (s->disposition & AV_DISPOSITION_ATTACHED_PIC &&
  	    lav_codec_id(s) == AV_CODEC_ID_MJPEG)
-+//	    lav_codec_id(s) == CODEC_ID_MJPEG)
  	{
- 		if (data)
- 			*data = s->attached_pic.data;
-diff -urw minidlna-1.2.1-ref/metadata.c minidlna-1.2.1/metadata.c
---- minidlna-1.2.1-ref/metadata.c	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/metadata.c	2018-01-12 19:56:37.000000000 +0300
-@@ -588,6 +588,8 @@
+diff -urw minidlna-1.3.0-ref/metadata.c minidlna-1.3.0/metadata.c
+--- minidlna-1.3.0-ref/metadata.c	2020-12-03 08:55:05.409700800 +0300
++++ minidlna-1.3.0/metadata.c	2020-12-03 08:42:03.443888200 +0300
+@@ -604,7 +604,7 @@
+ 	if( ed->size )
+ 	{
  		/* We might need to verify that the thumbnail is 160x160 or smaller */
- 		if( ed->size > 12000 )
+-		if( ed->size > 12000 )
++		if( ( ed->size > 12000 ) && ( ed->size < 60000 ) )
  		{
-+			if( ed->size < 60000)
-+			{
  			imsrc = image_new_from_jpeg(NULL, 0, ed->data, ed->size, 1, ROTATE_NONE);
  			if( imsrc )
- 			{
-@@ -596,6 +598,7 @@
- 				image_free(imsrc);
- 			}
- 		}
-+		}
- 		else
- 			thumb = 1;
- 	}
-diff -urw minidlna-1.2.1-ref/minidlna.c minidlna-1.2.1/minidlna.c
---- minidlna-1.2.1-ref/minidlna.c	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/minidlna.c	2018-01-12 19:54:06.000000000 +0300
-@@ -338,6 +338,7 @@
- 	}
+diff -urw minidlna-1.3.0-ref/minidlna.c minidlna-1.3.0/minidlna.c
+--- minidlna-1.3.0-ref/minidlna.c	2020-12-03 08:55:05.365598500 +0300
++++ minidlna-1.3.0/minidlna.c	2020-12-03 08:45:06.561454600 +0300
+@@ -341,14 +341,17 @@
+ 	return new_db;
+ }
  
++//#define MD_CHECK_MP 1
++
+ static void
+ check_db(sqlite3 *db, int new_db, pid_t *scanner_pid)
+ {
+-	struct media_dir_s *media_path = NULL;
+ 	char cmd[PATH_MAX*2];
++	int ret;
++#ifdef MD_CHECK_MP
++	struct media_dir_s *media_path = NULL;
+ 	char **result;
+ 	int i, rows = 0;
+-	int ret;
+ 
+ 	if (!new_db)
+ 	{
+@@ -385,18 +388,23 @@
+ 		}
+ 		sqlite3_free_table(result);
+ 	}
+-
++#endif
  	ret = db_upgrade(db);
 +
  	if (ret != 0)
  	{
++#ifdef MD_CHECK_MP
  rescan:
-@@ -361,7 +362,7 @@
++#endif
+ 		CLEARFLAG(RESCAN_MASK);
+ 		if (ret < 0)
+ 			DPRINTF(E_WARN, L_GENERAL, "Creating new database at %s/files.db\n", db_path);
++#ifdef MD_CHECK_MP
+ 		else if (ret == 1)
+ 			DPRINTF(E_WARN, L_GENERAL, "New media_dir detected; rebuilding...\n");
+ 		else if (ret == 2)
+ 			DPRINTF(E_WARN, L_GENERAL, "Removed media_dir detected; rebuilding...\n");
++#endif
+ 		else
+ 			DPRINTF(E_WARN, L_GENERAL, "Database version mismatch (%d => %d); need to recreate...\n",
+ 				ret, DB_VERSION);
+@@ -410,7 +418,7 @@
  		if (CreateDatabase() != 0)
  			DPRINTF(E_FATAL, L_GENERAL, "ERROR: Failed to create sqlite database!  Exiting...\n");
  	}
@@ -880,8 +908,8 @@ diff -urw minidlna-1.2.1-ref/minidlna.c minidlna-1.2.1/minidlna.c
 +	if (ret || GETFLAG(RESCAN_MASK) || GETFLAG(UPDATE_SCAN_MASK))
  	{
  #if USE_FORK
- 		SETFLAG(SCANNING_MASK);
-@@ -882,6 +883,9 @@
+ 		sqlite3_close(db);
+@@ -956,6 +964,9 @@
  			SETFLAG(SYSTEMD_MASK);
  			break;
  #endif
@@ -891,18 +919,75 @@ diff -urw minidlna-1.2.1-ref/minidlna.c minidlna-1.2.1/minidlna.c
  		case 'V':
  			printf("Version " MINIDLNA_VERSION "\n");
  			exit(0);
-@@ -916,6 +920,7 @@
- #ifdef __linux__
- 			"\t-S changes behaviour for systemd\n"
+@@ -990,6 +1001,7 @@
+ #if defined(__linux__) || defined(__APPLE__)
+ 			"\t-S changes behaviour for systemd/launchd\n"
  #endif
 +			"\t-U starts an update scan\n"
  			"\t-V print the version number\n",
  			argv[0], pidfilename);
  		return 1;
-diff -urw minidlna-1.2.1-ref/scanner.c minidlna-1.2.1/scanner.c
---- minidlna-1.2.1-ref/scanner.c	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/scanner.c	2018-01-12 19:32:15.000000000 +0300
-@@ -718,6 +718,26 @@
+diff -urw minidlna-1.3.0-ref/scanner.c minidlna-1.3.0/scanner.c
+--- minidlna-1.3.0-ref/scanner.c	2020-12-03 08:55:05.341835100 +0300
++++ minidlna-1.3.0/scanner.c	2020-12-03 08:48:47.187792200 +0300
+@@ -529,30 +529,7 @@
+ int
+ CreateDatabase(void)
+ {
+-	int ret, i;
+-	const char *containers[] = { "0","-1",   "root",
+-	                        MUSIC_ID, "0", _("Music"),
+-	                    MUSIC_ALL_ID, MUSIC_ID, _("All Music"),
+-	                  MUSIC_GENRE_ID, MUSIC_ID, _("Genre"),
+-	                 MUSIC_ARTIST_ID, MUSIC_ID, _("Artist"),
+-	                  MUSIC_ALBUM_ID, MUSIC_ID, _("Album"),
+-	                    MUSIC_DIR_ID, MUSIC_ID, _("Folders"),
+-	                  MUSIC_PLIST_ID, MUSIC_ID, _("Playlists"),
+-
+-	                        VIDEO_ID, "0", _("Video"),
+-	                    VIDEO_ALL_ID, VIDEO_ID, _("All Video"),
+-	                    VIDEO_DIR_ID, VIDEO_ID, _("Folders"),
+-
+-	                        IMAGE_ID, "0", _("Pictures"),
+-	                    IMAGE_ALL_ID, IMAGE_ID, _("All Pictures"),
+-	                   IMAGE_DATE_ID, IMAGE_ID, _("Date Taken"),
+-	                 IMAGE_CAMERA_ID, IMAGE_ID, _("Camera"),
+-	                    IMAGE_DIR_ID, IMAGE_ID, _("Folders"),
+-
+-	                    BROWSEDIR_ID, "0", _("Browse Folders"),
+-			0 };
+-
+-	ret = sql_exec(db, create_objectTable_sqlite);
++	int ret = sql_exec(db, create_objectTable_sqlite);
+ 	if( ret != SQLITE_OK )
+ 		goto sql_failed;
+ 	ret = sql_exec(db, create_detailTable_sqlite);
+@@ -576,18 +553,20 @@
+ 	ret = sql_exec(db, "INSERT into SETTINGS values ('UPDATE_ID', '0')");
+ 	if( ret != SQLITE_OK )
+ 		goto sql_failed;
+-	for( i=0; containers[i]; i=i+3 )
++	for( int i=0; containers[i].name; ++i )
+ 	{
++		const struct container_s *c = &containers[i];
++		const char *name = _(c->name);
+ 		ret = sql_exec(db, "INSERT into OBJECTS (OBJECT_ID, PARENT_ID, DETAIL_ID, CLASS, NAME)"
+ 		                   " values "
+ 		                   "('%s', '%s', %lld, 'container.storageFolder', '%q')",
+-		                   containers[i], containers[i+1], GetFolderMetadata(containers[i+2], NULL, NULL, NULL, 0), containers[i+2]);
++		                   c->object_id, c->parent_id, GetFolderMetadata(name, NULL, NULL, NULL, 0), name);
+ 		if( ret != SQLITE_OK )
+ 			goto sql_failed;
+ 	}
+-	for( i=0; magic_containers[i].objectid_match; i++ )
++	for( int i=0; magic_containers[i].objectid_match; i++ )
+ 	{
+-		struct magic_container_s *magic = &magic_containers[i];
++		const struct magic_container_s *magic = &magic_containers[i];
+ 		if (!magic->name)
+ 			continue;
+ 		if( sql_get_int_field(db, "SELECT 1 from OBJECTS where OBJECT_ID = '%s'", magic->objectid_match) == 0 )
+@@ -718,6 +697,26 @@
  		);
  }
  
@@ -929,7 +1014,7 @@ diff -urw minidlna-1.2.1-ref/scanner.c minidlna-1.2.1/scanner.c
  static void
  ScanDirectory(const char *dir, const char *parent, media_types dir_types)
  {
-@@ -725,7 +745,7 @@
+@@ -725,7 +724,7 @@
  	int i, n, startID = 0;
  	char *full_path;
  	char *name = NULL;
@@ -938,7 +1023,7 @@ diff -urw minidlna-1.2.1-ref/scanner.c minidlna-1.2.1/scanner.c
  	enum file_types type;
  
  	DPRINTF(parent?E_INFO:E_WARN, L_SCANNER, _("Scanning %s\n"), dir);
-@@ -799,7 +819,24 @@
+@@ -799,7 +798,24 @@
  		}
  		if( (type == TYPE_DIR) && (access(full_path, R_OK|X_OK) == 0) )
  		{
@@ -964,7 +1049,7 @@ diff -urw minidlna-1.2.1-ref/scanner.c minidlna-1.2.1/scanner.c
  			insert_directory(name, full_path, BROWSEDIR_ID, THISORNUL(parent), i+startID);
  			xasprintf(&parent_id, "%s$%X", THISORNUL(parent), i+startID);
  			ScanDirectory(full_path, parent_id, dir_types);
-@@ -807,9 +844,17 @@
+@@ -807,9 +823,17 @@
  		}
  		else if( type == TYPE_FILE && (access(full_path, R_OK) == 0) )
  		{
@@ -982,44 +1067,243 @@ diff -urw minidlna-1.2.1-ref/scanner.c minidlna-1.2.1/scanner.c
  		free(name);
  		free(namelist[i]);
  	}
-@@ -932,7 +977,11 @@
+@@ -932,7 +956,11 @@
  	/* Create this index after scanning, so it doesn't slow down the scanning process.
  	 * This index is very useful for large libraries used with an XBox360 (or any
  	 * client that uses UPnPSearch on large containers). */
+-	sql_exec(db, "create INDEX IDX_SEARCH_OPT ON OBJECTS(OBJECT_ID, CLASS, DETAIL_ID);");
 +
 +	if( !GETFLAG(UPDATE_SCAN_MASK) )
 +	{
- 	sql_exec(db, "create INDEX IDX_SEARCH_OPT ON OBJECTS(OBJECT_ID, CLASS, DETAIL_ID);");
++		sql_exec(db, "create INDEX IDX_SEARCH_OPT ON OBJECTS(OBJECT_ID, CLASS, DETAIL_ID);");
 +	}
  
  	fill_playlists();
  
-diff -urw minidlna-1.2.1-ref/upnpglobalvars.c minidlna-1.2.1/upnpglobalvars.c
---- minidlna-1.2.1-ref/upnpglobalvars.c	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/upnpglobalvars.c	2018-01-12 19:09:37.000000000 +0300
+diff -urw minidlna-1.3.0-ref/sql.c minidlna-1.3.0/sql.c
+--- minidlna-1.3.0-ref/sql.c	2020-12-03 08:55:05.420998700 +0300
++++ minidlna-1.3.0/sql.c	2020-12-03 08:08:16.121083400 +0300
+@@ -65,122 +65,72 @@
+ 	return ret;
+ }
+ 
++#define sql_get_field(type, column_get_fn) \
++		va_list		ap;\
++		int		counter, result;\
++		char		*sql;\
++		type		ret;\
++		sqlite3_stmt	*stmt;\
++		\
++		va_start(ap, fmt);\
++		sql = sqlite3_vmprintf(fmt, ap);\
++		va_end(ap);\
++\
++		/*DPRINTF(E_DEBUG, L_DB_SQL, "sql: %s\n", sql); */ \
++\
++		switch (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL))\
++		{\
++			case SQLITE_OK:\
++				break;\
++			default:\
++				DPRINTF(E_ERROR, L_DB_SQL, "prepare failed: %s\n%s\n", sqlite3_errmsg(db), sql);\
++				sqlite3_free(sql);\
++				return -1;\
++		}\
++\
++		for (counter = 0;\
++		     ((result = sqlite3_step(stmt)) == SQLITE_BUSY || result == SQLITE_LOCKED) && counter < 2;\
++		     counter++) {\
++			/* While SQLITE_BUSY has a built in timeout,\
++			 * SQLITE_LOCKED does not, so sleep */\
++			if (result == SQLITE_LOCKED)\
++				sleep(1);\
++		}\
++\
++		switch (result)\
++		{\
++			case SQLITE_DONE:\
++				/* no rows returned */\
++				ret = 0;\
++				break;\
++			case SQLITE_ROW:\
++				if (sqlite3_column_type(stmt, 0) == SQLITE_NULL)\
++				{\
++					ret = 0;\
++					break;\
++				}\
++				ret = column_get_fn(stmt, 0);\
++				break;\
++			default:\
++				DPRINTF(E_WARN, L_DB_SQL, "%s: step failed: %s\n%s\n", __func__, sqlite3_errmsg(db), sql);\
++				ret = -1;\
++				break;\
++		}\
++		sqlite3_free(sql);\
++		sqlite3_finalize(stmt);\
++\
++		return ret;
++
+ int
+ sql_get_int_field(sqlite3 *db, const char *fmt, ...)
+ {
+-	va_list		ap;
+-	int		counter, result;
+-	char		*sql;
+-	int		ret;
+-	sqlite3_stmt	*stmt;
+-	
+-	va_start(ap, fmt);
+-	sql = sqlite3_vmprintf(fmt, ap);
+-	va_end(ap);
+-
+-	//DPRINTF(E_DEBUG, L_DB_SQL, "sql: %s\n", sql);
+-
+-	switch (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL))
+-	{
+-		case SQLITE_OK:
+-			break;
+-		default:
+-			DPRINTF(E_ERROR, L_DB_SQL, "prepare failed: %s\n%s\n", sqlite3_errmsg(db), sql);
+-			sqlite3_free(sql);
+-			return -1;
+-	}
+-
+-	for (counter = 0;
+-	     ((result = sqlite3_step(stmt)) == SQLITE_BUSY || result == SQLITE_LOCKED) && counter < 2;
+-	     counter++) {
+-		/* While SQLITE_BUSY has a built in timeout,
+-		 * SQLITE_LOCKED does not, so sleep */
+-		if (result == SQLITE_LOCKED)
+-			sleep(1);
+-	}
+-
+-	switch (result)
+-	{
+-		case SQLITE_DONE:
+-			/* no rows returned */
+-			ret = 0;
+-			break;
+-		case SQLITE_ROW:
+-			if (sqlite3_column_type(stmt, 0) == SQLITE_NULL)
+-			{
+-				ret = 0;
+-				break;
+-			}
+-			ret = sqlite3_column_int(stmt, 0);
+-			break;
+-		default:
+-			DPRINTF(E_WARN, L_DB_SQL, "%s: step failed: %s\n%s\n", __func__, sqlite3_errmsg(db), sql);
+-			ret = -1;
+-			break;
+-	}
+-	sqlite3_free(sql);
+-	sqlite3_finalize(stmt);
+-
+-	return ret;
++	sql_get_field(int, sqlite3_column_int)
+ }
+ 
+ int64_t
+ sql_get_int64_field(sqlite3 *db, const char *fmt, ...)
+ {
+-	va_list		ap;
+-	int		counter, result;
+-	char		*sql;
+-	int64_t		ret;
+-	sqlite3_stmt	*stmt;
+-	
+-	va_start(ap, fmt);
+-	sql = sqlite3_vmprintf(fmt, ap);
+-	va_end(ap);
+-
+-	//DPRINTF(E_DEBUG, L_DB_SQL, "sql: %s\n", sql);
+-
+-	switch (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL))
+-	{
+-		case SQLITE_OK:
+-			break;
+-		default:
+-			DPRINTF(E_ERROR, L_DB_SQL, "prepare failed: %s\n%s\n", sqlite3_errmsg(db), sql);
+-			sqlite3_free(sql);
+-			return -1;
+-	}
+-
+-	for (counter = 0;
+-	     ((result = sqlite3_step(stmt)) == SQLITE_BUSY || result == SQLITE_LOCKED) && counter < 2;
+-	     counter++) {
+-		/* While SQLITE_BUSY has a built in timeout,
+-		 * SQLITE_LOCKED does not, so sleep */
+-		if (result == SQLITE_LOCKED)
+-			sleep(1);
+-	}
+-
+-	switch (result)
+-	{
+-		case SQLITE_DONE:
+-			/* no rows returned */
+-			ret = 0;
+-			break;
+-		case SQLITE_ROW:
+-			if (sqlite3_column_type(stmt, 0) == SQLITE_NULL)
+-			{
+-				ret = 0;
+-				break;
+-			}
+-			ret = sqlite3_column_int64(stmt, 0);
+-			break;
+-		default:
+-			DPRINTF(E_WARN, L_DB_SQL, "%s: step failed: %s\n%s\n", __func__, sqlite3_errmsg(db), sql);
+-			ret = -1;
+-			break;
+-	}
+-	sqlite3_free(sql);
+-	sqlite3_finalize(stmt);
+-
+-	return ret;
++	sql_get_field(int64_t, sqlite3_column_int64)
+ }
+ 
+ char *
+diff -urw minidlna-1.3.0-ref/upnpdescgen.c minidlna-1.3.0/upnpdescgen.c
+--- minidlna-1.3.0-ref/upnpdescgen.c	2020-12-03 08:55:05.422253300 +0300
++++ minidlna-1.3.0/upnpdescgen.c	2020-12-03 08:24:37.857546300 +0300
+@@ -525,6 +525,7 @@
+ 			pile[top].eltname = eltname;
+ 		}
+ 	}
++	return str;
+ }
+ 
+ /* genRootDesc() :
+diff -urw minidlna-1.3.0-ref/upnpglobalvars.c minidlna-1.3.0/upnpglobalvars.c
+--- minidlna-1.3.0-ref/upnpglobalvars.c	2020-12-03 08:55:05.413019400 +0300
++++ minidlna-1.3.0/upnpglobalvars.c	2020-12-03 08:17:49.191957700 +0300
 @@ -60,7 +60,7 @@
  struct runtime_vars_s runtime_vars;
- uint32_t runtime_flags = INOTIFY_MASK | TIVO_BONJOUR_MASK;
+ uint32_t runtime_flags = INOTIFY_MASK | TIVO_BONJOUR_MASK | SUBTITLES_MASK;
  
 -const char *pidfilename = "/var/run/minidlna/minidlna.pid";
 +const char *pidfilename = "/var/run/minidlna.pid";
  
  char uuidvalue[] = "uuid:00000000-0000-0000-0000-000000000000";
  char modelname[MODELNAME_MAX_LEN] = ROOTDEV_MODELNAME;
-diff -urw minidlna-1.2.1-ref/upnpglobalvars.h minidlna-1.2.1/upnpglobalvars.h
---- minidlna-1.2.1-ref/upnpglobalvars.h	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/upnpglobalvars.h	2018-01-13 17:28:58.000000000 +0300
-@@ -190,15 +190,17 @@
+diff -urw minidlna-1.3.0-ref/upnpglobalvars.h minidlna-1.3.0/upnpglobalvars.h
+--- minidlna-1.3.0-ref/upnpglobalvars.h	2020-12-03 08:55:05.348310700 +0300
++++ minidlna-1.3.0/upnpglobalvars.h	2020-12-03 08:38:34.234543200 +0300
+@@ -196,18 +196,19 @@
+ #define MERGE_MEDIA_DIRS_MASK 0x0020
  #define WIDE_LINKS_MASK       0x0040
  #ifdef HAVE_AVAHI
- #define TIVO_BONJOUR_MASK     0x0080
-+//#define UPDATE_SCAN_MASK      0x0400
+-#define TIVO_BONJOUR_MASK     0x0080
++//#define TIVO_BONJOUR_MASK     0x0080    //Reserv for UPDATE_SCAN_MASK
  #else
  #define TIVO_BONJOUR_MASK     0x0000
 +#define UPDATE_SCAN_MASK      0x0080
  #endif
  #define SCANNING_MASK         0x0100
  #define RESCAN_MASK           0x0200
+ #define SUBTITLES_MASK        0x0400
+ #define FORCE_ALPHASORT_MASK  0x0800
  
 -#define SETFLAG(mask)	runtime_flags |= mask
 +#define SETFLAG(mask)	(runtime_flags |= mask)
@@ -1029,11 +1313,11 @@ diff -urw minidlna-1.2.1-ref/upnpglobalvars.h minidlna-1.2.1/upnpglobalvars.h
  
  extern const char *pidfilename;
  
-diff -urw minidlna-1.2.1-ref/upnphttp.c minidlna-1.2.1/upnphttp.c
---- minidlna-1.2.1-ref/upnphttp.c	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/upnphttp.c	2018-01-12 19:08:17.000000000 +0300
-@@ -1053,12 +1053,12 @@
- 		n = recv(h->socket, buf, 2048, 0);
+diff -urw minidlna-1.3.0-ref/upnphttp.c minidlna-1.3.0/upnphttp.c
+--- minidlna-1.3.0-ref/upnphttp.c	2020-12-03 08:55:05.414016700 +0300
++++ minidlna-1.3.0/upnphttp.c	2020-12-03 08:22:20.840694400 +0300
+@@ -1074,7 +1074,7 @@
+ 		n = recv(h->ev.fd, buf, 2048, 0);
  		if(n<0)
  		{
 -			DPRINTF(E_ERROR, L_HTTP, "recv (state0): %s\n", strerror(errno));
@@ -1041,14 +1325,8 @@ diff -urw minidlna-1.2.1-ref/upnphttp.c minidlna-1.2.1/upnphttp.c
  			h->state = 100;
  		}
  		else if(n==0)
- 		{
--			DPRINTF(E_WARN, L_HTTP, "HTTP Connection closed unexpectedly\n");
-+			DPRINTF(E_DEBUG, L_HTTP, "HTTP Connection closed unexpectedly\n");
- 			h->state = 100;
- 		}
- 		else
-@@ -1099,12 +1099,12 @@
- 		n = recv(h->socket, buf, sizeof(buf), 0);
+@@ -1120,7 +1120,7 @@
+ 		n = recv(h->ev.fd, buf, sizeof(buf), 0);
  		if(n < 0)
  		{
 -			DPRINTF(E_ERROR, L_HTTP, "recv (state%d): %s\n", h->state, strerror(errno));
@@ -1056,25 +1334,67 @@ diff -urw minidlna-1.2.1-ref/upnphttp.c minidlna-1.2.1/upnphttp.c
  			h->state = 100;
  		}
  		else if(n == 0)
- 		{
--			DPRINTF(E_WARN, L_HTTP, "HTTP Connection closed unexpectedly\n");
-+			DPRINTF(E_DEBUG, L_HTTP, "HTTP Connection closed unexpectedly\n");
- 			h->state = 100;
- 		}
- 		else
-@@ -1620,7 +1620,7 @@
- 	char *resolution = NULL;
- 	char *key, *val;
- 	char *saveptr, *item = NULL;
--	int rotate;
-+	int rotate = 0;
- 	int pixw = 0, pixh = 0;
- 	long long id;
- 	int rows=0, chunked, ret;
-diff -urw minidlna-1.2.1-ref/utils.c minidlna-1.2.1/utils.c
---- minidlna-1.2.1-ref/utils.c	2017-08-24 20:28:25.000000000 +0300
-+++ minidlna-1.2.1/utils.c	2018-01-12 19:04:06.000000000 +0300
-@@ -398,6 +398,7 @@
+@@ -1465,7 +1465,7 @@
+ 	int fd;
+ 	struct string_s str;
+ 
+-	if( h->reqflags & (FLAG_XFERSTREAMING|FLAG_RANGE) )
++	if( (h->reqflags & FLAG_XFERSTREAMING) && (h->reqflags & FLAG_RANGE) )
+ 	{
+ 		DPRINTF(E_WARN, L_HTTP, "Client tried to specify transferMode as Streaming with an image!\n");
+ 		Send406(h);
+@@ -1570,7 +1570,7 @@
+ 	ExifLoader *l;
+ 	struct string_s str;
+ 
+-	if( h->reqflags & (FLAG_XFERSTREAMING|FLAG_RANGE) )
++	if( (h->reqflags & FLAG_XFERSTREAMING) && (h->reqflags & FLAG_RANGE) )
+ 	{
+ 		DPRINTF(E_WARN, L_HTTP, "Client tried to specify transferMode as Streaming with an image!\n");
+ 		Send406(h);
+@@ -1713,7 +1713,7 @@
+ 		goto resized_error;
+ 	}
+ #endif
+-	if( h->reqflags & (FLAG_XFERSTREAMING|FLAG_RANGE) )
++	if( (h->reqflags & FLAG_XFERSTREAMING) && (h->reqflags & FLAG_RANGE) )
+ 	{
+ 		DPRINTF(E_WARN, L_HTTP, "Client tried to specify transferMode as Streaming with an image!\n");
+ 		Send406(h);
+diff -urw minidlna-1.3.0-ref/upnpsoap.c minidlna-1.3.0/upnpsoap.c
+--- minidlna-1.3.0-ref/upnpsoap.c	2020-12-03 08:55:05.333753200 +0300
++++ minidlna-1.3.0/upnpsoap.c	2020-12-03 08:08:16.124074500 +0300
+@@ -804,7 +804,7 @@
+ }
+ 
+ static int
+-get_child_count(const char *object, struct magic_container_s *magic)
++get_child_count(const char *object, const struct magic_container_s *magic)
+ {
+ 	int ret;
+ 
+@@ -1301,7 +1301,7 @@
+ 			"<Result>"
+ 			"&lt;DIDL-Lite"
+ 			CONTENT_DIRECTORY_SCHEMAS;
+-	struct magic_container_s *magic;
++	const struct magic_container_s *magic;
+ 	char *zErrMsg = NULL;
+ 	char *sql, *ptr;
+ 	struct Response args;
+@@ -1823,7 +1823,7 @@
+ 			"<Result>"
+ 			"&lt;DIDL-Lite"
+ 			CONTENT_DIRECTORY_SCHEMAS;
+-	struct magic_container_s *magic;
++	const struct magic_container_s *magic;
+ 	char *zErrMsg = NULL;
+ 	char *sql, *ptr;
+ 	struct Response args;
+diff -urw minidlna-1.3.0-ref/utils.c minidlna-1.3.0/utils.c
+--- minidlna-1.3.0-ref/utils.c	2020-12-03 08:55:05.417036700 +0300
++++ minidlna-1.3.0/utils.c	2020-12-03 08:17:49.216379200 +0300
+@@ -400,6 +400,7 @@
  		ends_with(file, ".mts") || ends_with(file, ".m2ts")  ||
  		ends_with(file, ".m2t") || ends_with(file, ".mkv")   ||
  		ends_with(file, ".vob") || ends_with(file, ".ts")    ||

@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2018 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2021 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -82,6 +82,7 @@
 #define EDNS0_OPTION_CLIENT_SUBNET  8     /* IANA */
 #define EDNS0_OPTION_NOMDEVICEID    65073 /* Nominum temporary assignment */
 #define EDNS0_OPTION_NOMCPEID       65074 /* Nominum temporary assignment */
+#define EDNS0_OPTION_UMBRELLA       20292 /* Cisco Umbrella temporary assignment */
 
 struct dns_header {
   u16 id;

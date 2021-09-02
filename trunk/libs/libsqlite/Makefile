@@ -1,5 +1,5 @@
-SRC_NAME=sqlite-autoconf-3260000
-SRC_URL=https://www.sqlite.org/2018/$(SRC_NAME).tar.gz
+SRC_NAME=sqlite-autoconf-3350100
+SRC_URL=https://www.sqlite.org/2021/$(SRC_NAME).tar.gz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
@@ -28,6 +28,7 @@ configure:
 		$(if $(LIBS_BUILD_SHARED),--disable-static,--enable-static) \
 		$(if $(LIBS_BUILD_SHARED),--enable-shared,--disable-shared) \
 		--disable-readline \
+		--disable-editline \
 		--disable-dynamic-extensions \
 		--disable-fts3 \
 		--disable-fts4 \

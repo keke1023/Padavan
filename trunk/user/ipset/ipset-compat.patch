@@ -1,0 +1,38 @@
+diff -urN a/kernel/net/Kbuild b/kernel/net/Kbuild
+--- a/kernel/net/Kbuild	2020-06-26 00:30:16.675629900 +0300
++++ b/kernel/net/Kbuild	2020-06-26 00:29:37.804497500 +0300
+@@ -2,7 +2,6 @@
+ EXTRA_CFLAGS := -DCONFIG_IP_SET_MAX=$(IP_SET_MAX)
+ 
+ obj-m += netfilter/
+-obj-m += sched/
+ 
+ # It's for me...
+ incdirs := $(M) $(KDIR)/include/linux/netfilter $(KDIR)/include/linux/netfilter/ipset
+diff -urN a/kernel/net/netfilter/ipset/ip_set_hash_gen.h b/kernel/net/netfilter/ipset/ip_set_hash_gen.h
+--- a/kernel/net/netfilter/ipset/ip_set_hash_gen.h	2020-06-26 00:30:16.769384200 +0300
++++ b/kernel/net/netfilter/ipset/ip_set_hash_gen.h	2020-06-26 00:10:53.867232900 +0300
+@@ -8,21 +8,17 @@
+ #include <linux/rcupdate.h>
+ #include <linux/jhash.h>
+ #include <linux/types.h>
+-#include <linux/netfilter/nfnetlink.h>
+ #include <linux/netfilter/ipset/ip_set.h>
+ 
+ #define __ipset_dereference(p)		\
+ 	rcu_dereference_protected(p, 1)
+ #define ipset_dereference_nfnl(p)	\
+-	rcu_dereference_protected(p,	\
+-		lockdep_nfnl_is_held(NFNL_SUBSYS_IPSET))
++	rcu_dereference_protected(p, 1)
+ #define ipset_dereference_set(p, set) 	\
+ 	rcu_dereference_protected(p,	\
+-		lockdep_nfnl_is_held(NFNL_SUBSYS_IPSET) || \
+ 		lockdep_is_held(&(set)->lock))
+ #define ipset_dereference_bh_nfnl(p)	\
+-	rcu_dereference_bh_check(p, 	\
+-		lockdep_nfnl_is_held(NFNL_SUBSYS_IPSET))
++	rcu_dereference_bh_check(p, 1)
+ 
+ /* Hashing which uses arrays to resolve clashing. The hash table is resized
+  * (doubled) when searching becomes too long.

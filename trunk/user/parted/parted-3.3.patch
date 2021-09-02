@@ -1,0 +1,154 @@
+diff -urN parted-3.3-ref/Makefile.am parted-3.3/Makefile.am
+--- parted-3.3-ref/Makefile.am	2020-08-04 15:56:19.891344600 +0300
++++ parted-3.3/Makefile.am	2020-01-23 15:57:27.137920300 +0300
+@@ -1,5 +1,5 @@
+ ACLOCAL_AMFLAGS = -I m4
+-SUBDIRS = po lib include libparted parted partprobe doc debug tests
++SUBDIRS = po lib include libparted parted partprobe
+ 
+ EXTRA_DIST =				\
+   .version				\
+diff -urN parted-3.3-ref/libparted/fs/Makefile.am parted-3.3/libparted/fs/Makefile.am
+--- parted-3.3-ref/libparted/fs/Makefile.am	2020-08-04 15:56:20.268362800 +0300
++++ parted-3.3/libparted/fs/Makefile.am	2020-08-04 15:54:11.320865900 +0300
+@@ -14,15 +14,6 @@
+ 		    $(OS_LIBS)
+ 
+ libfs_la_SOURCES =		\
+-  amiga/affs.c			\
+-  amiga/affs.h			\
+-  amiga/amiga.c			\
+-  amiga/amiga.h			\
+-  amiga/apfs.c			\
+-  amiga/apfs.h			\
+-  amiga/asfs.c			\
+-  amiga/asfs.h			\
+-  amiga/a-interface.c		\
+   btrfs/btrfs.c			\
+   ext2/ext2.h			\
+   ext2/ext2_fs.h		\
+diff -urN parted-3.3-ref/libparted/labels/Makefile.am parted-3.3/libparted/labels/Makefile.am
+--- parted-3.3-ref/libparted/labels/Makefile.am	2020-08-04 15:56:20.168683900 +0300
++++ parted-3.3/libparted/labels/Makefile.am	2020-08-04 15:48:29.907281400 +0300
+@@ -18,8 +18,6 @@
+ 
+ liblabels_la_SOURCES = \
+   $(S390_SRCS)	\
+-  aix.c		\
+-  atari.c	\
+   bsd.c		\
+   dos.c		\
+   dvh.c		\
+@@ -33,8 +31,7 @@
+   pt-common.h	\
+   pt-tools.c	\
+   pt-tools.h	\
+-  rdb.c		\
+-  sun.c
++  rdb.c
+ 
+ liblabels_la_LIBADD = $(OS_LIBS) $(INTLLIBS) $(LIBICONV)
+ 
+diff -urN parted-3.3-ref/libparted/libparted.c parted-3.3/libparted/libparted.c
+--- parted-3.3-ref/libparted/libparted.c	2020-08-04 15:56:20.164706700 +0300
++++ parted-3.3/libparted/libparted.c	2020-08-04 15:50:45.145482100 +0300
+@@ -64,7 +64,6 @@
+ static int	dodgy_memory_active[100];
+ #endif /* DEBUG */
+ 
+-extern void ped_disk_aix_init ();
+ extern void ped_disk_bsd_init ();
+ extern void ped_disk_dvh_init ();
+ extern void ped_disk_gpt_init ();
+@@ -72,10 +71,7 @@
+ extern void ped_disk_mac_init ();
+ extern void ped_disk_msdos_init ();
+ extern void ped_disk_pc98_init ();
+-extern void ped_disk_sun_init ();
+-extern void ped_disk_amiga_init ();
+ extern void ped_disk_dasd_init ();
+-extern void ped_disk_atari_init ();
+ 
+ static void
+ init_disk_types ()
+@@ -86,8 +82,6 @@
+ #if defined __s390__ || defined __s390x__
+ 	ped_disk_dasd_init();
+ #endif
+-	ped_disk_atari_init (); /* easy false positives, so probe others first */
+-	ped_disk_sun_init ();
+ #ifdef ENABLE_PC98
+ 	ped_disk_pc98_init ();
+ #endif
+@@ -96,11 +90,8 @@
+ 	ped_disk_gpt_init ();
+ 	ped_disk_dvh_init ();
+ 	ped_disk_bsd_init ();
+-	ped_disk_amiga_init ();
+-	ped_disk_aix_init ();
+ }
+ 
+-extern void ped_file_system_amiga_init (void);
+ extern void ped_file_system_xfs_init (void);
+ extern void ped_file_system_ufs_init (void);
+ extern void ped_file_system_reiserfs_init (void);
+@@ -117,7 +108,6 @@
+ static void
+ init_file_system_types ()
+ {
+-	ped_file_system_amiga_init ();
+ 	ped_file_system_xfs_init ();
+ 	ped_file_system_ufs_init ();
+ 	ped_file_system_reiserfs_init ();
+@@ -132,7 +122,6 @@
+ 	ped_file_system_udf_init ();
+ }
+ 
+-extern void ped_disk_aix_done ();
+ extern void ped_disk_bsd_done ();
+ extern void ped_disk_dvh_done ();
+ extern void ped_disk_gpt_done ();
+@@ -141,9 +130,7 @@
+ extern void ped_disk_msdos_done ();
+ extern void ped_disk_pc98_done ();
+ extern void ped_disk_sun_done ();
+-extern void ped_disk_amiga_done ();
+ extern void ped_disk_dasd_done ();
+-extern void ped_disk_atari_done ();
+ 
+ static void
+ done_disk_types ()
+@@ -151,7 +138,6 @@
+ #if defined __s390__ || __s390x__
+ 	ped_disk_dasd_done ();
+ #endif
+-	ped_disk_sun_done ();
+ #ifdef ENABLE_PC98
+ 	ped_disk_pc98_done ();
+ #endif
+@@ -161,9 +147,6 @@
+ 	ped_disk_gpt_done ();
+ 	ped_disk_dvh_done ();
+ 	ped_disk_bsd_done ();
+-	ped_disk_amiga_done ();
+-	ped_disk_aix_done ();
+-	ped_disk_atari_done ();
+ }
+ 
+ static void _init() __attribute__ ((constructor));
+@@ -193,7 +176,6 @@
+ extern void ped_file_system_reiserfs_done (void);
+ extern void ped_file_system_ufs_done (void);
+ extern void ped_file_system_xfs_done (void);
+-extern void ped_file_system_amiga_done (void);
+ extern void ped_file_system_btrfs_done (void);
+ extern void ped_file_system_udf_done (void);
+ 
+@@ -210,7 +192,6 @@
+ 	ped_file_system_reiserfs_done ();
+ 	ped_file_system_ufs_done ();
+ 	ped_file_system_xfs_done ();
+-	ped_file_system_amiga_done ();
+ 	ped_file_system_btrfs_done ();
+ 	ped_file_system_udf_done ();
+ }

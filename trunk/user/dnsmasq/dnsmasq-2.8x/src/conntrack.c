@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2018 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2021 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ int get_incoming_mark(union mysockaddr *peer_addr, union all_addr *local_addr, i
       nfct_set_attr_u8(ct, ATTR_L4PROTO, istcp ? IPPROTO_TCP : IPPROTO_UDP);
       nfct_set_attr_u16(ct, ATTR_PORT_DST, htons(daemon->port));
       
+#ifdef HAVE_IPV6
       if (peer_addr->sa.sa_family == AF_INET6)
 	{
 	  nfct_set_attr_u8(ct, ATTR_L3PROTO, AF_INET6);
@@ -44,6 +45,7 @@ int get_incoming_mark(union mysockaddr *peer_addr, union all_addr *local_addr, i
 	  nfct_set_attr(ct, ATTR_IPV6_DST, local_addr->addr6.s6_addr);
 	}
       else
+#endif
 	{
 	  nfct_set_attr_u8(ct, ATTR_L3PROTO, AF_INET);
 	  nfct_set_attr_u32(ct, ATTR_IPV4_SRC, peer_addr->in.sin_addr.s_addr);
@@ -82,7 +84,4 @@ static int callback(enum nf_conntrack_msg_type type, struct nf_conntrack *ct, vo
   return NFCT_CB_CONTINUE;
 }
 
-#endif
-  
-
-
+#endif /* HAVE_CONNTRACK */

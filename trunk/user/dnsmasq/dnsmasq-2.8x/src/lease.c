@@ -1,4 +1,4 @@
-/* dnsmasq is Copyright (c) 2000-2018 Simon Kelley
+/* dnsmasq is Copyright (c) 2000-2021 Simon Kelley
 
    This program is free software; you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -230,7 +230,7 @@ void lease_update_from_configs(void)
     if (lease->flags & (LEASE_TA | LEASE_NA))
       continue;
     else if ((config = find_config(daemon->dhcp_conf, NULL, lease->clid, lease->clid_len, 
-				   lease->hwaddr, lease->hwaddr_len, lease->hwaddr_type, NULL)) && 
+				   lease->hwaddr, lease->hwaddr_len, lease->hwaddr_type, NULL, NULL)) && 
 	     (config->flags & CONFIG_NAME) &&
 	     (!(config->flags & CONFIG_ADDR) || config->addr.s_addr == lease->addr.s_addr))
       lease_set_hostname(lease, config->hostname, 1, get_domain(lease->addr), NULL);
@@ -378,7 +378,7 @@ void lease_update_file(time_t now)
       if (next_event == 0 || difftime(next_event, LEASE_RETRY + now) > 0.0)
 	next_event = LEASE_RETRY + now;
       
-      my_syslog(MS_DHCP | LOG_ERR, _("failed to write %s: %s (retry in %us)"), 
+      my_syslog(MS_DHCP | LOG_ERR, _("failed to write %s: %s (retry in %u s)"), 
 		daemon->lease_file, strerror(err),
 		(unsigned int)difftime(next_event, now));
     }
@@ -558,7 +558,7 @@ void lease_prune(struct dhcp_lease *target, time_t now)
   for (lease = leases, up = &leases; lease; lease = tmp)
     {
       tmp = lease->next;
-      if ((lease->expires != 0 && difftime(now, lease->expires) > 0) || lease == target)
+      if ((lease->expires != 0 && difftime(now, lease->expires) >= 0) || lease == target)
 	{
 	  file_dirty = 1;
 	  if (lease->hostname)
@@ -635,7 +635,8 @@ struct dhcp_lease *lease_find_by_addr(struct in_addr addr)
 #ifdef HAVE_DHCP6
 /* find address for {CLID, IAID, address} */
 struct dhcp_lease *lease6_find(unsigned char *clid, int clid_len, 
-			       int lease_type, int iaid, struct in6_addr *addr)
+			       int lease_type, unsigned int iaid,
+			       struct in6_addr *addr)
 {
   struct dhcp_lease *lease;
   
@@ -667,7 +668,9 @@ void lease6_reset(void)
 }
 
 /* enumerate all leases belonging to {CLID, IAID} */
-struct dhcp_lease *lease6_find_by_client(struct dhcp_lease *first, int lease_type, unsigned char *clid, int clid_len, int iaid)
+struct dhcp_lease *lease6_find_by_client(struct dhcp_lease *first, int lease_type,
+					 unsigned char *clid, int clid_len,
+					 unsigned int iaid)
 {
   struct dhcp_lease *lease;
 
@@ -833,7 +836,7 @@ void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now)
       dns_dirty = 1;
       lease->expires = exp;
 #ifndef HAVE_BROKEN_RTC
-      lease->flags |= LEASE_AUX_CHANGED;
+      lease->flags |= LEASE_AUX_CHANGED | LEASE_EXP_CHANGED;
       file_dirty = 1;
 #endif
     }
@@ -849,7 +852,7 @@ void lease_set_expires(struct dhcp_lease *lease, unsigned int len, time_t now)
 } 
 
 #ifdef HAVE_DHCP6
-void lease_set_iaid(struct dhcp_lease *lease, int iaid)
+void lease_set_iaid(struct dhcp_lease *lease, unsigned int iaid)
 {
   if (lease->iaid != iaid)
     {
@@ -1133,7 +1136,8 @@ int do_script_run(time_t now)
   
   for (lease = leases; lease; lease = lease->next)
     if ((lease->flags & (LEASE_NEW | LEASE_CHANGED)) || 
-	((lease->flags & LEASE_AUX_CHANGED) && option_bool(OPT_LEASE_RO)))
+	((lease->flags & LEASE_AUX_CHANGED) && option_bool(OPT_LEASE_RO)) ||
+	((lease->flags & LEASE_EXP_CHANGED) && option_bool(OPT_LEASE_RENEW)))
       {
 #ifdef HAVE_SCRIPT
 	queue_script((lease->flags & LEASE_NEW) ? ACTION_ADD : ACTION_OLD, lease, 
@@ -1143,7 +1147,7 @@ int do_script_run(time_t now)
 	emit_dbus_signal((lease->flags & LEASE_NEW) ? ACTION_ADD : ACTION_OLD, lease,
 			 lease->fqdn ? lease->fqdn : lease->hostname);
 #endif
-	lease->flags &= ~(LEASE_NEW | LEASE_CHANGED | LEASE_AUX_CHANGED);
+	lease->flags &= ~(LEASE_NEW | LEASE_CHANGED | LEASE_AUX_CHANGED | LEASE_EXP_CHANGED);
 	
 	/* this is used for the "add" call, then junked, since they're not in the database */
 	free(lease->extradata);
@@ -1197,8 +1201,4 @@ void lease_add_extradata(struct dhcp_lease *lease, unsigned char *data, unsigned
 }
 #endif
 
-#endif
-	  
-
-      
-
+#endif /* HAVE_DHCP */

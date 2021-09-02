@@ -36,7 +36,7 @@ OBJS += fallocate.o fibmap.o fwdownload.o dvdspeed.o
 endif
 
 all:
-	$(MAKE) hdparm
+	$(MAKE) -j4 hdparm
 
 hdparm: hdparm.h sgio.h $(OBJS)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o hdparm $(OBJS)

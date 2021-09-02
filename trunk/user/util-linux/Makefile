@@ -1,5 +1,5 @@
-SRC_NAME=util-linux-2.33.1
-SRC_URL=https://www.kernel.org/pub/linux/utils/util-linux/v2.33/util-linux-2.33.1.tar.xz
+SRC_NAME=util-linux-2.36.1
+SRC_URL=https://www.kernel.org/pub/linux/utils/util-linux/v2.36/util-linux-2.36.1.tar.xz
 
 THISDIR = $(shell pwd)
 
@@ -30,15 +30,12 @@ config_test:
 
 configure:
 	( cd $(SRC_NAME) ; \
+	./autogen.sh ; \
 	PKG_CONFIG_PATH=$(STAGEDIR)/lib/pkgconfig \
 	scanf_cv_type_modifier=no \
 	./configure \
 		--prefix=$(STAGEDIR) \
-		--without-tinfo \
 		--without-ncurses \
-		--without-user \
-		--without-cap-ng \
-		--without-util \
 		--without-ncursesw \
 		--without-slang \
 		--without-selinux \
@@ -48,35 +45,10 @@ configure:
 		--without-systemd \
 		--without-btrfs \
 		--without-readline \
+		--disable-all-programs \
 		--enable-libblkid \
 		--enable-libuuid \
-		--disable-cal \
-		--disable-fdformat \
-		--disable-hwclock \
-		--disable-bfs \
-		--disable-minix \
-		--disable-ipcrm \
-		--disable-ipcs \
-		--disable-setterm \
-		--disable-nsenter \
-		--disable-rfkill \
-		--disable-setpriv \
-		--disable-logger \
-		--disable-lslogins \
-		--disable-runuser \
-		--disable-libsmartcols \
-		--disable-raw \
-		--disable-ul \
-		--disable-chfn-chsh \
-		--disable-last \
-		--disable-fdisks \
-		--disable-libfdisk \
-		--disable-zramctl \
-		--disable-mesg \
-		--disable-nologin \
-		--disable-more \
-		--disable-chmem \
-		--disable-lsmem \
+		--enable-blkid \
 		--disable-bash-completion \
 		--disable-nls \
 		--disable-libmount \

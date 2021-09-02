@@ -26,19 +26,21 @@ configure:
 	ac_cv_netfilter_can_compile=no \
 	./configure \
 		--prefix=$(STAGEDIR) \
-		--enable-static \
-		--enable-shared \
+		--disable-shared \
 		$(if $(CONFIG_IPV6),--enable-ipv6,--disable-ipv6) \
 		--disable-yydebug \
 		--disable-dbus \
 		--disable-usb \
 		--disable-bluetooth \
+		--disable-netmap \
+		--disable-rdma \
 		--with-pcap=linux \
 		--without-flex \
 		--without-bison \
 		--without-dag \
 		--without-septel \
 		--without-libnl \
+		--without-snf \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \
 	)
