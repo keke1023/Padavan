@@ -76,11 +76,11 @@
 			}
 			}); 
 			$j("#v2_tls").change(function() { 
-			if(document.getElementById('v2_tls').value != '0'){
-			showhide_div('row_tj_tls_host', 1);
-			}else{			
-			showhide_div('row_tj_tls_host', 0);
-			}
+				if($j("#v2_tls").val() != '0'){
+					showhide_div('row_tj_tls_host', 1);
+				}else{
+					showhide_div('row_tj_tls_host', 0);
+				}
 			});
 			$j("#v2_mux").change(function() { 
 			if($j("#v2_mux").is(':checked')){
@@ -97,22 +97,22 @@
 			}
 			});
 		});
-function ctime() {
-var t=0;
-c=null;
-document.getElementById('btn_ctime').value='正在运行脚本:0s';
-document.getElementById('btn_ctime').style.display="inline";
-		c=setInterval(function(){
-		t=t+1
-        //document.getElementById("ctime").value=t + "秒";
-		document.getElementById('btn_ctime').value='正在运行脚本:' + t +"s";
-    },1000);
-}
-function dtime() {
-clearInterval(c);
-document.getElementById('btn_ctime').value='脚本运行完成!';
-setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
-}
+		function ctime() {
+			var t=0;
+			c=null;
+			document.getElementById('btn_ctime').value='正在运行脚本:0s';
+			document.getElementById('btn_ctime').style.display="inline";
+			c=setInterval(function(){
+				t=t+1
+				//document.getElementById("ctime").value=t + "秒";
+				document.getElementById('btn_ctime').value='正在运行脚本:' + t +"s";
+			},1000);
+		}
+		function dtime() {
+			clearInterval(c);
+			document.getElementById('btn_ctime').value='脚本运行完成!';
+			setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
+		}
 		function initial() {
 			show_banner(2);
 			show_menu(13, 13, 0);
@@ -350,7 +350,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				success: function (response) {
 					alert("脚本执行成功...")
 				},
-				complete: function(xhr, ts) {
+				complete: function (xhr, ts) {
 					hideLoading();
 				}
 			});
@@ -407,7 +407,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 		}
 		//订阅节点
 		function dlink() {
-		ctime();
+			ctime();
 			var ns = {};
 			ns[1] = "dlink";
 			document.getElementById("btn_update_link").value="正在更新订阅节点";
@@ -427,7 +427,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 		}
 		//清空节点
 		function ddlink() {
-		ctime();
+			ctime();
 			var ns = {};
 			ns[1] = "ddlink";
 			document.getElementById("btn_rest_link").value="正在清空节点";
@@ -468,13 +468,21 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 							});
 							//显示节点下拉列表 by 花妆男
 					// 渲染父节点  obj 需要渲染的数据 keyStr key需要去除的字符串
-					var keyStr = "ssconf_basic_json_";
-					var nodeList = document.getElementById("nodeList"); // 获取节点
-					var unodeList = document.getElementById("u_nodeList"); // 获取节点
-					var s5nodeList = document.getElementById("s5_nodeList"); // 获取节点
+							var keyStr = "ssconf_basic_json_",
+								nodeList = document.getElementById("nodeList"),//获取节点
+								unodeList = document.getElementById("u_nodeList"),//获取节点
+								s5nodeList = document.getElementById("s5_nodeList");//获取节点
+							$j(nodeList).find("option:gt(0)").remove();
+							$j(unodeList).find("option:gt(1)").remove();
+							$j(s5nodeList).find("option:gt(1)").remove();
 					for (var key in db_ss) { // 遍历对象
-						var optionObj = JSON.parse(db_ss[key]); // 字符串转为对象
-						//if(optionObj.ping != "failed"){   //过滤ping不通的节点
+								var optionObj = null;
+								try {
+									optionObj = JSON.parse(removeUselessChars(db_ss[key]));//字符串转为对象
+								} catch(e) {
+									optionObj = null;
+								}
+								if (optionObj == null) continue;
 						var text = '[ ' + (optionObj.type ? optionObj.type : "类型获取失败") + ' ] ' + (optionObj
 							.alias ? optionObj.alias : "名字获取失败"); // 判断下怕获取失败 ，括号是运算的问题
 						// 添加 
@@ -515,10 +523,16 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 						//}
 					}
 					//订阅节点表格
-					var myss = new Array();
-					var i = 0;
-					for (var key in db_ss) { // 遍历对象
-						var dbss = JSON.parse(db_ss[key])
+							var myss = [],
+								i = 0;
+							for (var key in db_ss) { // 遍历对象
+								var dbss = null;
+								try {
+									dbss = JSON.parse(removeUselessChars(db_ss[key]));//字符串转为对象
+								} catch(e) {
+									dbss = null;
+								}
+								if (dbss == null) continue;
 						dbss.ids = key.replace("ssconf_basic_json_", '');
 						myss[i] = dbss;
 						i = i + 1;
@@ -743,9 +757,9 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			} else if (type == "v2ray" || type == "xray") {
 				var transport = getProperty(ss, 'transport', 'tcp');
 				document.getElementById("ssp_insecure").value = getProperty(ss, 'insecure', 0);
-				document.getElementById("ssp_insecure").checked =  document.getElementById("ssp_insecure").value != 0;				
+				document.getElementById("ssp_insecure").checked = document.getElementById("ssp_insecure").value != 0;
 				document.getElementById("v2_mux").value = getProperty(ss, 'mux', 0);
-				document.getElementById("v2_mux").checked =  document.getElementById("v2_mux").value != 0;
+				document.getElementById("v2_mux").checked = document.getElementById("v2_mux").value != 0;
 				document.getElementById("v2_security").value = getProperty(ss, 'security', 'auto');
 				document.getElementById("v2_vmess_id").value = getProperty(ss, 'vmess_id', '');
 				document.getElementById("v2_alter_id").value = getProperty(ss, 'alter_id', '');
@@ -778,9 +792,9 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				}
 			} else if (type == "trojan") {
 				document.getElementById("ssp_insecure").value = getProperty(ss, 'insecure', 0);
-				document.getElementById("ssp_insecure").checked =  document.getElementById("ssp_insecure").value != 0;
+				document.getElementById("ssp_insecure").checked = document.getElementById("ssp_insecure").value != 0;
 				document.getElementById("v2_tls").value = getProperty(ss, 'tls', '0');
-				//document.getElementById("v2_tls").checked =  document.getElementById("v2_tls") != 0;
+				//document.getElementById("v2_tls").checked = document.getElementById("v2_tls") != 0;
 				document.getElementById("ssp_tls_host").value = getProperty(ss, 'tls_host', '');
 			} else if (type == "socks5") {
 				//
@@ -790,7 +804,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 		}
 		//单项删除
 		function del(id) {
-		ctime();
+			ctime();
 			var p = "ssconf_basic";
 			var ns = {};
 			ns[p + "_json_" + id] = "deleting";
@@ -804,21 +818,20 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 					alert("删除失败,请重试！")
 				},
 				success: function (response) {
-				dtime();
+					dtime();
 					$j('#table99').bootstrapTable('refresh');
 				}
 			});
 		}
 		//批量删除
 		function del_dlink() {
-		ctime();
+			ctime();
 			var row = $j("#table99").bootstrapTable('getSelections');
 			var p = "ssconf_basic";
 			var ns = {};
 			for (var key in row) {
 				ns[p + "_json_" + row[key].ids] = "deleting";
 			}
-			//console.log(ns)
 			document.getElementById("btn_del_link").value="正在删除节点";
 			$j.ajax({
 				url: "/applydb.cgi?userm1=del&p=ss",
@@ -836,7 +849,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 		}
 		//ping节点
 		function ping_dlink() {
-		ctime();
+			ctime();
 			var row = $j("#table99").bootstrapTable('getSelections');
 			var p = "ssconf_basic";
 			var ns = {};
@@ -862,7 +875,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 		}
 		//ping全部节点
 		function aping_dlink() {
-		ctime();
+			ctime();
 			var ns = {};
 			ns[1] = "allping";
 			document.getElementById("btn_aping_link").value="正在ping全部节点";
@@ -951,9 +964,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				return false;
 			}
 			s.innerHTML = "";
-			//var ssu = ssrurl.match(/ssr:\/\/([A-Za-z0-9_-]+)/i);
 			var ssu = ssrurl.split('://');
-			//console.log(ssu.length);
 			if ((ssu[0] != "ssr" && ssu[0] != "ss" && ssu[0] != "vmess" && ssu[0] != "vless" && ssu[0] != "trojan") || ssu[1] == "") {
 				s.innerHTML = "<font color='red'>无效格式</font>";
 				return false;
@@ -1006,7 +1017,6 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				document.getElementById('ssp_type').value = "ss";
 				document.getElementById('ssp_type').dispatchEvent(event);
 				var team = sstr.split('@');
-				console.log(param);
 				var part1 = team[0].split(':');
 				var part2 = team[1].split(':');
 				document.getElementById('ssp_server').value = part2[0];
@@ -1043,7 +1053,6 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				return false;
 			} else if (ssu[0] == "vmess") {
 				var sstr = b64DecodeUnicode(ssu[1]);
-				console.log(sstr);
 				var ploc = sstr.indexOf("/?");
 				document.getElementById('ssp_type').value = "v2ray";
 				document.getElementById('ssp_type').dispatchEvent(event);
@@ -1052,7 +1061,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 					url0 = sstr.substr(0, ploc);
 					param = sstr.substr(ploc + 2);
 				}
-				var ssm = JSON.parse(sstr);
+				var ssm = JSON.parse(removeUselessChars(sstr));
 				document.getElementById('ssp_name').value = ssm.ps;
 				document.getElementById('ssp_server').value = ssm.add;
 				document.getElementById('ssp_prot').value = ssm.port;
@@ -1241,7 +1250,6 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 		//点击保存节点按钮
 		function showNodeData(idName, obj) {
 			var nodeData = document.getElementById(idName);
-			//console.log(nodeData);
 			for (var key in obj) {
 				var tr = document.createElement("tr");
 				var td = document.createElement("td");
@@ -1348,7 +1356,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			}
 			var post_dbus = JSON.stringify(DataObj)
 			var ids;
-			if (editing_ss_id == 0) {  
+			if (editing_ss_id == 0) {
 				node_global_max += 1;
 				ids = node_global_max;
 			} else {
@@ -1357,7 +1365,6 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			var ns = {};
 			ns["ssconf_basic_json_" + ids] = post_dbus;
 			push_data(ns);
-			console.log(DataObj)
 		}
 		//post数据到后台处理
 		function push_data(obj) {
@@ -1369,7 +1376,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				dataType: 'text',
 				data: $j.param(obj),
 				success: function (response) {
-				//hideLoading();
+					//hideLoading();
 					$j("#vpnc_settings").fadeOut(200);
 					dtime();
 					$j('#table99').bootstrapTable('refresh');
@@ -1378,17 +1385,17 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 		}
 		function showsdlinkList() {
 			var key = "ssconf_basic_json_" + document.getElementById("nodeList").value;
-			var result = JSON.parse(db_ss[key]);
+			var result = JSON.parse(removeUselessChars(db_ss[key]));
 			document.getElementById("d_type").value = result.type;
 		}
 		function showsudlinkList() {
 			var key = "ssconf_basic_json_" + document.getElementById("u_nodeList").value;
-			var result = JSON.parse(db_ss[key]);
+			var result = JSON.parse(removeUselessChars(db_ss[key]));
 			document.getElementById("ud_type").value = result.type;
 		}
 		function shows5dlinkList() {
 			var key = "ssconf_basic_json_" + document.getElementById("s5_nodeList").value;
-			var result = JSON.parse(db_ss[key]);
+			var result = JSON.parse(removeUselessChars(db_ss[key]));
 			document.getElementById("s5_type").value = result.type;
 		}
 	</script>
@@ -2256,7 +2263,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 														<tr id="row_ssp_insecure" style="display:none;">
 															<th>allowInsecure</th>
 															<td>
-																<input type="checkbox" name="ssp_insecure" id="ssp_insecure" >		
+																<input type="checkbox" name="ssp_insecure" id="ssp_insecure" >
 															</td>
 														</tr>
 														<tr id="row_v2_tls" style="display:none;">
@@ -2295,19 +2302,6 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 																<input type="checkbox" name="v2_mux" id="v2_mux" >
 															</td>
 														</tr>
-														<!--<tr> <th>自动切换</th>
-<td>
-<div class="main_itoggle">
-<div id="switch_enable_x_0_on_of">
-<input type="checkbox" id="switch_enable_x_0_fake" <% nvram_match_x("", "switch_enable_x_0", "1", "value=1 checked"); %><% nvram_match_x("", "switch_enable_x_0", "0", "value=0"); %>>
-</div>
-</div>
-<div style="position: absolute; margin-left: -10000px;">
-<input type="radio" value="1" name="switch_enable_x_0" id="switch_enable_x_0_1" <% nvram_match_x("", "switch_enable_x_0", "1", "checked"); %>><#checkbox_Yes#>
-<input type="radio" value="0" name="switch_enable_x_0" id="switch_enable_x_0_0" <% nvram_match_x("", "switch_enable_x_0", "0", "checked"); %>><#checkbox_No#>
-</div>
-</td>
-</tr>-->
 														<tr>
 															<td>
 																<center><input name="ManualRULESList2"
@@ -2351,20 +2345,6 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 															</div>
 														</td>
 													</tr>
-													<!--  <tr> <th>启用自动切换</th>
-<td>
-<div class="main_itoggle">
-<div id="ss_turn_on_of">
-<input type="checkbox" id="ss_turn_fake" <% nvram_match_x("", "ss_turn", "1", "value=1 checked"); %><% nvram_match_x("", "ss_turn", "0", "value=0"); %>>
-</div>
-</div>
-<div style="position: absolute; margin-left: -10000px;">
-<input type="radio" value="1" name="ss_turn" id="ss_turn_1" <% nvram_match_x("", "ss_turn", "1", "checked"); %>><#checkbox_Yes#>
-<input type="radio" value="0" name="ss_turn" id="ss_turn_0" <% nvram_match_x("", "ss_turn", "0", "checked"); %>><#checkbox_No#>
-</div>
-</td>
-</tr>
--->
 													<tr>
 														<th width="50%">自动切换检查周期(秒)</th>
 														<td>
@@ -2381,17 +2361,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 																value="<% nvram_get_x("", "ss_turn_ss"); %>">
 														</td>
 													</tr>
-													<!--
-<tr> <th width="50%">自定义国内IP更新地址:</th>
-	<td>
-		<input type="text" class="input" size="15" name="ss_chnroute_url" style="width: 200px"  value="<% nvram_get_x("","ss_chnroute_url"); %>" />
-	</td>
-</tr>
-<tr> <th width="50%">广告过滤地址:</th>
-	<td>
-		<input type="text" class="input" size="15" name="ss_adblock_url" style="width: 200px"  value="<% nvram_get_x("","ss_adblock_url"); %>" />
-	</td>
-</tr>-->
+
 
 													<tr>
 														<th colspan="2" style="background-color: #E3E3E3;">SOCKS5代理</th>

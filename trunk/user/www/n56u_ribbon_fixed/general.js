@@ -1319,3 +1319,34 @@ function showhide_div(e, sh) {
     else if (document.layers)
         document.layers[e].display = status;
 }
+
+function removeUselessChars(str) {
+    str = str.replace(/\\/g, "\\\\");
+    str = str.replace(/\n/g, "\\n");
+    str = str.replace(/\r/g, "\\r");
+    str = str.replace(/\t/g, "\\t");
+    str = str.replace(/("")+/g, "\"\"");
+    str = str.replace(/\'/g, "&#39;");
+    str = str.replace(/ /g, "&nbsp;");
+    str = str.replace(/</g, "&lt;");
+    str = str.replace(/>/g, "&gt;");
+    return str;
+}
+
+function decodeSSID(s) {
+    var out, len, i;
+    out = "";
+    len = s.length;
+    i = 2;
+
+    if (s[0] == "0" && s[1] == "x") {
+        while(i < len) {
+            out += "%";
+            out += s[i++];
+            out += s[i++];
+        }
+        return decodeURIComponent(out);
+    }
+
+    return decodeURIComponent(s);
+}
