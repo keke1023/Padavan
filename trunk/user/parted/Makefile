@@ -31,6 +31,7 @@ configure:
 	( cd $(SRC_NAME) ; \
 	autoreconf -fvi; \
 	PKG_CONFIG_PATH="$(STAGEDIR)/lib/pkgconfig" \
+	LIBS="-liconv" \
 	./configure \
 		--prefix=/usr \
 		--without-readline \
