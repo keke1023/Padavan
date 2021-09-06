@@ -985,7 +985,7 @@
 	struct variable variables_ZeroConf[] = {
 			{"zerotier_enable", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zerotier_id", "", NULL, EVM_RESTART_ZEROTIER},
-		    {"zerotier_moonid", "", NULL, EVM_RESTART_ZEROTIER},
+		    	{"zerotier_moonid", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zerotiermoon_enable", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zerotiermoon_ip", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zerotier_nat", "", NULL, EVM_RESTART_ZEROTIER},
@@ -998,6 +998,12 @@
 #if defined(APP_SHADOWSOCKS)
 	struct variable variables_ShadowsocksConf[] = {
 			{"ss_enable","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"trojan_local_enable","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"trojan_local","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"trojan_link","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"v2_local_enable","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"v2_local","",NULL, EVM_RESTART_SHADOWSOCKS},
+			{"v2_link","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"global_server","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"backup_server","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"udp_relay_server","",NULL, EVM_RESTART_SHADOWSOCKS},
@@ -1023,7 +1029,7 @@
 			{"d_v2_host","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_v2_path","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_v2_tls","",NULL, EVM_RESTART_SHADOWSOCKS},
-		    {"d_v2_flow","",NULL, EVM_RESTART_SHADOWSOCKS},
+		    	{"d_v2_flow","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_ss_password","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_ss_method","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_ss_protocol","",NULL, EVM_RESTART_SHADOWSOCKS},
@@ -1114,6 +1120,7 @@
     struct variable variables_AdguardHomeConf[] = {
 			{"adg_enable", "", NULL, EVM_RESTART_ADGUARDHOME},
 			{"adg_redirect", "", NULL, EVM_RESTART_ADGUARDHOME},
+			{"adg_link", "", NULL, EVM_RESTART_ADGUARDHOME},
 			{0,0,0,0}
 	};
 #endif
