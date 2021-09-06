@@ -672,8 +672,13 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_adblock_url", "https://gitee.com/privacy-protection-tools/anti-ad/raw/master/anti-ad-for-dnsmasq.conf"},
 	{ "ss_schedule_enable", "0" },
 	{ "ss_schedule", "00000000000" },
-
 	{ "ss_enable", "0" },
+	{ "trojan_local_enable", "0" },
+	{ "trojan_local", "/tmp/trojan" },
+	{ "trojan_link", "https://cdn.jsdelivr.net/gh/Padavan_CI/ssp/trojan" },
+	{ "v2_local_enable", "0" },
+	{ "v2_local", "/tmp/v2ray" },
+	{ "v2_link", "https://cdn.jsdelivr.net/gh/Padavan_CI/ssp/v2ray" },
 	{ "ss_mode", "2" },
 	{ "ss_server", "127.0.0.1" },
 	{ "ss_server_port", "8989" },
@@ -690,16 +695,13 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_proto_param", ""},
 	{ "ss_obfs", "plain"},
 	{ "ss_obfs_param", ""},
-
 	{ "ss-tunnel_enable", "0" },
 	{ "ss-tunnel_local_port", "5353" },
 	{ "ss-tunnel_remote", "8.8.4.4:53" },
 	{ "ss-tunnel_mtu", "1492" },
-	
 	{ "ss_update_chnroute", "0" },
 	{ "ss_update_gfwlist", "0" },
 	{ "ssp_staticnum_x", "0" },
-	
 	{ "v2_type_tcp", "none" },
 	{ "v2_type_mkcp", "none" },
 	{ "v2_mkcp_mtu", "1350" },
@@ -741,12 +743,19 @@ struct nvram_pair router_defaults[] = {
 	{ "d_keyword_y", "" },
 	{ "d_update_link", "" },
 	{ "ss_keyword", "过期时间/剩余流量" },
+	{ "ss_watchcat", "1" },
+	{ "ss_update_chnroute", "0" },
+	{ "ss_update_gfwlist", "0" },
+#endif
 
-	
+#if defined(APP_ADGUARDHOME)
 	/* AdguargHome */
 	{ "adg_enable", "0" },
 	{ "adg_redirect", "0" },
-	
+	{ "adg_link", "https://cdn.jsdelivr.net/gh/chongshengB/rt-n56u/trunk/user/adguardhome/AdGuardHome" },
+#endif
+
+#if defined(APP_CADDY)
 	/*caddy*/
 	{ "caddy_enable", "0" },
 	{ "caddy_file", "0" },
@@ -758,11 +767,36 @@ struct nvram_pair router_defaults[] = {
 	{ "caddy_wip6", "0" },
 	{ "caddy_wname", "admin" },
 	{ "caddy_wpassword", "admin" },
-	
+#endif
+
+#if defined(APP_FRP)
 	/*frp*/
 	{ "frpc_enable", "0" },
 	{ "frps_enable", "0" },
-	
+#endif
+
+#if defined(APP_WYY)
+	/*UnblockNeteaseMusic*/
+	{ "wyy_enable", "0" },
+	{ "wyy_apptype", "cloud" },
+	{ "wyy_cloudserver", "cdn-shanghai.service.project-openwrt.eu.org:30000:30001" },
+	{ "wyy_musicapptype", "kuwo" },
+	{ "wyy_coustom_server", "" },
+	{ "wyy_coustom_music", "" },
+	{ "wyy_flac", "0" },
+	{ "wyy_staticnum_x", "0" },
+#endif
+
+#if defined(APP_ZEROTIER)
+	/*Zerotier*/
+	{ "zerotier_enable", "0" },
+	{ "zerotier_id", "" },
+	{ "zerotier_nat", "0" },
+	{ "zerotier_secret", "" },
+	{ "zero_staticnum_x", "0" },
+#endif
+
+#if defined(APP_SMARTDNS)
 	/*SmartDns*/
 	{ "sdns_enable", "0" },
 	{ "snds_name", "smartdns" },
@@ -795,27 +829,6 @@ struct nvram_pair router_defaults[] = {
 	{ "sdnse_cache", "0" },
 	{ "ss_white", "0" },
 	{ "ss_black", "0" },
-
-	/*UnblockNeteaseMusic*/
-	{ "wyy_enable", "0" },
-	{ "wyy_apptype", "cloud" },
-	{ "wyy_cloudserver", "cdn-shanghai.service.project-openwrt.eu.org:30000:30001" },
-	{ "wyy_musicapptype", "kuwo" },
-	{ "wyy_coustom_server", "" },
-	{ "wyy_coustom_music", "" },
-	{ "wyy_flac", "0" },
-	{ "wyy_staticnum_x", "0" },
-	
-	/*Zerotier*/
-	{ "zerotier_enable", "0" },
-	{ "zerotier_id", "" },
-	{ "zerotier_nat", "0" },
-	{ "zerotier_secret", "" },
-	{ "zero_staticnum_x", "0" },
-
-	{ "ss_watchcat", "1" },
-	{ "ss_update_chnroute", "0" },
-	{ "ss_update_gfwlist", "0" },
 #endif
 
 	/* DHCP server parameters */
