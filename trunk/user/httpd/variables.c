@@ -744,9 +744,9 @@
 			{"ddns2_user", "", NULL, EVM_RESTART_DDNS },
 			{"ddns2_pass", "", NULL, EVM_RESTART_DDNS },
 #if defined(APP_ALIDDNS)
-            {"aliddns_enable", "", NULL, EVM_RESTART_ALIDDNS },
+			{"aliddns_enable", "", NULL, EVM_RESTART_ALIDDNS },
 			{"aliddns_interval", "", NULL, EVM_RESTART_ALIDDNS },
-            {"aliddns_ttl", "", NULL, EVM_RESTART_ALIDDNS },
+			{"aliddns_ttl", "", NULL, EVM_RESTART_ALIDDNS },
 			{"aliddns_ak", "", NULL, EVM_RESTART_ALIDDNS },
 			{"aliddns_sk", "", NULL, EVM_RESTART_ALIDDNS },
 			{"aliddns_name", "", NULL, EVM_RESTART_ALIDDNS },
@@ -1151,7 +1151,7 @@
 
 #if defined(APP_SMARTDNS)
     struct variable variables_SmartdnsConf[] = {
-	        {"sdns_enable", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_enable", "", NULL, EVM_RESTART_SMARTDNS},
 			{"snds_name", "", NULL, EVM_RESTART_SMARTDNS},
 			{"sdns_port", "", NULL, EVM_RESTART_SMARTDNS},
 			{"sdns_tcp_server", "", NULL, EVM_RESTART_SMARTDNS},
@@ -1190,7 +1190,7 @@
 #endif
 
     struct variable variables_DwebConf[] = {
-	        {"w_ai", "", NULL, FALSE},
+			{"w_ai", "", NULL, FALSE},
 			{"w_vpn_s", "", NULL, FALSE},
 			{"w_vpn_c", "", NULL, FALSE},
 			{"w_wnet", "", NULL, FALSE},
