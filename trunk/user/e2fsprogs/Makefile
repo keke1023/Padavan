@@ -1,5 +1,5 @@
-SRC_NAME=e2fsprogs-1.45.3
-SRC_URL=https://mirrors.edge.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.45.3/e2fsprogs-1.45.3.tar.xz
+SRC_NAME=e2fsprogs-1.45.6
+SRC_URL=https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.45.6/$(SRC_NAME).tar.xz
 
 THISDIR = $(shell pwd)
 
@@ -50,6 +50,7 @@ configure:
 		--disable-tls \
 		--disable-libuuid \
 		--disable-libblkid \
+		--disable-threads \
 		--enable-symlink-build \
 		--enable-verbose-makecmds \
 		--enable-elf-shlibs \
