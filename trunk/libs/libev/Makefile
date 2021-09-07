@@ -1,18 +1,7 @@
-SRC_NAME=libev-4.27
-SRC_URL=http://dist.schmorp.de/libev/libev-4.27.tar.gz
+SRC_NAME=libev-4.33
 
-all: download_test extract_test config_test
+all: config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
-
-download_test:
-	( if [ ! -f $(SRC_NAME).tar.gz ]; then \
-		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
-	fi )
-
-extract_test:
-	( if [ ! -d $(SRC_NAME) ]; then \
-		tar xf $(SRC_NAME).tar.gz ; \
-	fi )
 
 config_test:
 	( if [ -f ./config_done ]; then \
@@ -25,6 +14,8 @@ configure:
 	( cd $(SRC_NAME) ; \
 	./configure \
 		--prefix=$(STAGEDIR) \
+		--enable-static \
+		--disable-shared \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \
 	)
