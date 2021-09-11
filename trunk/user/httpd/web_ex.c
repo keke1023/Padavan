@@ -2978,22 +2978,26 @@ openvpn_srv_cert_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	int has_found_cert = 0;
 #if defined(APP_OPENVPN)
-	int i, i_atls;
+	int i, i_atls, i_tcv2;
 	char key_file[64];
-	static const char *openvpn_server_keys[5] = {
+	static const char *openvpn_server_keys[6] = {
 		"ca.crt",
 		"dh1024.pem",
 		"server.crt",
 		"server.key",
-		"ta.key"
+		"ta.key",
+		"stc2.key"
 	};
 
 	has_found_cert = 1;
 
 	i_atls = nvram_get_int("vpns_ov_atls");
+	i_tcv2 = nvram_get_int("vpns_ov_tcv2");
 
-	for (i=0; i<5; i++) {
+	for (i=0; i<6; i++) {
 		if (!i_atls && (i == 4))
+			continue;
+		if (!i_tcv2 && (i == 5))
 			continue;
 		sprintf(key_file, "%s/%s", STORAGE_OVPNSVR_DIR, openvpn_server_keys[i]);
 		if (!f_exists(key_file)) {
@@ -3011,26 +3015,28 @@ static int openvpn_cli_cert_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	int has_found_cert = 0;
 #if defined(APP_OPENVPN)
-	int i, i_auth, i_atls;
+	int i, i_atls, i_tcv2;
 	char key_file[64];
-	static const char *openvpn_client_keys[4] = {
+	static const char *openvpn_server_keys[6] = {
 		"ca.crt",
-		"client.crt",
-		"client.key",
-		"ta.key"
+		"dh1024.pem",
+		"server.crt",
+		"server.key",
+		"ta.key",
+		"stc2.key"
 	};
 
 	has_found_cert = 1;
 
-	i_auth = nvram_get_int("vpnc_ov_auth");
-	i_atls = nvram_get_int("vpnc_ov_atls");
+	i_atls = nvram_get_int("vpns_ov_atls");
+	i_tcv2 = nvram_get_int("vpns_ov_tcv2");
 
-	for (i=0; i<4; i++) {
-		if (i_auth == 1 && (i == 1 || i == 2))
+	for (i=0; i<6; i++) {
+		if (!i_atls && (i == 4))
 			continue;
-		if (!i_atls && (i == 3))
+		if (!i_tcv2 && (i == 5))
 			continue;
-		sprintf(key_file, "%s/%s", STORAGE_OVPNCLI_DIR, openvpn_client_keys[i]);
+		sprintf(key_file, "%s/%s", STORAGE_OVPNSVR_DIR, openvpn_server_keys[i]);
 		if (!f_exists(key_file)) {
 			has_found_cert = 0;
 			break;
