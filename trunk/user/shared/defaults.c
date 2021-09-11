@@ -418,6 +418,7 @@ struct nvram_pair router_defaults[] = {
 	{ "reboot_schedule_enable", "0" },
 	{ "reboot_schedule", "00000000000" },
 	
+#if defined(APP_KOOLPROXY)
 	/* koolproxy AD */
 	{ "koolproxy_enable", "0"},
 	{ "koolproxy_https", "0"},
@@ -443,7 +444,9 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_DNS_Redirect", "0" },
 	{ "kp_ip_x", "0" },
 	{ "kp_staticnum_x", "0" },
-	
+#endif
+
+#if defined(APP_ADBYBY)
 	/*Adbyby PlUS+*/
 	{ "adbyby_enable", "0" },
 	{ "adbyby_set", "0" },
@@ -460,12 +463,15 @@ struct nvram_pair router_defaults[] = {
 	{ "anti_ad", "0" },
 	{ "anti_ad_link", "https://anti-ad.net/anti-ad-for-dnsmasq.conf" },
 	{ "anti_ad_count", "0" },
+#endif
+
 	/* Pdnsd */
 	{ "dns_enable", "0" },
 	{ "dns_server", "223.5.5.5,114.114.114.114" },
 	{ "dns_server_port", "5333" },
 	{ "dns_server_bind", "0.0.0.0" },
 
+#if defined(APP_ALIDDNS)
 	/* Aliddns */
 	{ "aliddns_enable", "0" },
 	{ "aliddns_interval", "600" },
@@ -478,7 +484,8 @@ struct nvram_pair router_defaults[] = {
 	{ "aliddns_domain", "" },
 	{ "aliddns_domain2", "" },
 	{ "aliddns_domain6", "" },
-	
+#endif
+
 	{ "hdd_spindt", "0" },
 	{ "hdd_apmoff", "0" },
 	/*WEB DIY*/
