@@ -2334,6 +2334,15 @@ static int frps_status_hook(int eid, webs_t wp, int argc, char **argv)
 }
 #endif
 
+#if defined (APP_NVPPROXY)
+static int nvpproxy_status_hook(int eid, webs_t wp, int argc, char **argv)
+{
+	int nvpproxy_status_code = pids("nvpproxy");
+	websWrite(wp, "function nvpproxy_status() { return %d;}\n", nvpproxy_status_code);
+	return 0;
+}
+#endif
+
 static int update_action_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	char *up_action = websGetVar(wp, "connect_action", "");
@@ -2568,6 +2577,11 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int found_app_frp = 0;
 #endif
+#if defined(APP_NVPPROXY)
+	int found_app_nvpproxy = 1;
+#else
+	int found_app_nvpproxy = 0;
+#endif
 #if defined(APP_ALIDDNS)
 	int found_app_aliddns = 1;
 #else
@@ -2764,6 +2778,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function found_app_adbyby() { return %d;}\n"
 		"function found_app_smartdns() { return %d;}\n"
 		"function found_app_frp() { return %d;}\n"
+		"function found_app_nvpproxy() { return %d;}\n"
 		"function found_app_wyy() { return %d;}\n"
 		"function found_app_zerotier() { return %d;}\n"
 		"function found_app_aliddns() { return %d;}\n"
@@ -2795,6 +2810,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		found_app_adbyby,
 		found_app_smartdns,
 		found_app_frp,
+		found_app_nvpproxy,
 		found_app_wyy,
 		found_app_zerotier,
 		found_app_aliddns,
@@ -2978,22 +2994,26 @@ openvpn_srv_cert_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	int has_found_cert = 0;
 #if defined(APP_OPENVPN)
-	int i, i_atls;
+	int i, i_atls, i_tcv2;
 	char key_file[64];
-	static const char *openvpn_server_keys[5] = {
+	static const char *openvpn_server_keys[6] = {
 		"ca.crt",
 		"dh1024.pem",
 		"server.crt",
 		"server.key",
-		"ta.key"
+		"ta.key",
+		"stc2.key"
 	};
 
 	has_found_cert = 1;
 
 	i_atls = nvram_get_int("vpns_ov_atls");
+	i_tcv2 = nvram_get_int("vpns_ov_tcv2");
 
-	for (i=0; i<5; i++) {
+	for (i=0; i<6; i++) {
 		if (!i_atls && (i == 4))
+			continue;
+		if (!i_tcv2 && (i == 5))
 			continue;
 		sprintf(key_file, "%s/%s", STORAGE_OVPNSVR_DIR, openvpn_server_keys[i]);
 		if (!f_exists(key_file)) {
@@ -3011,26 +3031,28 @@ static int openvpn_cli_cert_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	int has_found_cert = 0;
 #if defined(APP_OPENVPN)
-	int i, i_auth, i_atls;
+	int i, i_atls, i_tcv2;
 	char key_file[64];
-	static const char *openvpn_client_keys[4] = {
+	static const char *openvpn_server_keys[6] = {
 		"ca.crt",
-		"client.crt",
-		"client.key",
-		"ta.key"
+		"dh1024.pem",
+		"server.crt",
+		"server.key",
+		"ta.key",
+		"stc2.key"
 	};
 
 	has_found_cert = 1;
 
-	i_auth = nvram_get_int("vpnc_ov_auth");
-	i_atls = nvram_get_int("vpnc_ov_atls");
+	i_atls = nvram_get_int("vpns_ov_atls");
+	i_tcv2 = nvram_get_int("vpns_ov_tcv2");
 
-	for (i=0; i<4; i++) {
-		if (i_auth == 1 && (i == 1 || i == 2))
+	for (i=0; i<6; i++) {
+		if (!i_atls && (i == 4))
 			continue;
-		if (!i_atls && (i == 3))
+		if (!i_tcv2 && (i == 5))
 			continue;
-		sprintf(key_file, "%s/%s", STORAGE_OVPNCLI_DIR, openvpn_client_keys[i]);
+		sprintf(key_file, "%s/%s", STORAGE_OVPNSVR_DIR, openvpn_server_keys[i]);
 		if (!f_exists(key_file)) {
 			has_found_cert = 0;
 			break;
@@ -4583,7 +4605,10 @@ struct ej_handler ej_handlers[] =
 	{ "frpc_status", frpc_status_hook},
 	{ "frps_status", frps_status_hook},
 #endif
-    { "update_action", update_action_hook},
+#if defined (APP_NVPPROXY)
+	{ "nvpproxy_status", nvpproxy_status_hook},
+#endif
+    	{ "update_action", update_action_hook},
 	{ "openssl_util_hook", openssl_util_hook},
 	{ "openvpn_srv_cert_hook", openvpn_srv_cert_hook},
 	{ "openvpn_cli_cert_hook", openvpn_cli_cert_hook},

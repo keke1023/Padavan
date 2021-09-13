@@ -72,3 +72,8 @@ if [ $(nvram get zerotier_enable) = 1 ] ; then
 logger -t "自动启动" "正在启动zerotier"
 /usr/bin/zerotier.sh start
 fi
+
+if [ $(nvram get nvpproxy_enable) = 1 ] ; then
+logger -t "自动启动" "正在启动nvpproxy"
+/usr/bin/nvpproxy.sh start
+fi

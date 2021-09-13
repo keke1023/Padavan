@@ -597,6 +597,11 @@ void stop_dnsforwarder(void);
 void start_dnsforwarder(void);
 void restart_dnsforwarder(void);
 #endif
+#if defined(APP_NVPPROXY)
+void stop_nvpproxy(void);
+void start_nvpproxy(void);
+void restart_nvpproxy(void);
+#endif
 
 /* services_ex.c */
 int fill_dnsmasq_servers(void);

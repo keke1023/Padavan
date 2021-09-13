@@ -57,10 +57,10 @@ typedef u_int8_t u8;
 #define EVM_RESTART_VPNCLI		(1ULL << 11)
 #define EVM_RESTART_WIFI2		(1ULL << 12)
 #define EVM_RESTART_WIFI5		(1ULL << 13)
-#define EVM_RESTART_SWITCH_CFG		(1ULL << 14)
-#define EVM_RESTART_SWITCH_VLAN		(1ULL << 15)
-#define EVM_RESTART_LAN			(1ULL << 17)
-#define EVM_RESTART_WAN			(1ULL << 18)
+#define EVM_RESTART_SWITCH_CFG	(1ULL << 14)
+#define EVM_RESTART_SWITCH_VLAN	(1ULL << 15)
+#define EVM_RESTART_LAN		(1ULL << 17)
+#define EVM_RESTART_WAN		(1ULL << 18)
 #define EVM_RESTART_IPV6		(1ULL << 19)
 #define EVM_RESTART_HTTPD		(1ULL << 20)
 #define EVM_RESTART_TELNETD		(1ULL << 21)
@@ -72,7 +72,7 @@ typedef u_int8_t u8;
 #define EVM_RESTART_CROND		(1ULL << 27)
 #define EVM_RESTART_SYSCTL		(1ULL << 28)
 #define EVM_RESTART_TWEAKS		(1ULL << 29)
-#define EVM_RESTART_WDG			(1ULL << 30)
+#define EVM_RESTART_WDG		(1ULL << 30)
 #define EVM_RESTART_DI			(1ULL << 31)
 #define EVM_RESTART_SPOOLER		(1ULL << 32)
 #define EVM_RESTART_MODEM		(1ULL << 33)
@@ -81,7 +81,7 @@ typedef u_int8_t u8;
 #define EVM_RESTART_NMBD		(1ULL << 36)
 #define EVM_RESTART_SMBD		(1ULL << 37)
 #define EVM_RESTART_NFSD		(1ULL << 38)
-#define EVM_RESTART_DMS			(1ULL << 39)
+#define EVM_RESTART_DMS		(1ULL << 39)
 #define EVM_RESTART_ITUNES		(1ULL << 40)
 #define EVM_RESTART_TRMD		(1ULL << 41)
 #define EVM_RESTART_ARIA		(1ULL << 42)
@@ -92,15 +92,16 @@ typedef u_int8_t u8;
 #define EVM_RESTART_SHADOWSOCKS	(1ULL << 48)
 #define EVM_RESTART_SS_TUNNEL		(1ULL << 49)
 #define EVM_RESTART_MENTOHUST		(1ULL << 50)
-#define EVM_RESTART_ADBYBY		    (1ULL << 51)
-#define EVM_RESTART_ALIDDNS		    (1ULL << 52)
-#define EVM_RESTART_SMARTDNS	    (1ULL << 53)
-#define EVM_RESTART_FRP	    (1ULL << 54)
-#define EVM_RESTART_KOOLPROXY		    (1ULL << 55)
-#define EVM_RESTART_CADDY		    (1ULL << 56)
-#define EVM_RESTART_ADGUARDHOME		    (1ULL << 57)
-#define EVM_RESTART_WYY		    (1ULL << 58)
-#define EVM_RESTART_ZEROTIER		    (1ULL << 59)
+#define EVM_RESTART_ADBYBY		(1ULL << 51)
+#define EVM_RESTART_ALIDDNS		(1ULL << 52)
+#define EVM_RESTART_SMARTDNS	    	(1ULL << 53)
+#define EVM_RESTART_FRP	    	(1ULL << 54)
+#define EVM_RESTART_KOOLPROXY		(1ULL << 55)
+#define EVM_RESTART_CADDY		(1ULL << 56)
+#define EVM_RESTART_ADGUARDHOME	(1ULL << 57)
+#define EVM_RESTART_WYY		(1ULL << 58)
+#define EVM_RESTART_ZEROTIER		(1ULL << 59)
+#define EVM_RESTART_NVPPROXY		(1ULL << 60)
 #define EVM_RESTART_REBOOT		(1ULL << 62)
 
 #define EVM_BLOCK_UNSAFE		(1ULL << 63) /* special case */
@@ -124,10 +125,10 @@ typedef u_int8_t u8;
 #define EVT_RESTART_WIFI2		3
 #endif
 #define EVT_RESTART_WIFI5		3
-#define EVT_RESTART_SWITCH_CFG		3
-#define EVT_RESTART_SWITCH_VLAN		3
-#define EVT_RESTART_LAN			5
-#define EVT_RESTART_WAN			5
+#define EVT_RESTART_SWITCH_CFG	3
+#define EVT_RESTART_SWITCH_VLAN	3
+#define EVT_RESTART_LAN		5
+#define EVT_RESTART_WAN		5
 #define EVT_RESTART_IPV6		3
 #define EVT_RESTART_HTTPD		2
 #define EVT_RESTART_TELNETD		1
@@ -139,7 +140,7 @@ typedef u_int8_t u8;
 #define EVT_RESTART_IPTV		1
 #define EVT_RESTART_SYSCTL		1
 #define EVT_RESTART_TWEAKS		1
-#define EVT_RESTART_WDG			1
+#define EVT_RESTART_WDG		1
 #define EVT_RESTART_DI			1
 #define EVT_RESTART_SPOOLER		1
 #define EVT_RESTART_MODEM		3
@@ -148,7 +149,7 @@ typedef u_int8_t u8;
 #define EVT_RESTART_NMBD		2
 #define EVT_RESTART_SMBD		2
 #define EVT_RESTART_NFSD		2
-#define EVT_RESTART_DMS			2
+#define EVT_RESTART_DMS		2
 #define EVT_RESTART_ITUNES		2
 #define EVT_RESTART_TRMD		3
 #define EVT_RESTART_ARIA		3
@@ -157,18 +158,19 @@ typedef u_int8_t u8;
 #define EVT_RESTART_VLMCSD		1
 #define EVT_RESTART_SHADOWSOCKS	2
 #define EVT_RESTART_SS_TUNNEL		2
-#define EVT_RESTART_ADBYBY	2
-#define EVT_RESTART_KOOLPROXY	2
+#define EVT_RESTART_ADBYBY		2
+#define EVT_RESTART_KOOLPROXY		2
 #define EVT_RESTART_DNSFORWARDER	1
 #define EVT_RESTART_MENTOHUST		2
 #define EVT_RESTART_PDNSD		1
-#define EVT_RESTART_ALIDDNS	2
-#define EVT_RESTART_SMARTDNS	1
-#define EVT_RESTART_FRP      	2
+#define EVT_RESTART_ALIDDNS		2
+#define EVT_RESTART_SMARTDNS		1
+#define EVT_RESTART_FRP      		2
 #define EVT_RESTART_CADDY      	2
 #define EVT_RESTART_ADGUARDHOME      	1
-#define EVT_RESTART_WYY      	2
+#define EVT_RESTART_WYY      		2
 #define EVT_RESTART_ZEROTIER     	2
+#define EVM_RESTART_NVPPROXY     	2
 #define EVT_RESTART_REBOOT		40
 
 struct variable

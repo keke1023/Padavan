@@ -686,8 +686,10 @@
 			{"vpns_ov_port", "", NULL, EVM_RESTART_VPNSVR},
 			{"vpns_ov_mdig", "", NULL, EVM_REAPPLY_VPNSVR},
 			{"vpns_ov_ciph", "", NULL, EVM_REAPPLY_VPNSVR},
-			{"vpns_ov_clzo", "", NULL, EVM_REAPPLY_VPNSVR},
+			{"vpns_ov_ncp_clist", "", NULL, EVM_REAPPLY_VPNSVR},
+			{"vpns_ov_compress", "", NULL, EVM_REAPPLY_VPNSVR},
 			{"vpns_ov_atls", "", NULL, EVM_REAPPLY_VPNSVR},
+			{"vpns_ov_tcv2", "", NULL, EVM_REAPPLY_VPNSVR},
 			{"vpns_ov_rdgw", "", NULL, EVM_REAPPLY_VPNSVR},
 			{"vpnc_ov_mode", "", NULL, EVM_RESTART_VPNCLI},
 			{"vpnc_ov_cnat", "", NULL, EVM_RESTART_VPNCLI},
@@ -696,7 +698,8 @@
 			{"vpnc_ov_auth", "", NULL, EVM_RESTART_VPNCLI},
 			{"vpnc_ov_mdig", "", NULL, EVM_RESTART_VPNCLI},
 			{"vpnc_ov_ciph", "", NULL, EVM_RESTART_VPNCLI},
-			{"vpnc_ov_clzo", "", NULL, EVM_RESTART_VPNCLI},
+			{"vpnc_ov_ncp_clist", "", NULL, EVM_RESTART_VPNCLI},
+			{"vpnc_ov_compress", "", NULL, EVM_RESTART_VPNCLI},
 			{"vpnc_ov_atls", "", NULL, EVM_RESTART_VPNCLI},
 			{"ovpnsvr.ca.crt", "File", NULL, EVM_REAPPLY_VPNSVR|EVM_BLOCK_UNSAFE},
 			{"ovpnsvr.server.conf", "File", NULL, EVM_REAPPLY_VPNSVR},
@@ -704,6 +707,7 @@
 			{"ovpnsvr.server.key", "File", NULL, EVM_REAPPLY_VPNSVR|EVM_BLOCK_UNSAFE},
 			{"ovpnsvr.dh1024.pem", "File", NULL, EVM_REAPPLY_VPNSVR|EVM_BLOCK_UNSAFE},
 			{"ovpnsvr.ta.key", "File", NULL, EVM_REAPPLY_VPNSVR|EVM_BLOCK_UNSAFE},
+			{"ovpnsvr.stc2.key", "File", NULL, EVM_REAPPLY_VPNSVR|EVM_BLOCK_UNSAFE},
 			{"ovpncli.ca.crt", "File", NULL, EVM_RESTART_VPNCLI},
 			{"ovpncli.client.conf", "File", NULL, EVM_RESTART_VPNCLI},
 			{"ovpncli.client.crt", "File", NULL, EVM_RESTART_VPNCLI},
@@ -985,7 +989,7 @@
 	struct variable variables_ZeroConf[] = {
 			{"zerotier_enable", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zerotier_id", "", NULL, EVM_RESTART_ZEROTIER},
-		    	{"zerotier_moonid", "", NULL, EVM_RESTART_ZEROTIER},
+		    {"zerotier_moonid", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zerotiermoon_enable", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zerotiermoon_ip", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zerotier_nat", "", NULL, EVM_RESTART_ZEROTIER},
@@ -1029,7 +1033,7 @@
 			{"d_v2_host","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_v2_path","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_v2_tls","",NULL, EVM_RESTART_SHADOWSOCKS},
-		    	{"d_v2_flow","",NULL, EVM_RESTART_SHADOWSOCKS},
+		    {"d_v2_flow","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_ss_password","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_ss_method","",NULL, EVM_RESTART_SHADOWSOCKS},
 			{"d_ss_protocol","",NULL, EVM_RESTART_SHADOWSOCKS},
@@ -1193,6 +1197,16 @@
 			{"scripts.smartdns_whitelist-ip.conf", "File", NULL, EVM_RESTART_SMARTDNS},
 			{"scripts.smartdns_custom.conf", "File", NULL, EVM_RESTART_SMARTDNS},
 			{"SdnsList", "Group", ARGV((char*)variables_SmartdnsConf_SdnsList, "8", "55", "sdnss_staticnum_x"), EVM_RESTART_SMARTDNS},
+	};
+#endif
+
+
+#if defined(APP_NVPPROXY)
+    struct variable variables_NvpproxyConf[] = {
+			{"nvpproxy_enable", "", NULL, EVM_RESTART_NVPPROXY},
+			{"nvpproxy_wan_port", "", NULL, EVM_RESTART_SMARTDNS},
+			{"nvpproxy_vpn_port", "", NULL, EVM_RESTART_SMARTDNS},
+			{0,0,0,0}
 	};
 #endif
 
@@ -1360,6 +1374,9 @@
 #if defined(APP_SMARTDNS)
 		{"SmartdnsConf",		variables_SmartdnsConf},
 #endif
+#if defined(APP_NVPPROXY)
+		{"NvpproxyConf",		variables_NvpproxyConf},
+#endif
 		{"DwebConf",		variables_DwebConf},
 		{"LANGUAGE",			variables_Language},
 		{0,0}
@@ -1467,6 +1484,9 @@
 #endif
 #if defined(APP_SMARTDNS)
 		{EVM_RESTART_SMARTDNS,		EVT_RESTART_SMARTDNS,		RCN_RESTART_SMARTDNS,	0},
+#endif
+#if defined(APP_NVPPROXY)
+		{EVM_RESTART_NVPPROXY,		EVT_RESTART_NVPPROXY,		RCN_RESTART_NVPPROXY,	0},
 #endif
 #if defined(APP_ALIDDNS)
 		{EVM_RESTART_ALIDDNS,		EVT_RESTART_ALIDDNS,		RCN_RESTART_ALIDDNS,	0},

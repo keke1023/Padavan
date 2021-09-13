@@ -434,7 +434,10 @@ if (found_app_caddy()){
 	tabtitle[18] = new Array("", "<#menu5_27_1#>");
 }
 if (found_app_wyy()){
-	tabtitle[18] = new Array("", "<#menu5_31_1#>");
+	tabtitle[19] = new Array("", "<#menu5_31_1#>");
+}
+if (found_app_nvpproxy()){
+	tabtitle[20] = new Array("", "<#menu5_33_1#>");
 }
 //Level 3 Tab title
 
@@ -497,6 +500,10 @@ if (found_app_wyy()){
 	wyy_array = new Array("","Advanced_wyy.asp");
 	tablink[19] = (wyy_array);
 }
+if (found_app_nvpproxy()){
+	nvpproxy_array = new Array("","Advanced_nvpproxy.asp");
+	tablink[20] = (nvpproxy_array);
+}
 
 //Level 2 Menu
 menuL2_title = new Array(21)
@@ -547,6 +554,10 @@ if (found_app_wyy()){
 	menuL2_title.push("<#menu5_31#>");
 } else menuL2_title.push("");
 
+if (found_app_nvpproxy()){
+	menuL2_title.push("<#menu5_33#>");
+} else menuL2_title.push("");
+
 menuL2_link  = new Array("", tablink[0][1], tablink[1][1], tablink[2][1], tablink[3][1], tablink[4][1], tablink[5][1], tablink[6][1], tablink[7][1], support_2g_radio() ? tablink[8][1] : "Main_EStatus_Content.asp", tablink[9][1]);
 if (found_app_scutclient()){
 	menuL2_link.push(scutclient_array[1]);
@@ -586,6 +597,9 @@ if (found_app_caddy()){
 } else menuL2_link.push("");
 if (found_app_wyy()){
 	menuL2_link.push(wyy_array[1]);
+} else menuL2_link.push("");
+if (found_app_nvpproxy()){
+	menuL2_link.push(nvpproxy_array[1]);
 } else menuL2_link.push("");
 
 //Level 1 Menu in Gateway, Router mode

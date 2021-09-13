@@ -486,6 +486,13 @@ struct nvram_pair router_defaults[] = {
 	{ "aliddns_domain6", "" },
 #endif
 
+#if defined(APP_NVPPROXY)
+	/* Nvpproxy */
+	{ "nvpproxy_enable", "0" },
+	{ "nvpproxy_wan_port", "9999" },
+	{ "nvpproxy_vpn_port", "1194" },
+#endif
+
 	{ "hdd_spindt", "0" },
 	{ "hdd_apmoff", "0" },
 	/*WEB DIY*/

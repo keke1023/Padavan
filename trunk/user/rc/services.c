@@ -564,6 +564,23 @@ void restart_aliddns(void){
 }
 #endif
 
+#if defined(APP_NVPPROXY)
+void stop_nvpproxy(void){
+	eval("/usr/bin/nvpproxy.sh","stop");
+}
+
+void start_nvpproxy(void){
+	int aliddns_mode = nvram_get_int("nvpproxy_enable");
+	if ( aliddns_mode == 1)
+		eval("/usr/bin/nvpproxy.sh","start");
+}
+
+void restart_nvpproxy(void){
+    stop_nvpproxy();
+    start_nvpproxy();
+}
+#endif
+
 void
 start_httpd(int restart_fw)
 {
