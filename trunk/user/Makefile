@@ -233,6 +233,7 @@ endif
 dir_$(CONFIG_FIRMWARE_INCLUDE_KOOLPROXY)		+= koolproxy
 dir_$(CONFIG_FIRMWARE_INCLUDE_ADBYBY)			+= adbyby
 dir_$(CONFIG_FIRMWARE_INCLUDE_ALIDDNS)			+= aliddns
+dir_$(CONFIG_FIRMWARE_INCLUDE_NVPPROXY)			+= nvpproxy
 ifdef CONFIG_MTD_UBI
 ifneq ($(STORAGE_ENABLED),y)
 dir_y							+= optware
