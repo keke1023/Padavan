@@ -79,7 +79,11 @@ dns:
   ratelimit_whitelist: []
   refuse_any: true
   bootstrap_dns:
+  - 223.5.5.5
+  - 119.29.29.29
   - 1.1.1.1
+  - 1.0.0.1
+  - 114.114.114.114
   all_servers: true
   allowed_clients: []
   disallowed_clients: []
@@ -90,7 +94,8 @@ dns:
   safebrowsing_enabled: false
   resolveraddress: ""
   upstream_dns:
-  - 1.1.1.1
+  - https://dns.alidns.com/dns-query
+  - https://doh.pub/dns-query
 tls:
   enabled: false
   server_name: ""
