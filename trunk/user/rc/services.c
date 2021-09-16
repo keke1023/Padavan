@@ -532,6 +532,21 @@ void restart_frp(void){
 }
 #endif
 
+#if defined(APP_NPC)
+void stop_npc(void){
+	eval("/usr/bin/npc.sh","stop");
+}
+
+void start_npc(void){
+	eval("/usr/bin/npc.sh","start");
+}
+
+void restart_npc(void){
+	stop_npc();
+	start_npc();
+}
+#endif
+
 #if defined(APP_CADDY)
 void stop_caddy(void){
 	eval("/usr/bin/caddy.sh","stop");
@@ -800,6 +815,9 @@ doSystem("/usr/sbin/skipd -d /etc/storage/db");
 //#if defined(APP_FRP)
 //	start_frp();
 //#endif
+//#if defined(APP_NPC)
+//	start_npc();
+//#endif
 #if defined(APP_VLMCSD)
 	start_vlmcsd();
 #endif
@@ -861,6 +879,9 @@ stop_services(int stopall)
 #endif
 #if defined(APP_FRP)
 	stop_frp();
+#endif
+#if defined(APP_NPC)
+	stop_npc();
 #endif
 #if defined(APP_KOOLPROXY)
 	stop_koolproxy();

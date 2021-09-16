@@ -810,6 +810,18 @@ struct nvram_pair router_defaults[] = {
 	{ "zero_staticnum_x", "0" },
 #endif
 
+#if defined(APP_NPC)
+	/* NPC */
+	{ "npc_enable", "0" },
+	{ "npc_server_addr", "127.0.0.1" },
+	{ "npc_server_port", "8024" },
+	{ "npc_protocol", "tcp"  },
+	{ "npc_vkey", "1234567890" },
+	{ "npc_compress", "1" },
+	{ "npc_crypt", "1" },
+	{ "npc_log_level", "3" },
+#endif
+
 #if defined(APP_SMARTDNS)
 	/*SmartDns*/
 	{ "sdns_enable", "0" },

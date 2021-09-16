@@ -439,6 +439,9 @@ if (found_app_wyy()){
 if (found_app_nvpproxy()){
 	tabtitle[20] = new Array("", "<#menu5_33_1#>");
 }
+if (found_app_npc()){
+	tabtitle[21] = new Array("", "<#menu5_34_1#>");
+}
 //Level 3 Tab title
 
 tablink[0] = new Array("", "Advanced_Wireless2g_Content.asp", "Advanced_WGuest2g_Content.asp", "Advanced_WMode2g_Content.asp", "Advanced_ACL2g_Content.asp", "Advanced_WSecurity2g_Content.asp", "Advanced_WAdvanced2g_Content.asp");
@@ -504,6 +507,10 @@ if (found_app_nvpproxy()){
 	nvpproxy_array = new Array("","Advanced_nvpproxy.asp");
 	tablink[20] = (nvpproxy_array);
 }
+if (found_app_npc()){
+	npc_array = new Array("","Advanced_npc.asp");
+	tablink[21] = (npc_array);
+}
 
 //Level 2 Menu
 menuL2_title = new Array(21)
@@ -558,6 +565,10 @@ if (found_app_nvpproxy()){
 	menuL2_title.push("<#menu5_33#>");
 } else menuL2_title.push("");
 
+if (found_app_npc()){
+	menuL2_title.push("<#menu5_34#>");
+} else menuL2_title.push("");
+
 menuL2_link  = new Array("", tablink[0][1], tablink[1][1], tablink[2][1], tablink[3][1], tablink[4][1], tablink[5][1], tablink[6][1], tablink[7][1], support_2g_radio() ? tablink[8][1] : "Main_EStatus_Content.asp", tablink[9][1]);
 if (found_app_scutclient()){
 	menuL2_link.push(scutclient_array[1]);
@@ -600,6 +611,9 @@ if (found_app_wyy()){
 } else menuL2_link.push("");
 if (found_app_nvpproxy()){
 	menuL2_link.push(nvpproxy_array[1]);
+} else menuL2_link.push("");
+if (found_app_npc()){
+	menuL2_link.push(npc_array[1]);
 } else menuL2_link.push("");
 
 //Level 1 Menu in Gateway, Router mode

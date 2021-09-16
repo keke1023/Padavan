@@ -953,6 +953,21 @@
 	};
 #endif
 
+#if defined(APP_NPC)
+	struct variable variables_NpcConf[] = {
+			{"npc_enable", "", NULL, EVM_RESTART_NPC},
+			{"npc_server_addr", "", NULL, EVM_RESTART_NPC},
+			{"npc_server_port", "", NULL, EVM_RESTART_NPC},
+			{"npc_protocol", "", NULL, EVM_RESTART_NPC},
+			{"npc_vkey", "", NULL, EVM_RESTART_NPC},
+			{"npc_compress", "", NULL, EVM_RESTART_NPC},
+			{"npc_crypt", "", NULL, EVM_RESTART_NPC},
+			{"npc_log_level", "", NULL, EVM_RESTART_NPC},
+			{"scripts.npc_script.sh", "File", NULL, EVM_RESTART_NPC},
+			{0,0,0,0}
+	};
+#endif
+
 #if defined(APP_CADDY)
 	struct variable variables_CaddyConf[] = {
 			{"caddy_enable", "", NULL, EVM_RESTART_CADDY},
@@ -1344,6 +1359,9 @@
 #if defined(APP_FRP)
 		{"FrpConf",		variables_FrpConf},
 #endif
+#if defined(APP_NPC)
+		{"NpcConf",		variables_NpcConf},
+#endif
 #if defined(APP_SCUT)
 		{"ScutclientConf",		variables_ScutclientConf},
 #endif
@@ -1490,6 +1508,9 @@
 #endif
 #if defined(APP_ALIDDNS)
 		{EVM_RESTART_ALIDDNS,		EVT_RESTART_ALIDDNS,		RCN_RESTART_ALIDDNS,	0},
+#endif
+#if defined(APP_NPC)
+		{EVM_RESTART_NPC,		EVT_RESTART_NPC,		RCN_RESTART_NPC,	0},
 #endif
 #if defined(APP_SMBD) || defined(APP_NMBD)
 		{EVM_RESTART_NMBD,		EVT_RESTART_NMBD,		RCN_RESTART_NMBD,	0},

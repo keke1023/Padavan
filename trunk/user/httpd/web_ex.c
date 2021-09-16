@@ -2334,6 +2334,15 @@ static int frps_status_hook(int eid, webs_t wp, int argc, char **argv)
 }
 #endif
 
+#if defined (APP_NPC)
+static int npc_status_hook(int eid, webs_t wp, int argc, char **argv)
+{
+	int npc_status_code = pids("npc");
+	websWrite(wp, "function npc_status() { return %d;}\n", npc_status_code);
+	return 0;
+}
+#endif
+
 #if defined (APP_NVPPROXY)
 static int nvpproxy_status_hook(int eid, webs_t wp, int argc, char **argv)
 {
@@ -2582,6 +2591,11 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int found_app_nvpproxy = 0;
 #endif
+#if defined(APP_NPC)
+	int found_app_npc = 1;
+#else
+	int found_app_npc = 0;
+#endif
 #if defined(APP_ALIDDNS)
 	int found_app_aliddns = 1;
 #else
@@ -2779,6 +2793,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function found_app_smartdns() { return %d;}\n"
 		"function found_app_frp() { return %d;}\n"
 		"function found_app_nvpproxy() { return %d;}\n"
+		"function found_app_npc() { return %d;}\n"
 		"function found_app_wyy() { return %d;}\n"
 		"function found_app_zerotier() { return %d;}\n"
 		"function found_app_aliddns() { return %d;}\n"
@@ -2811,6 +2826,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		found_app_smartdns,
 		found_app_frp,
 		found_app_nvpproxy,
+		found_app_npc,
 		found_app_wyy,
 		found_app_zerotier,
 		found_app_aliddns,
@@ -2851,8 +2867,8 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function support_2g_turbo_qam() { return %d;}\n"
 		"function support_2g_airtimefairness() { return %d;}\n"
 		"function support_5g_txbf() { return %d;}\n"
-		"function support_5g_mumimo() { return %d;}\n"
 		"function support_5g_band_steering() { return %d;}\n"
+		"function support_5g_mumimo() { return %d;}\n"
 		"function support_sfe() { return %d;}\n"
 		"function support_lan_ap_isolate() { return %d;}\n"
 		"function support_5g_160mhz() { return %d;}\n"
@@ -2863,8 +2879,8 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		has_ipv4_ppe,
 		has_peap_ssl,
 		has_http_ssl,
-		has_ddns_ssl,
 		has_openssl_ec,
+		has_ddns_ssl,
 		MIN_EXT_VLAN_VID,
 		max_conn,
 		has_mtd_rwfs,
@@ -4608,7 +4624,10 @@ struct ej_handler ej_handlers[] =
 #if defined (APP_NVPPROXY)
 	{ "nvpproxy_status", nvpproxy_status_hook},
 #endif
-    	{ "update_action", update_action_hook},
+#if defined (APP_NPC)
+	{ "npc_status", npc_status_hook},
+#endif
+    { "update_action", update_action_hook},
 	{ "openssl_util_hook", openssl_util_hook},
 	{ "openvpn_srv_cert_hook", openvpn_srv_cert_hook},
 	{ "openvpn_cli_cert_hook", openvpn_cli_cert_hook},
