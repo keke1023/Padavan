@@ -1,7 +1,7 @@
 THISDIR = $(shell pwd)
 xray_dir="xray.com/core/main"
 export GO111MODULE=on
-export GOPROXY=https://goproxy.io
+export GOPROXY=https://goproxy.cn
 xray_SED_ARGS:=
 xray_SED_ARGS += \
 	s/_ "xray.com\/core\/main\/json"/\/\/ &/; \
