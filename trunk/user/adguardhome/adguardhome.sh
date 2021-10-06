@@ -154,7 +154,7 @@ fi
 }
 
 start_adg() {
-    mkdir -p /tmp/AdGuardHome
+  mkdir -p /tmp/AdGuardHome
   mkdir -p /etc/storage/AdGuardHome
   if [ ! -f "/tmp/AdGuardHome/AdGuardHome" ]; then
   dl_adg
@@ -163,16 +163,15 @@ start_adg() {
   change_dns
   set_iptable
   logger -t "AdGuardHome" "运行AdGuardHome"
-  eval "/tmp/AdGuardHome/AdGuardHome -c $adg_file -w /tmp/AdGuardHome -v" &
-
+  eval "SSL_CERT_FILE=/usr/bin/cacert.pem/tmp/AdGuardHome/AdGuardHome -c $adg_file -w /tmp/AdGuardHome -v" &
 }
+
 stop_adg() {
 rm -rf /tmp/AdGuardHome
 killall -9 AdGuardHome
 del_dns
 clear_iptable
 }
-
 
 case $1 in
 start)
