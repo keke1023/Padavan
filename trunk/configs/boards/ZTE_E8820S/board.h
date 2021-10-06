@@ -8,7 +8,7 @@
 #define BOARD_MODEL_URL		"http://www.ztehome.com.cn/"
 #define BOARD_BOOT_TIME		30
 #define BOARD_FLASH_TIME   	120
-#define BOARD_GPIO_BTN_FN1    10
+#define BOARD_GPIO_BTN_FN1    10    //WiFi
 #define BOARD_GPIO_BTN_RESET	18
 #define BOARD_GPIO_BTN_WPS	8
 #undef  BOARD_GPIO_LED_ALL
@@ -16,11 +16,11 @@
 #undef BOARD_GPIO_LED_SW2G   
 #undef BOARD_GPIO_LED_SW5G   
 #define BOARD_GPIO_LED_POWER	3
-#define BOARD_GPIO_LED_SYS	
+#define BOARD_GPIO_LED_SYS	  16
 #undef BOARD_GPIO_LED_LAN
 #undef BOARD_GPIO_LED_WAN	
-#undef BOARD_GPIO_LED_USB	
-#undef BOARD_GPIO_LED_ROUTER
+#undef BOARD_GPIO_LED_USB	    6
+#undef BOARD_GPIO_LED_ROUTER  7   //WPS
 #undef  BOARD_GPIO_PWR_USB
 #define BOARD_HAS_5G_11AC	1
 #define BOARD_NUM_ANT_5G_TX	2
