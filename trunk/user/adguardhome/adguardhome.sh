@@ -62,8 +62,8 @@ if [ ! -f "$adg_file" ] || [ ! -s "$adg_file" ] ; then
   cat > "$adg_file" <<-\EEE
 bind_host: 0.0.0.0
 bind_port: 3030
-auth_name: admin
-auth_pass: admin
+auth_name: adguardhome
+auth_pass: adguardhome
 language: zh-cn
 rlimit_nofile: 0
 dns:
@@ -80,9 +80,6 @@ dns:
   bootstrap_dns:
   - 223.5.5.5
   - 119.29.29.29
-  - 1.1.1.1
-  - 1.0.0.1
-  - 114.114.114.114
   all_servers: true
   allowed_clients: []
   disallowed_clients: []
@@ -93,8 +90,10 @@ dns:
   safebrowsing_enabled: false
   resolveraddress: ""
   upstream_dns:
-  - https://dns.alidns.com/dns-query
-  - https://doh.pub/dns-query
+  - quic://i.passcloud.xyz:784
+  - tls://i.passcloud.xyz:5432
+  - quic://a.passcloud.xyz:784
+  - tls://a.passcloud.xyz:5432
 tls:
   enabled: false
   server_name: ""
@@ -113,13 +112,9 @@ filters:
   name: AdAway
   id: 2
 - enabled: true
-  url: https://hosts-file.net/ad_servers.txt
-  name: hpHosts - Ad and Tracking servers only
+  url: https://anti-ad.net/easylist.txt
+  name: anti-AD
   id: 3
-- enabled: true
-  url: https://www.malwaredomainlist.com/hostslist/hosts.txt
-  name: MalwareDomainList.com Hosts List
-  id: 4
 user_rules: []
 dhcp:
   enabled: false
