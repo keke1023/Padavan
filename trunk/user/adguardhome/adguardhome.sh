@@ -144,7 +144,7 @@ nvram set adg_enable=0
 exit 0
 else
 logger -t "AdGuardHome" "AdGuardHome下载成功。"
-chmod 777 /tmp/AdGuardHome/AdGuardHome
+chmod +x /tmp/AdGuardHome/AdGuardHome
 fi
 }
 
