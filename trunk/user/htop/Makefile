@@ -1,5 +1,5 @@
-SRC_NAME = htop-3.0.5
-SRC_URL = http://sources.buildroot.net/htop/htop-3.0.5.tar.gz
+SRC_NAME = htop-3.1.0
+SRC_URL = http://sources.buildroot.net/htop/htop-3.1.0.tar.gz
 THISDIR = $(shell pwd)
 
 all: download_test extract_test config_test
@@ -24,6 +24,7 @@ config_test:
 
 configure:
 	( cd $(SRC_NAME) ; \
+	./autogen.sh ; \
 	./configure \
 		--prefix=/usr \
 		--enable-unicode \
