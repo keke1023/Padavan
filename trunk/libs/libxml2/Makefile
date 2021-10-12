@@ -1,4 +1,4 @@
-SRC_NAME=libxml2-2.9.10
+SRC_NAME=libxml2-2.9.12
 SRC_URL=http://xmlsoft.org/sources/$(SRC_NAME).tar.gz
 
 all: download_test extract_test config_test

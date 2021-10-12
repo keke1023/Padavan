@@ -1,5 +1,5 @@
-SRC_NAME=libexif-0.6.22
-SRC_URL=https://github.com/libexif/libexif/releases/download/libexif-0_6_22-release/$(SRC_NAME).tar.xz
+SRC_NAME=libexif-0.6.23
+SRC_URL=https://github.com/libexif/libexif/releases/download/v0.6.23/$(SRC_NAME).tar.xz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
