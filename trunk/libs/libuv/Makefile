@@ -1,5 +1,5 @@
 SRC_NAME=libuv-v1.42.0
-SRC_URL=https://dist.libuv.org/dist/v1.38.1/libuv-v1.42.0.tar.gz
+SRC_URL=https://dist.libuv.org/dist/v1.42.0/libuv-v1.42.0.tar.gz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
