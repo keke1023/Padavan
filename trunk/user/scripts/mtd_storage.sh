@@ -273,7 +273,6 @@ sync && echo 3 > /proc/sys/vm/drop_caches
 #iwpriv ra0 set AssocReqRssiThres=-80
 #iwpriv rai0 set KickStaRssiLow=-85
 #iwpriv rai0 set AssocReqRssiThres=-80
->>>>>>> a321e6940bb0cb44619e21b8b3df6e91f892751a
 
 # Mount SATA disk
 #mdev -s
