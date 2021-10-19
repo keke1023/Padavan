@@ -1,6 +1,6 @@
-diff -rupw 3proxy-0.9.3-orig/Makefile.Linux 3proxy-0.9.3/Makefile.Linux
---- 3proxy-0.9.3-orig/Makefile.Linux	2020-12-25 10:47:39.762479989 +0800
-+++ 3proxy-0.9.3/Makefile.Linux	2020-12-25 10:46:54.502480750 +0800
+diff -rupw 3proxy-0.9.4-orig/Makefile.Linux 3proxy-0.9.4/Makefile.Linux
+--- 3proxy-0.9.4-orig/Makefile.Linux	2020-12-25 10:47:39.762479989 +0800
++++ 3proxy-0.9.4/Makefile.Linux	2020-12-25 10:46:54.502480750 +0800
 @@ -8,13 +8,13 @@
  # library support. Add -DSAFESQL for poorely written ODBC library / drivers.
  
