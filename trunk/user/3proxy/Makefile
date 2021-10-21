@@ -22,6 +22,6 @@ clean:
 	fi
 
 romfs:
-	#$(ROMFSINST) $(THISDIR)/$(SRC_NAME)/bin/3proxy /usr/bin/3proxy
-	#$(ROMFSINST) -S $(THISDIR)/$(SRC_NAME)/bin/TransparentPlugin.ld.so /usr/lib/TransparentPlugin.ld.so
+	$(ROMFSINST) $(THISDIR)/$(SRC_NAME)/bin/3proxy /usr/bin/3proxy
+	$(ROMFSINST) -S $(THISDIR)/$(SRC_NAME)/bin/TransparentPlugin.ld.so /usr/lib/TransparentPlugin.ld.so
 
