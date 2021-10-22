@@ -45,4 +45,3 @@ romfs:
 	cp $(SRC_NAME)/src/fsck.fat .
 	$(STRIP) fsck.fat
 	$(ROMFSINST) /sbin/fsck.fat
-

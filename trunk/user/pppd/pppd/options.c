@@ -983,7 +983,7 @@ print_option(opt, mainopt, printer, arg)
 			p = (char *) opt->addr2;
 			if ((opt->flags & OPT_STATIC) == 0)
 				p = *(char **)p;
-			printer("%q", p);
+			printer(arg, "%q", p);
 		} else if (opt->flags & OPT_A2LIST) {
 			struct option_value *ovp;
 
@@ -1349,6 +1349,7 @@ getword(f, word, newlinep, filename)
 
 	c = getc(f);
     }
+    word[MAXWORDLEN-1] = 0;	/* make sure word is null-terminated */
 
     /*
      * End of the word: check for errors.
@@ -1744,7 +1745,7 @@ user_unsetenv(argv)
 	option_error("unexpected = in name: %s", arg);
 	return 0;
     }
-    if (arg == '\0') {
+    if (*arg == '\0') {
 	option_error("missing variable name for unset");
 	return 0;
     }

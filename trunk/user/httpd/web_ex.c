@@ -3595,7 +3595,7 @@ apply_cgi(const char *url, webs_t wp)
 	}
 	else if (!strcmp(value, " Reboot "))
 	{
-	    sys_reboot();
+		sys_reboot();
 		return 0;
 	}
 	else if (!strcmp(value, " Shutdown "))
@@ -4627,7 +4627,7 @@ struct ej_handler ej_handlers[] =
 #if defined (APP_NPC)
 	{ "npc_status", npc_status_hook},
 #endif
-    { "update_action", update_action_hook},
+	{ "update_action", update_action_hook},
 	{ "openssl_util_hook", openssl_util_hook},
 	{ "openvpn_srv_cert_hook", openvpn_srv_cert_hook},
 	{ "openvpn_cli_cert_hook", openvpn_cli_cert_hook},

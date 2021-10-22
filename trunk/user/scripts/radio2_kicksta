@@ -1,0 +1,40 @@
+#!/bin/sh
+devname=ra0
+lowrssi=$(nvram get rt_KickStaRssiLow)
+
+get_sta_rssi() {
+    curl -s http://127.0.0.1/Main_WStatus2g_Content.asp | grep '^\w\w:\w\w:\w\w:\w\w:\w\w:\w\w'
+}
+
+while [ true ]; do
+    #__disabled__
+    if [ $lowrssi -ge 0 ] || [ $(nvram get rt_radio_x) -eq 0 ]
+    then
+        continue
+    fi
+    
+    #__update_sta_rssi__
+    get_sta_rssi | awk '{print $1,$9}' > /tmp/roaming_sta_rssi
+    #echo "station_rssi_list"
+    #echo "-[sta_mac]------- -[rssi]-"
+    cat /tmp/roaming_sta_rssi
+    echo
+
+    #__get_sta_rssi__
+    while IFS= read stainfo
+    do
+        stamac=$(echo "$stainfo" | awk '{print $1}')
+        rssi=$(echo "$stainfo" | awk '{print $2}')
+        if [ $rssi -le $lowrssi ]
+        then
+            iwpriv $devname set DisConnectSta=$stamac
+            #echo "kicked out $stamac rssi at $rssi"
+            logger -t "无线2.4G弱信号剔除" "已剔除客户端 $stamac 信号值 $rssi"
+        fi
+    done < /tmp/roaming_sta_rssi
+    rm -f /tmp/roaming_sta_rssi
+
+    #echo "done."
+    #echo "<copyright (c)2021 xRetia Labs>"
+    sleep 30
+done

@@ -5,6 +5,7 @@ clean:
 
 romfs:
 	./makedevlinks $(ROMFSDIR)
+	$(ROMFSINST) /sbin/radio2_kicksta
 	$(ROMFSINST) /sbin/dev_init.sh
 	$(ROMFSINST) /sbin/reset_ss.sh
 	$(ROMFSINST) /sbin/mtd_storage.sh
@@ -20,7 +21,6 @@ endif
 ifdef CONFIG_MTD_UBI
 	$(ROMFSINST) /sbin/rwfs2ubi.sh
 endif
-	$(ROMFSINST) /etc_ro/ld.so.conf
 	$(ROMFSINST) /etc_ro/protocols
 	$(ROMFSINST) /etc_ro/services
 	$(ROMFSINST) /etc_ro/profile
