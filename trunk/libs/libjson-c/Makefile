@@ -24,14 +24,16 @@ config_test:
 
 configure:
 	( cd $(SRC_NAME) ; \
-	sh autogen.sh; \
-	sed -e 's/#undef malloc.*//g' -e 's/#undef realloc.*//g' -i config.h.in; \
-	./configure \
+	#sh autogen.sh; \
+	#sed -e 's/#undef malloc.*//g' -e 's/#undef realloc.*//g' -i config.h.in; \
+	mkdir build; \
+	cd build; \
+	../cmake-configure \
 		--prefix=$(STAGEDIR) \
 		--enable-static \
-		--enable-shared \
-		--host=$(HOST_TARGET) \
-		--build=$(HOST_BUILD) ; \
+		--enable-shared ; \
+		#--host=$(HOST_TARGET) \
+		#--build=$(HOST_BUILD) ; \
 	)
 
 clean:
