@@ -3,7 +3,7 @@ SRC_URL=https://github.com/json-c/json-c/archive/refs/tags/json-c-0.15-20200726.
 ARCHIVE_NAME=json-c-json-c-0.15-20200726
 
 all: download_test extract_test config_test
-	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
+	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)/build
 
 download_test:
 	( if [ ! -f $(ARCHIVE_NAME).tar.gz ]; then \
@@ -37,13 +37,15 @@ configure:
 	)
 
 clean:
-	if [ -f $(SRC_NAME)/Makefile ] ; then \
-		$(MAKE) -C $(SRC_NAME) distclean ; \
-	fi ; \
-	rm -f config_done
+	#if [ -f $(SRC_NAME)/Makefile ] ; then \
+	#	$(MAKE) -C $(SRC_NAME) distclean ; \
+	#fi ; \
+	( rm -f $(SRC_NAME) ; \
+	rm -f config_done ; \
+	)
 
 install:
-	$(MAKE) -C $(SRC_NAME) install DESTDIR=""
+	$(MAKE) -C $(SRC_NAME)/build install DESTDIR=""
 
 romfs:
-	cp -fP $(DESTDIR)/lib/libjson-c.so* $(ROMFSDIR)/lib
+	cp -fP $(SRC_NAME)/build/libjson-c.so* $(ROMFSDIR)/lib
