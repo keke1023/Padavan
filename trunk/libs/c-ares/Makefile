@@ -1,5 +1,5 @@
-SRC_NAME=c-ares-1.17.2
-SRC_URL=https://github.com/c-ares/c-ares/releases/download/cares-1_17_2/c-ares-1.17.2.tar.gz
+SRC_NAME=c-ares-1.18.1
+SRC_URL=https://github.com/c-ares/c-ares/releases/download/cares-1_18_1/c-ares-1.18.1.tar.gz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)/build
