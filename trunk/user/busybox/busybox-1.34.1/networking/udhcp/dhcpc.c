@@ -1230,7 +1230,7 @@ int udhcpc_main(int argc UNUSED_PARAM, char **argv)
 	llist_t *list_x = NULL;
 	int tryagain_timeout = 20;
 	int discover_timeout = 3;
-	int discover_retries = 3;
+	int discover_retries = 4;
 	uint32_t server_id = server_id; /* for compiler */
 	uint32_t requested_ip = 0;
 	int packet_num;

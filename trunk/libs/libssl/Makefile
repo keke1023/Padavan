@@ -23,11 +23,11 @@ OPENSSL_CIPHERS = no-capieng no-cms no-rfc3779 no-seed \
   no-sm3 no-sm4 no-afalgeng no-comp
 
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_SSWAN),y)
-OPENSSL_CIPHERS += no-rc2
+OPENSSL_OPTIONS += no-rc2
 endif
 
-ifneq ($(CONFIG_FIRMWARE_INCLUDE_OPENSSL_EC),y)
-OPENSSL_CIPHERS += no-ec
+ifeq (,$(filter y,$(CONFIG_FIRMWARE_INCLUDE_OPENSSL_EC) $(CONFIG_FIRMWARE_INCLUDE_TOR)))
+OPENSSL_OPTIONS += no-ec
 endif
 
 all: download_test extract_test config_test
@@ -72,11 +72,16 @@ install:
 	$(MAKE) -C $(SRC_NAME) install_ssldirs DESTDIR="$(STAGEDIR)"
 	rm -f $(DESTDIR)/lib/libssl.a
 	rm -f $(DESTDIR)/lib/libcrypto.a
+	# fix pkgconfig
+	sed -i 's,^prefix=.*,prefix=$(STAGEDIR),g' $(STAGEDIR)/lib/pkgconfig/libcrypto.pc
+	sed -i 's,^prefix=.*,prefix=$(STAGEDIR),g' $(STAGEDIR)/lib/pkgconfig/libssl.pc
+	sed -i 's,^prefix=.*,prefix=$(STAGEDIR),g' $(STAGEDIR)/lib/pkgconfig/openssl.pc
 
 romfs:
 	cp -fP $(DESTDIR)/lib/libssl.so* $(ROMFSDIR)/lib
 	cp -fP $(DESTDIR)/lib/libcrypto.so* $(ROMFSDIR)/lib
 	$(ROMFSINST) /etc_ro/openssl.cnf
+	$(ROMFSINST) /etc_ro/ca-certificates.crt
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_OPENSSL_EXE),y)
 	$(ROMFSINST) $(SRC_NAME)/apps/openssl /usr/bin/openssl
 endif

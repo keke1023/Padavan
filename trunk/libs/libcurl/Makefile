@@ -51,7 +51,6 @@ configure:
 		--disable-libcurl-option \
 		--disable-threaded-resolver \
 		--without-gnutls \
-		--without-ca-bundle \
 		--without-libidn \
 		--without-libssh2 \
 		--without-krb4 \
@@ -59,6 +58,7 @@ configure:
 		--with-random=/dev/urandom \
 		--with-zlib=$(STAGEDIR) \
 		--with-ssl=$(STAGEDIR) \
+		--with-ca-bundle=/etc/ssl/cert.pem \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \
 	)

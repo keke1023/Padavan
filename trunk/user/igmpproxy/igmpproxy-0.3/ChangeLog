@@ -1,0 +1,904 @@
+2021-01-04 18:40:01 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Release version 0.3
+
+2020-09-05 13:52:50 +0200  Pali Rohár <pali.rohar@gmail.com>
+
+	* Remove duplicate code in mcgroup.c file
+
+	  Existing functionality is provided by k_join and k_leave functions.
+
+2020-09-05 13:07:38 +0200  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix initialization and deinitialization of mrouter socket
+
+	  Ensure that uninitialized socket is invalid (-1) and not stdin (0).
+
+2020-09-05 13:07:00 +0200  Pali Rohár <pali.rohar@gmail.com>
+
+	* Use main mrouter socket also for sending join/leave messages to upstream router
+
+	  There is no need to open additional UDP socket which is used just for calling
+	  IP_ADD_MEMBERSHIP/IP_DROP_MEMBERSHIP setsockopt. Main mrouter socket is can
+	  be used for these operations too.
+
+2020-05-20 09:59:11 +0200  Uglymotha <uglymotha@wizdom.nu>
+
+	* Free BSD Compilation Patch
+
+	  On FreeBSD compilation failed due to missing includes in os-freebsd.h.
+	  This was causing errors about undefined structs and types in missing includes.
+	  Also defines __BSD_VISIBLE due to FreeBSD not providing u_int, u_long etc
+	  in a default _POSIX_C_SOURCE environment.
+
+	  Fixes: https://github.com/pali/igmpproxy/issues/68
+
+2020-05-08 22:54:06 +0200  Pali Rohár <pali.rohar@gmail.com>
+
+	* Remove MAX_MC_VIFS macro
+
+	  Its value is same as MAXVIFS, so use MAXVIFS instead.
+
+2020-03-06 11:51:21 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Improve downstream host tracking for quickleave mode
+
+	  Use bit based per multicast route hash table for tracking downstream hosts.
+	  For hasing function is used 32bit MurmurHash3 with pseudorandom seed and
+	  size of hash table can be configured via a new "hashtablesize" token in
+	  config file. Default size of hash table is 32 bytes, so it can store
+	  approximatelly 128 hosts which is half of /24 subnet. For home networks
+	  this should be sane default value.
+
+	  Fixes: https://github.com/pali/igmpproxy/pull/57
+
+2020-02-26 20:27:08 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Show error message when IP_ADD_MEMBERSHIP fails with errno ENOBUFS
+
+	  Also on Linux show hint how to increase maximum number of multicast groups.
+
+	  Fixes: https://github.com/pali/igmpproxy/issues/30
+
+2020-02-25 23:46:57 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix gcc-7 and clang-9 on Travis
+
+2020-02-25 23:24:26 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Update Travis config file
+
+2019-06-26 17:42:15 +0200  Pali Rohár <pali.rohar@gmail.com>
+
+	* Use AS_IF macro for C99 check in configure.ac
+
+2018-09-30 00:28:05 +0200  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix makefile rules for generating AUTHORS and ChangeLog files
+
+2018-02-13 20:17:30 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Release version 0.2.1
+
+2018-01-14 15:32:07 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix building on Travis with gcc-4.4
+
+2018-01-14 15:13:27 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Throw fatal error when C compiler does not support ISO C99 which is required
+
+2018-01-11 03:22:19 +0000  Vladimir Panteleev <git@thecybershadow.net>
+
+	* Fix running as daemon
+
+	  Commit 29eab814175d7754797c51ed6d4d1d7c91155cca introduced a new flag,
+	  -n, which allows making igmpproxy not run as a daemon (fork and run in
+	  the foreground). However, the boolean flag controlling this option was
+	  always true, thus causing igmpproxy to never run as a daemon,
+	  regardless whether the switch was specified or not.
+
+2018-01-06 14:15:44 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix compilation on FreeBSD systems
+
+	  FreeBSD's struct ifreq does not have member ifr_netmask. Instead for
+	  SIOCGIFNETMASK ioctl FreeBSD kernel fills ifru_addr member. As both members
+	  ifr_netmask and ifru_addr are stored in same union on Linux, they alias to
+	  same data and therefore this change does not break Linux support.
+
+	  Fixes: https://github.com/pali/igmpproxy/issues/24
+
+2018-01-06 13:26:15 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Compile also for x32, powerpc and arm on Travis
+
+2018-01-06 03:18:02 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Compile also without -O2 on Travis
+
+2017-12-22 12:01:50 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Release 0.2
+
+2017-12-22 12:01:31 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix spelling: interace => interface; explicitely => explicitly
+
+2017-12-22 11:54:01 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Add a new option -n which cause that igmpproxy would not run as a daemon
+
+2017-12-22 11:14:25 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Escape leading dot in man page
+
+2017-12-22 11:10:27 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Use _GNU_SOURCE instead of _BSD_SOURCE which is deprecated
+
+2017-12-21 20:33:32 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Disable -Wno-error=unused-but-set-variable on Travis
+
+2017-12-21 20:33:21 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Declare loop variable outside block
+
+2017-12-21 20:16:28 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* On Travis use -Wno-error=unused-but-set-variable and let autoconf to enable C99
+
+2017-12-21 19:41:10 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Enable -Werror on Travis
+
+2017-12-21 19:40:07 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Try to fix problems with strict aliasing
+
+2017-12-21 16:30:51 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix compile warning: this 'if' clause does not guard...
+
+2017-12-21 16:20:56 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Define _POSIX_C_SOURCE and _BSD_SOURCE to allow compilation with --std=c99
+
+2017-12-21 16:20:13 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Include config.h before any other files to make its effect
+
+2017-12-21 16:16:47 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix compile warning: unused variable
+
+2017-12-21 16:15:35 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix compile warning: comparison between signed and unsigned integer expressions
+
+2017-12-21 15:26:08 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Generate ChangeLog file to be more compatible with GNU format
+
+2017-12-21 15:23:47 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Add missing file autogen.sh into EXTRA_DIST
+
+2017-12-21 15:23:27 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Add missing file os-qnxnto.h into igmpproxy_SOURCES
+
+2017-10-30 17:33:43 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* On Travis test with more compilers (gcc, clang, tcc) and for both 32bit and 64bit platforms
+
+2017-05-05 10:20:11 +0200  Victor Toni <victor.toni@gmail.com>
+
+	* Renamed 'upStreamVif' to 'upStreamIfIdx' for clarity.
+
+	  Signed-off-by: Victor Toni <victor.toni@gmail.com>
+
+2017-05-05 10:01:38 +0200  Victor Toni <victor.toni@gmail.com>
+
+	* Replaced tabs with 4 whitespaces and removed trailing whitespaces.
+
+	  Signed-off-by: Victor Toni <victor.toni@gmail.com>
+
+2017-05-05 08:56:03 +0200  Victor Toni <victor.toni@gmail.com>
+
+	* Added used upstream VIF to logging.
+
+	  Signed-off-by: Victor Toni <victor.toni@gmail.com>
+
+2017-04-04 19:57:39 +0000  Vladimir Panteleev <git@thecybershadow.net>
+
+	* igmp: Fix incorrect index calculation of upstream VIF
+
+	  igmpproxy uses a number of different kinds of indices to identify
+	  interfaces:
+
+	  - The system interface index, as used by IfDescVc / getIfByIx. These
+	    identify and enumerate all interfaces on the system.
+	  - The Virtual Interface Index (VIF). These identify only those
+	    interfaces which take part in multicast routing.
+	  - The upstream interface index, as used in upStreamVif, which
+	    identifies/enumerates only those interfaces that are configured as
+	    multicast upstream interfaces in igmpproxy's configuration.
+
+	  activateRoute's expected a VIF index for its upstrVif parameter,
+	  however it was being passed upStreamVif[i]-1 (i.e. the system
+	  interface index of the upstream interface, minus one, where i is the
+	  current upstream interface index being iterated).
+
+	  It is unclear what the logic was behind the upStreamVif[i]-1
+	  expression, as it existed ever since the upstrVif parameter was
+	  introduced in b55e0125c79fc9dbc95c6d6ab1121570f0c6f80f. igmpproxy
+	  working as expected highly depended on the system configuration and
+	  enumeration order of network interfaces.
+
+2017-03-25 16:57:07 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix typo recieves => receives
+
+2017-03-25 16:57:03 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix typo availible => available
+
+2017-03-25 16:56:58 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix typo interupt => interrupt
+
+2017-03-25 16:56:51 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix typo recieved => received
+
+2017-03-25 16:56:43 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Fix manpage, escape leading dot
+
+2017-03-25 16:52:31 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Add configuration for Travis CI
+
+2017-03-25 16:52:01 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Rename bootstrap to autogen.sh
+
+2017-03-25 16:48:51 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Update homepage
+
+2017-03-25 13:16:46 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Apply 3-clause BSD license on the mrouted source code
+
+	  mrouted was originally licensed under the proprietary Stanford license.
+	  Later, in March 2003 OpenBSD team managed to convince Stanford to release
+	  mrouted under a free BSD-3-clause license. See details at:
+	  http://www.openbsd.org/cgi-bin/cvsweb/src/usr.sbin/mrouted/LICENSE
+	  http://troglobit.com/mrouted.html
+
+	  igmpproxy is licensed under the proprietary Stanford and GPL-2+ license,
+	  but all authors and contributors of igmpproxy agreed that their changes and
+	  contributions can be licensed under GPL-2+ license.
+
+	  So now igmpproxy software can be redistributed under BSD-3-clause and
+	  GPL-2+. And so is finally GPL-2+ compatible.
+
+	  Below are agreement sent by all igmpproxy contributors:
+
+	  ===========================================================================
+
+	  From: Pali Rohár <pali.rohar@gmail.com>
+	  Subject: igmpproxy: Request for GPLv2+ license for your contribution
+	  Date: Fri, 2 Dec 2016 18:39:07 +0100
+	  Message-Id: <201612021839.08107@pali>
+	  Do you agree that your igmpproxy contributions can be licensed under
+	  GPLv2+ license?
+
+	  From: Conrad Kostecki <ck@conrad-kostecki.de>
+	  Date: Fri, 02 Dec 2016 17:40:35 +0000
+	  Message-Id: <em47684c24-25ab-4fd0-b4aa-e830e378ebec@valkyrie>
+	  yes, I agree!
+
+	  From: Alexey Charkov <alchark@gmail.com>
+	  Date: Fri, 2 Dec 2016 21:17:19 +0300
+	  Message-ID: <CABjd4YzNj8MOJhZG7O4-6K9_-t4anypu1YRTkQ8gQSEtTMBJgw@mail.gmail.com>
+	  Agreed.
+
+	  From: Johnny Egeland <johnnyege@gmail.com>
+	  Date: Fri, 2 Dec 2016 19:43:07 +0100
+	  Message-ID: <CAD4Kcc26CV5uSurVeoot1v4+3K12sQRwqzg7-0Dxij5kqUJ0PA@mail.gmail.com>
+	  Yes, I definitely do ;-)
+
+	  From: Martin Djernaes <martin@djernaes.dk>
+	  Date: Mon, 5 Dec 2016 11:06:57 +0100
+	  Message-ID: <CAHNoM5KpwPCt8wt53=uqmKJgo7pt4XPUcFJ7eAUMs_H5LTw9xA@mail.gmail.com>
+	  Yes that is fine.
+
+	  From: Damjan Cvetko <damjan.cvetko@gmail.com>
+	  Date: Tue, 6 Dec 2016 12:52:50 +0100
+	  Message-ID: <CAKHrGec4RA6gn8mH09MirKXwdNSQH4WkZX89ajukziNXrbqQ_g@mail.gmail.com>
+	  Yes, I agree with the change of licencing of my contributions to igmpproxy
+	  project.
+
+	  From: Christian Ruppert <idl0r@qasl.de>
+	  Date: Tue, 06 Dec 2016 13:24:47 +0100
+	  Message-ID: <62abfbeb145413490632bcc307b8ef0d@qasl.de>
+	  I agree relicensing it/my contribution(s) under GPLv2+!
+
+	  From: Konstantin Baranov <const@mimas.ru>
+	  Date: Tue, 6 Dec 2016 09:02:06 -0800
+	  Message-ID: <CAM5obhDChMwKKhvEZMSWhz-ON2ZsaOgFf29mXkw2DS4wakFJrA@mail.gmail.com>
+	  Yes, I do agree.
+
+	  ===========================================================================
+
+	  From: Pali Rohár <pali.rohar@gmail.com>
+	  Subject: igmpproxy: Request for GPLv2+ license for your patches
+	  Date: Sat, 10 Dec 2016 18:42:54 +0100
+	  Message-Id: <201612101737.59917@pali>
+	  Do you agree that your igmpproxy patches can be licensed under GPLv2+
+	  license?
+
+	  From: Antti Seppälä <a.seppala@gmail.com>
+	  Date: Sat, 10 Dec 2016 18:45:15 +0200
+	  Message-ID: <CAKv9HNbWq86b64MrDnaCscDsjxvZX_kJ0j7LLabzFngfKFh9Nw@mail.gmail.com>
+	  I agree that my igmpproxy patches can be licensed under GPLv2+.
+
+	  From: Jonas Gorski <jonas.gorski@gmail.com>
+	  Date: Sat, 10 Dec 2016 18:24:35 +0100
+	  Message-ID: <CAOiHx=k8r=rhodMCPdjNzh1opLWmDWxAFJKhNPxWbLRG0KC5+Q@mail.gmail.com>
+	  Yes, fine by me.
+
+	  From: Ambroz Bizjak <ambrop7@gmail.com>
+	  Date: Sat, 10 Dec 2016 18:51:00 +0100
+	  Message-ID: <CAOA3yKLqLE58UvgK2+Y6LJsTRpKotFKaZNSSMQAOX-43_VA+yw@mail.gmail.com>
+	  I agree that any of my igmpproxy patches are licensed under GPLv2+.
+
+	  From: Tim Ruehsen <rockdaboot@gmail.com>
+	  Date: Sat, 10 Dec 2016 19:05:29 +0100
+	  Message-ID: <CAEYqemEByfOn6kgEU6vwySX6Bu+5K7A29g2N80-oovxgZSpFBA@mail.gmail.com>
+	  feel free to relicense my patches to GPLv2+.
+
+	  From: Felix Fietkau <nbd@nbd.name>
+	  Date: Sat, 10 Dec 2016 21:08:20 +0100
+	  Message-ID: <73bd287a-3566-8a9b-ca4d-e9eadcc82eb7@nbd.name>
+	  Yes, I agree.
+
+	  From: Gustavo Zacarias <gustavo@zacarias.com.ar>
+	  Date: Sat, 10 Dec 2016 17:21:30 -0300
+	  Message-ID: <6b1796a9-c710-ef03-0a1a-649b94ac522a@zacarias.com.ar>
+	  It's fine for my contribution.
+
+	  From: Maxim Shvyndya <mshvyndya@gmail.com>
+	  Date: Sat, 10 Dec 2016 22:33:47 +0200
+	  Message-ID: <CAMKJLpZE3SRuTJ_iHH9PTmGtU_2yptTVi=rkf=Xx_FLF+WuN6g@mail.gmail.com>
+	  I agree that my igmpproxy patches can be licensed under GPLv2+ license.
+
+	  From: Stefan Becker <chemobejk@gmail.com>
+	  Date: Sun, 11 Dec 2016 15:44:11 +0200
+	  Message-ID: <CAOJ2eMfJ67TH6memszB3kZ18vS1=X7rWj8ZuEFq3owcU_WmxEA@mail.gmail.com>
+	  I have no problem to upgrade that to GPLv2.
+
+	  From: Pali Rohár <pali.rohar@gmail.com>
+	  To: Stefan Becker <chemobejk@gmail.com>
+	  Date: Sun, 11 Dec 2016 14:54:31 +0100
+	  Message-Id: <201612111454.31472@pali>
+	  Thank you! But I would like to have not only GPLv2, but GPLv2+ (either
+	  version 2 of the GNU General Public License, or any later version) as
+	  whole igmpproxy project.
+
+	  From: Stefan Becker <chemobejk@gmail.com>
+	  Date: Sun, 11 Dec 2016 16:01:18 +0200
+	  Message-ID: <CAOJ2eMf9=F-Uno6_R_TEhYG8U2cJJnpaWTCSuev-0e_uyivJTQ@mail.gmail.com>
+	  I'm fine with GPLv2+, GPLv3 or whatever...
+
+	  From: Natanael Copa <ncopa@alpinelinux.org>
+	  Date: Sun, 11 Dec 2016 11:53:35 -0300
+	  Message-ID: <20161211115335.500c31ea@ncopa-macbook.copa.dup.pw>
+	  I agree that my patch can be licensed under GPLv2+ or new mrouted BSD license.
+
+	  From: Victor Toni <victor.toni@gmail.com>
+	  Date: Tue, 14 Mar 2017 13:28:59 +0100
+	  Message-ID: <CAG0OSgcrJRU=E7VJ7vODCamDj8-4F38yUTRPdbz=t0QpFmqKhA@mail.gmail.com>
+	  I agree that all my contributions to igmpproxy can be licensed under GPLv2+.
+
+	  From: Erik Tews <erik@datenzone.de>
+	  Date: Tue, 14 Mar 2017 13:46:48 +0000
+	  Message-ID: <1489499208.3441.0.camel@datenzone.de>
+	  Yes, I'M OK with that.
+
+	  From: Michael Marschalkowski <grinch@itg-em.de>
+	  Date: Tue, 14 Mar 2017 14:54:04 +0100
+	  Message-ID: <135c7813-7222-ddf8-4d87-8a3ecc931fd0@itg-em.de>
+	  you can include my patches under GPLv2+ license.
+
+	  From: Mike C. Fletcher <mcfletch@vrplumber.com>
+	  Date: Tue, 14 Mar 2017 10:31:37 -0400
+	  Message-ID: <6782d9d1-77bd-d95d-de25-e0ec62fa9567@vrplumber.com>
+	  However, to formally clear the hurdle, I hereby declare that any
+	  contributions I have made are licensed under the 2-clause BSD license,
+	  and that as such you can merge them into your work and re-license under
+	  GPL-v2+.
+
+	  From: Leonid Lisovskiy <lly.dev@gmail.com>
+	  Date: Tue, 14 Mar 2017 17:42:37 +0300
+	  Message-ID: <CAF5PLbs+qOMH9POQUgoUm2RpYUKu-+ZUGEBhwhBxx2HD7iTBsA@mail.gmail.com>
+	  Yes, I am agree that my igmpproxy patches can be licensed under GPLv2+ license.
+
+	  From: Evgeny Yurchenko <ey@tm-k.com>
+	  Date: Tue, 14 Mar 2017 16:02:22 -0400
+	  Message-ID: <20170314200222.8515670.78274.2935@tm-k.com>
+	  Yes, I agree.
+
+	  From: Watch Me <aimwang@gmail.com>
+	  Date: Wed, 15 Mar 2017 11:11:14 +0800
+	  Message-ID: <CAMThHmbO78Gtne4yQ=Xy3pO=9ie_NyvR5cjDraBnV9HeWnqgHQ@mail.gmail.com>
+	  I agree.
+
+	  From: Vladislav Grishenko <themiron.ru@gmail.com>
+	  Date: Sat, 25 Mar 2017 17:08:11 +0500
+	  Message-ID: <000301d2a560$79bc6940$6d353bc0$@gmail.com>
+	  Sure, I conditionally permit GPLv2+ license my patches if they has my authorship in git history.
+
+	  ===========================================================================
+
+2017-03-25 11:41:21 +0100  Pali Rohár <pali.rohar@gmail.com>
+
+	* Clarify smcroute 0.92 license correctly
+
+	  Original smcroute 0.92 can be redistributed and/or modified under the terms
+	  of the GNU General Public License as published by the Free Software
+	  Foundation; either version 2 of the License, or (at your option) any later
+	  version.
+
+	  Source: http://www.cschill.de/smcroute/
+
+2016-04-27 21:12:57 +0200  Victor Toni <victor.toni@gmail.com>
+
+	* Replace call to setpgrp with setpgid
+
+	  Linux and FreeBSD use a different signature for setpgrp.
+	  Both support setpgid which replaces the now obsolete setpgrp and has the same signature on both systems.
+2016-04-06 20:20:57 +0200  Victor Toni <victor.toni@gmail.com>
+
+	* Minor change in wording of logging message.
+
+2016-04-02 01:03:21 +0200  Victor Toni <victor.toni@gmail.com>
+
+	* Adding support for fbsd 9/10 due to changes in struct ip.
+
+	  Original patch submitted by: yuri@rivera.ru
+
+2015-01-18 01:42:43 +0100  Antti Seppälä <a.seppala@gmail.com>
+
+	* add patch to silence unnecessary logging of downstream igmp traffic
+
+	  This patch adds a simple check to silence logging of messages about
+	  unrecognized igmp packets which originate from devices in local network.
+
+	  Without this patch igmpproxy floods openwrt syslog with messages such as:
+
+	    user.warn igmpproxy[19818]: The source address 192.168.1.175 for group
+	    239.255.250.250, is not in any valid net for upstream VIF.
+
+	  Signed-off-by: Antti Seppälä <a.seppala@gmail.com>
+
+2014-08-03 12:45:31 +0200  Felix Fietkau <nbd@openwrt.org>
+
+	* add missing include
+
+	  Signed-off-by: Felix Fietkau <nbd@openwrt.org>
+
+2012-03-29 17:01:11 +0200  Jonas Gorski <jonas.gorski@gmail.com>
+
+	* use monotic clock instead of time of day
+
+	  The time of day might chance e.g. by daylight savings time during the
+	  runtime, which causes timers to fire repeatedly for a long time.
+
+	  Contributed by T-Labs, Deutsche Telekom Innovation Laboratories
+
+	  Signed-off-by: Jonas Gorski <jonas.gorski@gmail.com>
+
+2012-03-04 10:46:28 +0100  Ambroz Bizjak <ambrop7@users.sourceforge.net>
+
+	* Support multiple multicast sources
+
+	  If a multicast packet comes in on the upstream interface to a group
+	  address, but from a different IP source than previously seen, igmpproxy
+	  will forget about the old source, and the corresponding multicast route
+	  will time out shortly - even if the multicast stream from the original
+	  source is never interrupted.
+
+	  I haven't investigated what in particular the suspicious packet is; it did
+	  however originate from the multicast router.
+
+	  The submitted patch resolves the issue by adding support for multiple
+	  source IPs for any given group. Instead of keeping a single source address,
+	  MAX_ORIGINS addresses are kept. If we run out of source address slots, the
+	  least recently used one will be reused.
+
+2012-07-28 11:36:55 +0200  Vladislav Grishenko <themiron@mail.ru>
+
+	* add igmpv3 clients support
+
+2009-09-15 18:08:34 +0200  Leonid Lisovskiy <lly.dev@gmail.com>
+
+	* implement daemonization
+
+2009-01-02 14:48:41 +0100  Vladislav Grishenko <themiron@mail.ru>
+
+	* ignore upnp
+
+2009-03-31 19:41:41 +0200  Leonid Lisovskiy <lly.dev@gmail.com>
+
+	* fix timer queue
+
+2009-01-02 14:48:41 +0100  Vladislav Grishenko <themiron@mail.ru>
+
+	* allow zero altnet
+
+2009-09-23 17:53:23 +0200  Leonid Lisovskiy <lly.dev@gmail.com>
+
+	* Fix memleak
+
+2009-09-15 18:08:34 +0200  Leonid Lisovskiy <lly.dev@gmail.com>
+
+	* fix compilation warnings
+
+2014-03-03 12:11:26 +0000  Natanael Copa <ncopa@alpinelinux.org>
+
+	* Use standard unsigned integer types
+
+	  Use the stanard unsigned integer types instead of the non-standard
+	  u_char, u_short and u_int.
+
+	  This fixes build with musl libc.
+
+2015-09-28 10:37:04 -0400  Mike C. Fletcher <mcfletch@vrplumber.com>
+
+	* Fix case where we want to specify 0.0.0.0/0 but config disallows
+
+	  Config parser disallows cases where we use 0.0.0.0/whatever because
+	  it checks for address != 0, but sometime we actually want to say
+	  "everything that isn't from an internal address" and so specify that
+	  0.0.0.0 address. This makes the check take the network mask into
+	  consideration when checking for the incoming address.
+
+2014-03-12 21:50:00 +0000  Gustavo Zacarias <gustavo@zacarias.com.ar>
+
+	* configure.ac: uclinux is also linux
+
+	  Signed-off-by: Gustavo Zacarias <gustavo@zacarias.com.ar>
+
+2013-10-31 21:05:00 +0000  Aim Wang <aimwang@users.sourceforge.net>
+
+	* downstream link change detect on the fly
+
+	  This patch can work on a PPP server. When PPP client link up, the new link
+	  will set as downstrem interface automatically.
+
+	  New feature:
+	  1. Multiple upstream interface
+2. Set default Vif State in config file
+	  3. Swith auto scan function on/off in config file.
+
+	  When config file have set "defaultdown" means VIFs default status is
+	  downstream, oterwise will be disable.
+
+	  When config file have set "rescanvif" the igmpproxy will scan the interface
+	  state and auto add new Vif, it is very helpful in ppp links.
+
+2012-09-17 02:44:00 +0000  Aim Wang <aimwang@users.sourceforge.net>
+
+	* ppp end point IP patch
+
+	  When the link is PPP (flag = 0x10d1) should get the P-t-P address to use.
+	  Or received report from P-t-P address will get warring message
+	  [No interfaces found for source %s].
+
+2012-05-30 08:53:00 +0000  Tim Ruehsen <rockdaboot@users.sourceforge.net>
+
+	* fixed gcc warnings
+
+	  the patch fixes several gcc (4.7.0) warnings like missing or old-style prototypes, const issues, unused parameters, etc
+
+	  * igmpproxy.h: fix gcc warnings [-Wstrict-prototypes]
+	  * igmpproxy.c: fix gcc warnings [-Wstrict-prototypes] [-Wold-style-definition]
+	  * callout.c: fix gcc warnings [-Wold-style-definition]
+	  * config.c: fix gcc warnings [-Wold-style-definition] [-Wstrict-prototypes] [-Wmissing-prototypes]
+	  * confread.c: fix gcc warnings [-Wold-style-definition]
+	  * ifvc.c: fix gcc warnings [-Wold-style-definition] [-Wmissing-prototypes]
+	  * igmp.c: fix gcc warnings [-Wold-style-definition] [-Wmissing-prototypes]
+	  igmpPacketKind() return type fixed to 'const char *'
+	  * mroute-api.c: fix gcc warnings [-Wold-style-definition]
+	  * request.c: fix gcc warnings [-Wold-style-definition] [-Wunused-parameter]
+	  cast second arg to timer_setTimer() to timer_f
+	  * rttable.c: fix gcc warnings [-Wold-style-definition] [-Wstrict-prototypes] [-Wmissing-prototypes]
+	  logRouteTable() fixed argument to 'const char *'
+
+2011-12-02 08:27:12 +0200  Maxim Shvyndya <mshvyndya@gmail.com>
+
+	* QNX 6 support enabling
+
+2015-03-11 20:40:22 +0100  Erik Tews <erik@datenzone.de>
+
+	* Improved the handling of groups that are used on more than one interface.
+
+	  This patch has two effects. First, the quickleave feature/behaviour is disabled for all groups that are used on more than one interface. The idea of quickleave is to leave a group fast and later figure out whether there is still somebody interested in that group. For groups used on more than one interface, it is already known that there is still somebody interested in that group.
+
+	  Second, when a leave is received for a group that is used on more than one interface, igmpproxy sends queries on all interface to discover remeining listeners for that group. Previously these queries were only send on the interface the leave was received on, so that listeners on the other interfaces were not discovered and the group might be left on the upstream router incorrectly.
+
+	  This patch can be improved by sending the queries only on the interface the leave was received on and adapting the algorithm in internAgeRoute(...) in rttable.c in a way that only one interface is actually processed and all other interfaces of the route are silently assumed to be still active.
+
+2009-12-11 21:08:57 +0200  Stefan Becker <stefan.becker@nokia.com>
+
+	* Restrict igmp reports forwarding to upstream interface
+
+	  Utilize the new "whitelist" keyword also on the upstream interface definition.
+	  If specified then only whitelisted multicast groups will be forwarded upstream.
+
+	  This can be used to avoid publishing private multicast groups to the world,
+	  e.g. SSDP from a UPnP server on the internal network.
+
+2010-02-23 21:08:02 +0400  Constantin Baranov <const@mimas.ru>
+
+	* Change default interface state to disabled (wrt #2945877)
+
+2010-01-04 05:13:59 +0500  Evgeny Yurchenko <evg.yurch@rogers.com>
+
+	* Send IGMP packets with IP Router Alert option [RFC 2113] included in IP header
+
+2009-10-05 23:07:06 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Merge branch '0.1'
+
+	  * 0.1:
+	    Release 0.1
+	    Fix building on FreeBSD 8.0 (wrt #2870461)
+	    Fix netmask detection on interfaces with multiple addresses
+	    Generate ChangeLog and AUTHORS by Git
+
+2009-10-05 21:31:42 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Release 0.1
+
+2009-10-01 00:09:38 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Fix building on FreeBSD 8.0 (wrt #2870461)
+
+	  Several IGMP_* macroses was deprecated in r189347/v800069 and
+	  removed in r193938/v800098. Redefine them if needed.
+
+2009-09-06 16:41:22 +0500  Martin Djernaes <djernaes@users.sourceforge.net>
+
+	* Fix netmask detection on interfaces with multiple addresses
+
+	  When having multiple IP addresses on an interface the netmask retrieved for
+	  each IP address is not correct. The reason is that ioctrl for
+	  SIOCGIFNETMASK will just provide the first netmask when no IP address is
+	  provided in the call.
+
+2009-09-04 01:38:27 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Generate ChangeLog and AUTHORS by Git
+
+2009-08-16 19:58:26 +0500  Grinch <grinch79@users.sourceforge.net>
+
+	* Restrict igmp reports for downstream interfaces (wrt #2833339)
+
+	  atm all igmp membership reports are forwarded to the upstream interface.
+	  Unfortunately some ISP Providers restrict some multicast groups (esp. those
+	  that are defined as local link groups and that are not supposed to be
+	  forwarded to the wan, i.e 224.0.0.0/24). Therefore there should be some
+	  kind of black oder whitelisting.
+	  As whitelisting can be accomplished quite easy I wrote a litte patch, which
+	  is attached to this request.
+
+2009-08-16 19:45:04 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Release 0.1 beta5
+
+2009-08-16 19:28:30 +0500  Damjan Cvetko <zobo@users.sourceforge.net>
+
+	* Improve getIfByAddress() function (wrt #2835052)
+
+	  getIfByAddress does not find the best iterface in case of overlaping
+	  networks. This patchs scans through all interfaces (and networks) and picks
+	  the one with the longest subnet.
+
+2009-08-16 18:37:58 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Fix nextConfigToken() function (wrt #2838154)
+
+	  The nextConfigToken() returns NULL when EOF reached even if token
+	  was read already. This results in loss of last token in file usually.
+	  Let it return unterminated token if it is non-empty already.
+
+2009-05-14 01:14:56 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Release 0.1 beta4
+
+2009-05-14 01:10:35 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Update README etc.
+
+2009-05-14 01:06:44 +0500  Constantin Baranov <const@mimas.ru>
+
+	* State licenses in the COPYING
+
+2009-05-10 05:01:21 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Remove pointless backslashes in configure.ac
+
+2009-05-10 02:19:30 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Replace bzero() with memset()
+
+2009-05-09 02:09:28 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Remove redundant #include
+
+2009-05-09 02:00:03 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Add DragonFly BSD support
+
+2009-05-09 01:57:07 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Add missed format argument in acceptLeaveMessage()
+
+2009-05-06 01:29:04 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Avoid inclusion if linux/in.h (wrt #2787118)
+
+	  The linux/in.h header conflicts with the netinet/in.h header in
+	  certain Linux distributions. So let's ensure that linux/in.h will
+	  never be included neither directly nor from linux/mroute.h.
+
+2009-05-03 22:00:33 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Release 0.1 beta3
+
+2009-05-03 21:53:56 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Show version in help message
+
+	  Also remove unused Version constant.
+
+2009-05-03 21:43:01 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Remove IF_DEBUG macros
+
+	  IF_DEBUG macros hides my_log(LOG_DEBUG...) calls. Thus it is redundant.
+
+2009-05-03 21:29:16 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Break long lines in build scripts
+
+2009-05-03 21:19:19 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Remove hardcoded version strings from man pages
+
+2009-05-03 20:52:58 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Move mrouted-LICENSE out of doc directory
+
+2009-05-03 20:32:31 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Use strdup() instead of malloc() and strcpy()
+
+2009-05-03 20:30:44 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Eliminate message about IGMP_MEMBERSHIP_QUERY ignored
+
+2009-05-03 20:25:30 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Add OpenBSD support
+
+2009-05-03 04:16:53 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Add NetBSD support
+
+2009-05-02 05:07:12 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Remove outdated bug report email address
+
+2009-05-02 04:49:38 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Improve OS checking mechanism
+
+	  Hide all OS-specific things in os-*.h headers and let autoconf select
+	  proper header. Also add check for struct sockaddr_in.sin_len member.
+
+2009-05-02 04:48:23 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Do not close std* streams in non-debug mode
+
+2009-04-17 21:16:47 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Clean up configure.ac and add check for sockaddr.sa_len member
+
+2009-04-17 20:04:32 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Install igmpproxy to sbin directory
+
+2009-04-17 20:03:46 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Add missing igmpproxy.h to list of sources
+
+2009-04-09 21:28:04 +0500  Christian Ruppert <idl0r@gentoo.org>
+
+	* Add missing 'h' to the getopt() optstring
+
+2009-04-04 00:38:37 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Rework logging
+
+	  Allow to control verbosity with -v option.
+	  Don't write to syslog in debug mode.
+	  Don't fork in background. Let start-stop-deamon do this.
+
+	  Also update man-pages and help messages.
+
+2009-04-04 00:38:06 +0500  Constantin Baranov <const@mimas.ru>
+
+	* Move igmpproxy.conf out of src directory
+
+2009-03-09 22:03:46 +0400  Constantin Baranov <const@mimas.ru>
+
+	* Initial FreeBSD support
+
+	  Based on IGMPproxy port to FreeBSD made by
+	  Pavel Korshunov and gygenot.
+
+2009-03-08 20:37:17 +0400  Constantin Baranov <const@mimas.ru>
+
+	* Move to C99 and clean up the code
+
+	  Listen to compiler's warnings.
+	  Use standard integer and boolean types.
+	  Remove redundant version.h.
+
+2009-03-08 17:53:24 +0400  Constantin Baranov <const@mimas.ru>
+
+	* Rename defs.h to igmpproxy.h
+
+2009-03-08 16:17:20 +0400  Constantin Baranov <const@mimas.ru>
+
+	* Add bootstrap script
+
+2009-02-27 22:28:03 +0400  Constantin Baranov <const@mimas.ru>
+
+	* Remove stuff generated by autotools
+
+2009-02-23 00:36:39 +0400  Constantin Baranov <const@mimas.ru>
+
+	* Fix logging to syslog
+
+	  Do not write textual representation of message severity
+	  because syslog can do this itself. Also write only one
+	  string at a time.
+
+2009-02-23 00:22:20 +0400  Constantin Baranov <const@mimas.ru>
+
+	* chmod -x on appropriate files
+
+2009-02-23 00:18:48 +0400  Conrad Kostecki <ConiKost@gmx.de>
+
+	* Remove banner
+
+2009-02-23 00:13:03 +0400  Alexey Charkov <alchark@gmail.com>
+
+	* Enable autotools
+
+	  I've packaged igmpproxy with GNU autotools, which will allow for a better
+	  experience on Gentoo (CFLAGS, directory structure etc). Also, compile-time
+	  warnings are fixed. As the project is dead, this is not even a fork :)
+
+2009-02-23 00:10:48 +0400  Johnny Egeland <johnnyege@users.sourceforge.net>
+
+	* Initial import
+

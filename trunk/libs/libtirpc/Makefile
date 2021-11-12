@@ -1,4 +1,4 @@
-SRC_NAME=libtirpc-1.3.1
+SRC_NAME=libtirpc-1.3.2
 
 all: config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
@@ -18,7 +18,7 @@ configure:
 		--enable-shared \
 		--disable-static \
 		--disable-gssapi \
-		--disable-ipv6 \
+		$(if $(CONFIG_IPV6),--enable-ipv6,--disable-ipv6) \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \
 	)
