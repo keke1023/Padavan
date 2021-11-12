@@ -964,7 +964,7 @@ traceroute_init(int op, char **argv)
 		xmove_fd(xsocket(AF_INET, SOCK_RAW, IPPROTO_ICMP), rcvsock);
 #if ENABLE_FEATURE_TRACEROUTE_VERBOSE
 		/* want recvmsg to report target local address (for -v) */
-		socket_want_pktinfo(rcvsock);
+		setsockopt_1(rcvsock, IPPROTO_IP, IP_PKTINFO);
 #endif
 	}
 #if ENABLE_TRACEROUTE6
@@ -972,7 +972,7 @@ traceroute_init(int op, char **argv)
 		xmove_fd(xsocket(AF_INET6, SOCK_RAW, IPPROTO_ICMPV6), rcvsock);
 # if ENABLE_FEATURE_TRACEROUTE_VERBOSE
 		/* want recvmsg to report target local address (for -v) */
-		setsockopt_1(rcvsock, SOL_IPV6, IPV6_RECVPKTINFO);
+		socket_want_pktinfo(rcvsock);
 # endif
 	}
 #endif
