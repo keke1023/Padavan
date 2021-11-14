@@ -1,21 +1,10 @@
 SRC_NAME=tcpdump-4.99.1
-SRC_URL=https://www.tcpdump.org/release/$(SRC_NAME).tar.gz
 
 CFLAGS += -Os -ffunction-sections -fdata-sections -DTCPDUMP_MINI
 LDFLAGS += -Wl,--gc-sections
 
-all: download_test extract_test config_test build
-
-download_test:
-	( if [ ! -f $(SRC_NAME).tar.gz ]; then \
-		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
-	fi )
-
-extract_test:
-	( if [ ! -d $(SRC_NAME) ]; then \
-		tar zxf $(SRC_NAME).tar.gz; \
-		patch -d $(SRC_NAME) -p1 -i ../100-tcpdump_mini.patch; \
-	fi )
+all: config_test
+	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME) TCPDUMP_MINI=1
 
 config_test:
 	( if [ -f ./config_done ]; then \
@@ -42,13 +31,12 @@ configure:
 		--build=$(HOST_BUILD) ; \
 	)
 
-build:
-	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME) TCPDUMP_MINI=1
-
 clean:
+	if [ -f $(SRC_NAME)/Makefile ] ; then \
+		$(MAKE) -C $(SRC_NAME) distclean ; \
+	fi ; \
 	rm -f config_done
 	rm -f tcpdump
-	rm -rf $(SRC_NAME)
 
 romfs:
 	cp $(SRC_NAME)/tcpdump .
