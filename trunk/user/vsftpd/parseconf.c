@@ -89,6 +89,9 @@ parseconf_bool_array[] =
   { "ssl_sslv2", &tunable_sslv2 },
   { "ssl_sslv3", &tunable_sslv3 },
   { "ssl_tlsv1", &tunable_tlsv1 },
+  { "ssl_tlsv11", &tunable_tlsv1_1 },
+  { "ssl_tlsv12", &tunable_tlsv1_2 },
+  { "ssl_tlsv13", &tunable_tlsv1_3 },
   { "force_anon_logins_ssl", &tunable_force_anon_logins_ssl },
   { "force_anon_data_ssl", &tunable_force_anon_data_ssl },
   { "debug_ssl", &tunable_debug_ssl },
@@ -189,6 +192,7 @@ parseconf_str_array[] =
   { "rsa_private_key_file", &tunable_rsa_private_key_file },
   { "dsa_private_key_file", &tunable_dsa_private_key_file },
   { "ca_certs_file", &tunable_ca_certs_file },
+  { "ssl_sni_hostname", &tunable_ssl_sni_hostname },
 #endif
   { "cmds_denied", &tunable_cmds_denied },
   { 0, 0 }

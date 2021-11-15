@@ -75,7 +75,8 @@ const char* vsf_sysutil_next_dirent(struct vsf_sysutil_dir* p_dir);
 /* File create/open/close etc. */
 enum EVSFSysUtilOpenMode
 {
-  kVSFSysUtilOpenReadOnly = 1,
+  kVSFSysUtilOpenUnknown = 0,
+  kVSFSysUtilOpenReadOnly,
   kVSFSysUtilOpenWriteOnly,
   kVSFSysUtilOpenReadWrite
 };
