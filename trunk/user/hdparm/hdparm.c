@@ -2,7 +2,7 @@
  * hdparm.c - Command line interface to get/set hard disk parameters.
  *          - by Mark Lord (C) 1994-2018 -- freely distributable.
  */
-#define HDPARM_VERSION "v9.58"
+#define HDPARM_VERSION "v9.62"
 
 #define _LARGEFILE64_SOURCE /*for lseek64*/
 #define _BSD_SOURCE	/* for strtoll() */
@@ -381,6 +381,7 @@ static int time_device (int fd)
 		err = get_dev_geometry(fd, NULL, NULL, NULL, NULL, &nsectors);
 		if (!err)
 			max_iterations = nsectors / (2 * 1024) / TIMING_BUF_MB;
+		err = 0;
 	}
 	buf = prepare_timing_buf(TIMING_BUF_BYTES);
 	if (!buf)
@@ -517,7 +518,7 @@ static void dump_identity (__u16 *idw)
 	printf(" CurCHS=%u/%u/%u, CurSects=%u", idw[54], idw[55], idw[56], idw[57] | (idw[58] << 16));
 	printf(", LBA=%s", YN(idw[49] & 0x200));
 	if (idw[49] & 0x200)
- 		printf(", LBAsects=%llu", get_lba_capacity(idw));
+		printf(", LBAsects=%llu", get_lba_capacity(idw));
 
 	if (idw[49] & 0x100) {
 		if (idw[62] | idw[63]) {
@@ -1087,7 +1088,8 @@ static void get_identify_data (int fd)
 		args[0] = last_identify_op;
 		args[3] = 1;	/* sector count */
 		if (do_drive_cmd(fd, args, 0)) {
-			perror(" HDIO_DRIVE_CMD(identify) failed");
+			if (verbose)
+				perror(" HDIO_DRIVE_CMD(identify) failed");
 			return;
 		}
 	}
@@ -1131,21 +1133,21 @@ int get_log_page_data (int fd, __u8 log_address, __u8 pagenr, __u8 *buf)
 	if (!id)
 		exit(EIO);
 	if ((id[84] && (1<<5)) == 0)
-		return -ENOENT;  /* READ_LOG_EXT not supported */
+		return ENOENT;  /* READ_LOG_EXT not supported */
 	if (!page0) {
 		err = do_read_log(fd, 0, 0, page0_buf);
 		if (err) {
 			fprintf(stderr, "READ_LOG_EXT(0,0) failed: %s\n", strerror(err));
-			return -ENOENT;
+			return ENOENT;
 		}
 		page0 = page0_buf;
 	}
 	if (page0[log_address] <= pagenr)
-		return -ENOENT;
+		return ENOENT;
 	err = do_read_log(fd, log_address, pagenr, buf);
 	if (err) {
 		fprintf(stderr, "READ_LOG_EXT(0x%02x, %u) failed: %s\n", log_address, pagenr, strerror(err));
-		return -ENOENT;
+		return ENOENT;
 	}
 	return 0;
 }
@@ -1207,12 +1209,12 @@ static void dump_sectors (__u16 *w, unsigned int count, int raw, unsigned int se
 
 static int abort_if_not_full_device (int fd, __u64 lba, const char *devname, const char *msg)
 {
-	struct stat stat;
+	struct stat st;
 	__u64 start_lba;
 	int i, err, shortened = 0;
 	char *fdevname = strdup(devname);
 
-	if (0 == fstat(fd, &stat) && S_ISCHR(stat.st_mode))
+	if (0 == fstat(fd, &st) && S_ISCHR(st.st_mode))
 		return 0; /* skip geometry test for character (non-block) devices; eg. /dev/sg* */
 	err = get_dev_geometry(fd, NULL, NULL, NULL, &start_lba, NULL);
 	if (err)
@@ -1329,6 +1331,7 @@ do_dco_setmax_cmd (int fd)
 		exit(err);
 }
 
+
 static __u64 do_get_native_max_sectors (int fd)
 {
 	int err = 0;
@@ -1363,8 +1366,8 @@ static __u64 do_get_native_max_sectors (int fd)
 			if (verbose)
 				printf("GET_NATIVE_MAX_ADDRESS_EXT response: hob={%02x %02x %02x} lob={%02x %02x %02x}\n",
 					   r.hob.lbah, r.hob.lbam, r.hob.lbal, r.lob.lbah, r.lob.lbam, r.lob.lbal);
-			max = (((__u64)((r.hob.lbah << 16) | (r.hob.lbam << 8) | r.hob.lbal) << 24)
-				   | ((r.lob.lbah << 16) | (r.lob.lbam << 8) | r.lob.lbal)) + 1;
+			max = (((__u64)((r.hob.lbah << 16) | ((__u64)(r.hob.lbam << 8) | r.hob.lbal)) << 24)
+				   | (__u64)((r.lob.lbah << 16) | (r.lob.lbam << 8) | r.lob.lbal)) + 1;
 		}
 	} else { // ACS2 or below, or optional AMAX not present
 		if (SUPPORTS_48BIT_ADDR(id)) {
@@ -1382,7 +1385,7 @@ static __u64 do_get_native_max_sectors (int fd)
 					printf("READ_NATIVE_MAX_ADDRESS_EXT response: hob={%02x %02x %02x} lob={%02x %02x %02x}\n",
 						r.hob.lbah, r.hob.lbam, r.hob.lbal, r.lob.lbah, r.lob.lbam, r.lob.lbal);
 				max = (((__u64)((r.hob.lbah << 16) | (r.hob.lbam << 8) | r.hob.lbal) << 24)
-				     	| ((r.lob.lbah << 16) | (r.lob.lbam << 8) | r.lob.lbal)) + 1;
+				     	| ((__u64)(r.lob.lbah << 16) | (r.lob.lbam << 8) | r.lob.lbal)) + 1;
 			}
 		} else {
 			/* DEVICE (3:0) / LBA (27:24) "remap" does NOT apply in ATA Status Return */
@@ -1568,7 +1571,7 @@ static void do_trim_sector_ranges (int fd, const char *devname, int nranges, str
 	for (i = 0; i < nranges; ++i) {
 		nsectors += sr->nsectors;
 		range = sr->nsectors;
-		range = (range << 48) | sr->lba;
+		range = (__u64)(range << 48) | sr->lba;
 		data[i] = __cpu_to_le64(range);
 		++sr;
 	}
@@ -1625,18 +1628,40 @@ get_set_sector_index (int fd, unsigned int wanted_sector_size, int *checkword)
 {
 	__u8 d[512] = {0,};
 	const int SECTOR_CONFIG = 0x2f;
-	int i, rc;
+	int i, rc, found_byte_lss = 0, found_word_lss = 0, lss_is_bytes = 0;
+	unsigned int current_lss;
 
 	rc = get_log_page_data(fd, SECTOR_CONFIG, 0, d);
 	if (rc) {
 		fprintf(stderr, "READ_LOG_EXT(SECTOR_CONFIGURATION) failed: %s\n", strerror(rc));
 		exit(1);
 	}
+	/*
+	 * Some devices incorrectly return logical sector size (lss) as bytes.
+	 * Scan log entries and if the current lss is in the log, and there isn't an equivalent
+	 * entry in words, assume the device is returning the logical sector size in bytes.
+	 * Doing this takes two passes through the log data.
+	 */
+	current_lss = (unsigned int)get_current_sector_size(fd);
 	for (i = 0; i < 128; i += 16) {
 		unsigned int lss;
 		if ((d[i] & 0x80) == 0)  /* Is this descriptor valid? */
 			continue;  /* not valid */
 		lss = d[i + 4] | (d[i + 5] << 8) | (d[i + 6] << 16) | (d[i + 7] << 24);  /* logical sector size */
+		if (lss == current_lss) {
+			found_byte_lss = 1;  /* found lss in bytes */
+		} else if ((lss * 2) == current_lss) {
+			found_word_lss = 1;  /* found lss in words */
+			break;
+		}
+	}
+	lss_is_bytes = !found_word_lss && found_byte_lss;
+	for (i = 0; i < 128; i += 16) {
+		unsigned int lss;
+		if ((d[i] & 0x80) == 0)  /* Is this descriptor valid? */
+			continue;  /* not valid */
+		lss = d[i + 4] | (d[i + 5] << 8) | (d[i + 6] << 16) | (d[i + 7] << 24);  /* logical sector size */
+		lss = lss_is_bytes ? lss : lss * 2;
 		if (lss == wanted_sector_size) {
 			*checkword = d[i + 2] | (d[i + 3] << 8);
 			return i / 16;  /* descriptor index */
@@ -1648,7 +1673,7 @@ get_set_sector_index (int fd, unsigned int wanted_sector_size, int *checkword)
 
 static int do_set_sector_size_cmd (int fd, const char *devname)
 {
-	int index, err = 0;
+	int idx, err = 0;
 	__u8 ata_op;
 	struct hdio_taskfile *r;
 	int checkword = 0;
@@ -1663,11 +1688,11 @@ static int do_set_sector_size_cmd (int fd, const char *devname)
 	ata_op = ATA_OP_SET_SECTOR_CONFIGURATION;
 	init_hdio_taskfile(r, ata_op, RW_WRITE, LBA48_FORCE, 0, 0, 0);
 
-	index = get_set_sector_index(fd, new_sector_size, &checkword);
+	idx = get_set_sector_index(fd, new_sector_size, &checkword);
 	r->hob.feat  = checkword >> 8;
 	r->lob.feat  = checkword;
 	r->hob.nsect = 0;
-	r->lob.nsect = index;
+	r->lob.nsect = idx;
 	r->oflags.bits.hob.feat = 1;
 
 	printf("changing sector size configuration to %llu: ", new_sector_size);
@@ -1732,7 +1757,7 @@ do_trim_from_stdin (int fd, const char *devname)
 			err = errno;
 			fprintf(stderr, "stdin: error at lba:count pair #%d: %s\n", (total_ranges + 1), strerror(err));
 		} else {
-			range = (nsect << 48) | lba;
+			range = (__u64)(nsect << 48) | lba;
 			nsectors += nsect;
 			data[nranges++] = __cpu_to_le64(range);
 			if (nranges == max_ranges) {
@@ -1957,7 +1982,7 @@ static void usage_help (int clue, int rc)
 	" --fwdownload-modee-max  Download firmware using mode E (max-size segments) (EXTREMELY DANGEROUS)\n"
 	" --idle-immediate  Idle drive immediately\n"
 	" --idle-unload     Idle immediately and unload heads\n"
-  " --Iraw filename   Write raw binary identify data to the specfied file\n"
+	" --Iraw filename   Write raw binary identify data to the specfied file\n"
 	" --Istdin          Read identify data from stdin as ASCII hex\n"
 	" --Istdout         Write identify data to stdout as ASCII hex\n"
 	" --make-bad-sector Deliberately corrupt a sector directly on the media (VERY DANGEROUS)\n"
@@ -2573,18 +2598,18 @@ void process_dev (char *devname)
 					break;
 				default:printf("\?\?\?)\n");
 			}
-               } else if (get_io32bit) {
-                       err = errno;
-                       perror(" HDIO_GET_32BIT failed");
+		} else if (get_io32bit) {
+			err = errno;
+			perror(" HDIO_GET_32BIT failed");
 		}
 	}
 	if (do_defaults || get_unmask) {
 		if (0 == ioctl(fd, HDIO_GET_UNMASKINTR, &parm)) {
 			printf(" unmaskirq     = %2ld", parm);
 			on_off(parm);
-               } else if (get_unmask) {
-                       err = errno;
-                       perror(" HDIO_GET_UNMASKINTR failed");
+		} else if (get_unmask) {
+			err = errno;
+			perror(" HDIO_GET_UNMASKINTR failed");
 		}
 	}
 
@@ -2595,9 +2620,9 @@ void process_dev (char *devname)
 				printf(" (DMA-Assisted-PIO)\n");
 			else
 				on_off(parm);
-                } else if (get_dma) {
-                       err = errno;
-                       perror(" HDIO_GET_DMA failed");
+		} else if (get_dma) {
+			err = errno;
+			perror(" HDIO_GET_DMA failed");
 		}
 	}
 	if (get_dma_q) {
@@ -2611,7 +2636,7 @@ void process_dev (char *devname)
 			on_off(parm);
 		} else if (get_keep) {
 			err = errno;
-                        perror(" HDIO_GET_KEEPSETTINGS failed");
+			perror(" HDIO_GET_KEEPSETTINGS failed");
 		}
 	}
 	if (get_nowerr) {
@@ -2722,7 +2747,7 @@ void process_dev (char *devname)
 					fprintf(stderr, "Wrote IDENTIFY DEVICE data to \"%s\"\n", raw_identify_path);
 					close(rfd);
 				}
-      			} else {
+			} else {
 				identify(fd, (void *)id);
 			}
 		}
@@ -2822,7 +2847,7 @@ void process_dev (char *devname)
 					__u16 *dco = get_dco_identify_data(fd, 1);
 					if (dco) {
 						__u64 dco_max = dco[5];
-						dco_max = ((((__u64)dco[5]) << 32) | (dco[4] << 16) | dco[3]) + 1;
+						dco_max = ((((__u64)dco[5]) << 32) | ((__u64)dco[4] << 16) | (__u64)dco[3]) + 1;
 						printf("(%llu?)", dco_max);
 					}
 					printf(", HPA setting seems invalid");
@@ -2833,6 +2858,7 @@ void process_dev (char *devname)
 				}
 			}
 		
+
 	}	
 #endif
 
@@ -3414,6 +3440,7 @@ int main (int _argc, char **_argv)
 {
 	int no_more_flags = 0, disallow_flags = 0;
 	char c;
+	char name[32];
 
 	argc = _argc;
 	argv = _argv;

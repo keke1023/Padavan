@@ -71,7 +71,9 @@ const struct apt_usb_id_entry apt_usb_id_map[] = {
 	{0x152d, 0x2338, 0x0100, apt_ds_jmicron,
 	    apt_jmicron_int_init, apt_jmicron_sg16}, /* JMicron JM20337/8 (USB->SATA+PATA, USB+SATA->PATA) */
 	{0x152d, 0x2339, 0x0100, apt_ds_jmicron,
-	    apt_jmicron_int_init, apt_jmicron_sg16}  /* JMicron JM20339 (USB->SATA) */
+	    apt_jmicron_int_init, apt_jmicron_sg16}, /* JMicron JM20339 (USB->SATA) */
+	{0x0c0b, 0xb157, 0x0100, apt_ds_jmicron,
+	    apt_jmicron_int_init, apt_jmicron_sg16}  /* ioSafe Solo */
 };
 
 int apt_detect (int fd, int verbose)

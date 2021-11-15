@@ -316,7 +316,8 @@ int sg16 (int fd, int rw, int dma, struct ata_tf *tf,
 				fprintf(stderr, "SG_IO: missing sense data, results may be incorrect\n");
 		}
 	} else if (sb[0] != 0x72 || sb[7] < 14 || desc[0] != 0x09 || desc[1] < 0x0c) {
-		dump_bytes("SG_IO: bad/missing sense data, sb[]", sb, sizeof(sb));
+		if (verbose || tf->command != ATA_OP_IDENTIFY)
+			dump_bytes("SG_IO: bad/missing sense data, sb[]", sb, sizeof(sb));
 	}
 
 	if (verbose) {

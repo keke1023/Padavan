@@ -346,10 +346,6 @@ const char actual_ver[MINOR_MAX+2] = {
 #define SUPPORT_48_BIT		0x0400  
 #define NUM_CMD_FEAT_STR	48
 
-static const char unknown[8] = "obsolete";
-//static const char unknown[8] = "unknown";
-#define unknown "unknown-"
-
 static const char *feat_word69_str[16] = { 
 	"CFast specification support",			/* word 69 bit 15 */
 	"Deterministic read data after TRIM",		/* word 69 bit 14 */
@@ -359,12 +355,12 @@ static const char *feat_word69_str[16] = {
 	"WRITE BUFFER DMA command",			/* word 69 bit 10 */
 	"SET MAX SETPASSWORD/UNLOCK DMA commands",	/* word 69 bit  9 */
 	"DOWNLOAD MICROCODE DMA command",		/* word 69 bit  8 */
-	"reserved 69[7]",				/* word 69 bit  7 */
-	"reserved 69[6]",				/* word 69 bit  6 */
-	"Deterministic read ZEROs after TRIM",		/* word 69 bit  5 */
-	"reserved 69[4]",				/* word 69 bit  4 */
-	"reserved 69[3]",				/* word 69 bit  3 */
-	"reserved 69[2]",				/* word 69 bit  2 */
+	"IEEE 1667 authentication of transient storage devices",	/* word 69 bit  7 */
+	"Optional ATA device 28-bit commands",			/* word 69 bit  6 */
+	"Deterministic read ZEROs after TRIM",			/* word 69 bit  5 */
+	"Device encrypts all user data",				/* word 69 bit  4 */
+	"Extended number of user addressable sectors ",	/* word 69 bit  3 */
+	"All write cache is non-volatile",				/* word 69 bit  2 */
 	"reserved 69[1]",				/* word 69 bit  1 */
 	"reserved 69[0]",				/* word 69 bit  0 */
 };
@@ -689,14 +685,33 @@ static void print_devslp_info (int fd, __u16 *id)
 }
 
 static void
-print_logical_sector_sizes (int fd)
+print_logical_sector_sizes (int fd, unsigned int current_lss)
 {
 	__u8 d[512] = {0,};
-	int i, found = 0, rc;
+	int i, found = 0, rc, found_byte_lss = 0, found_word_lss = 0, lss_is_bytes = 0;
 
 	rc = get_log_page_data(fd, 0x2f, 0, d);
 	if (rc)
 		return;
+	/*
+	 * Some devices incorrectly return logical sector size (lss) as bytes.
+	 * Scan log entries and if the current lss is in the log, and there isn't an equivalent
+	 * entry in words, assume the device is returning the logical sector size in bytes.
+	 * Doing this takes two passes through the log data.
+	 */
+	for (i = 0; i < 128; i += 16) {
+		unsigned int lss;
+		if ((d[i] & 0x80) == 0)  /* Is this descriptor valid? */
+			continue;  /* not valid */
+		lss = d[i + 4] | (d[i + 5] << 8) | (d[i + 6] << 16) | (d[i + 7] << 24);  /* logical sector size */
+		if (lss == current_lss) {
+			found_byte_lss = 1;  /* found lss in bytes */
+		} else if ((lss * 2) == current_lss) {
+			found_word_lss = 1;  /* found lss in words */
+			break;
+		}
+	}
+	lss_is_bytes = !found_word_lss && found_byte_lss;
 	for (i = 0; i < 128; i += 16) {
 		unsigned int lss;
 		if ((d[i] & 0x80) == 0)  /* Is this descriptor valid? */
@@ -704,6 +719,7 @@ print_logical_sector_sizes (int fd)
 		if (!found++)
 			printf(" [ Supported:");
 		lss = d[i + 4] | (d[i + 5] << 8) | (d[i + 6] << 16) | (d[i + 7] << 24);  /* logical sector size */
+		lss = lss_is_bytes ? lss : (lss * 2);
 		printf(" %u", lss);
 	}
 	if (found)
@@ -997,7 +1013,7 @@ void identify (int fd, __u16 *id_supplied)
 				lsize = (val[118] << 16) | val[117];
 			sector_bytes = 2 * lsize;
 			printf("\t%-31s %11u bytes","Logical  Sector size:", sector_bytes);
-			print_logical_sector_sizes(fd);
+			print_logical_sector_sizes(fd, sector_bytes);
 			printf("\n");
 			printf("\t%-31s %11u bytes\n","Physical Sector size:", sector_bytes * pfactor);
 			if ((val[209] & 0xc000) == 0x4000) {
@@ -1220,8 +1236,10 @@ void identify (int fd, __u16 *id_supplied)
 
 	/* Programmed IO stuff */
 	printf("\tPIO: ");
-        /* If a drive supports mode n (e.g. 3), it also supports all modes less
-	 * than n (e.g. 3, 2, 1 and 0).  Print all the modes. */
+	/*
+	 * If a drive supports mode n (e.g. 3), it also supports all modes less
+	 * than n (e.g. 3, 2, 1 and 0).  Print all the modes.
+	 */
 	if((val[WHATS_VALID] & OK_W64_70) && (val[ADV_PIO_MODES] & PIO_SUP)) {
 		jj = ((val[ADV_PIO_MODES] & PIO_SUP) << 3) | 0x0007;
 		for (ii = 0; ii <= PIO_MODE_MAX ; ii++) {
@@ -1513,7 +1531,7 @@ void dco_identify_print (__u16 *dco)
 	else if (dco[2] & (1<<0)) printf(" udma0");
 	putchar('\n');
 
-	lba = ((((__u64)dco[5]) << 32) | (dco[4] << 16) | dco[3]) + 1;
+	lba = ((((__u64)dco[5]) << 32) | ((__u64)dco[4] << 16) | (__u64)dco[3]) + 1;
 	printf("\tReal max sectors: %llu\n", lba);
 
 	printf("\tATA command/feature sets:");

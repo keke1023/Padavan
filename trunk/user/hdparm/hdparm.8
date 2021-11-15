@@ -1,4 +1,4 @@
-.TH HDPARM 8 "October 2018" "Version 9.58"
+.TH HDPARM 8 "May 2021" "Version 9.62"
 
 .SH NAME
 hdparm \- get/set SATA/IDE device parameters
@@ -611,7 +611,8 @@ For drives which support reconfiguring of the Logical Sector Size,
 this flag can be used to specify the new desired sector size in bytes.
 .B VERY DANGEROUS.  This most likely will scramble all data on the drive.
 The specified size must be one of 512, 520, 528, 4096, 4160, or 4224.
-Very few drives support values other than 512 and 4096.
+Very few drives support values other than 512 and 4096.  Eg.
+.B hdparm --set-sector-size 4096 /dev/sdb
 .TP
 .I -t
 Perform timings of device reads for benchmark and comparison purposes.

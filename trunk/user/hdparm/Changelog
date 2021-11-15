@@ -1,3 +1,16 @@
+hdparm-9.62:
+	- Work around unexpected sign-extending of left-shifted unsigned values by gcc
+hdparm-9.61:
+	- fixes for --set-sector-size and reporting of physical/logical sector sizes, courtesy of Western Digital.
+hdparm-9.60:
+	- support for ioSafe Solo with jMicron bridge, courtesy Matthias-Christian Ott.
+hdparm-9.59:
+	- decode more bits from id[69], courtesy Adrián Kálazi.
+	- allow passing of custom LDFLAGS from the environment.
+	- add new "static" target.
+	- fix --dco-identify max sectors, courtesy of Paul Sultana.
+	- get rid of leftover "unknown" variables from identify.c
+	- fixed return values from get_log_page_data().
 hdparm-9.58:
 	- fix bug from 9.57 whereby -I for non-ATA might segfault.
 hdparm-9.57:
