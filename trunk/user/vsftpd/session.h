@@ -23,7 +23,6 @@ struct vsf_session
   char* p_control_line_buf;
   int idle_timeout;
   int data_timeout;
-  int prelogin_errors;
 
   /* Details of the data connection */
   int pasv_listen_fd;

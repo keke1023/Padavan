@@ -74,7 +74,7 @@ str_chdir(const struct mystr* p_str)
 int
 str_open(const struct mystr* p_str, const enum EVSFSysStrOpenMode mode)
 {
-  enum EVSFSysUtilOpenMode open_mode = kVSFSysUtilOpenUnknown;
+  enum EVSFSysUtilOpenMode open_mode = kVSFSysStrOpenUnknown;
   switch (mode)
   {
     case kVSFSysStrOpenReadOnly:
