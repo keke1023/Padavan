@@ -855,6 +855,7 @@
 			{"wl_VgaClamp", "", NULL, EVM_RESTART_WIFI5},
 #endif
 #if defined (USE_WID_5G) && (USE_WID_5G==7615 || USE_WID_5G==7915)
+			{"wl_band_steering", "", NULL, EVM_RESTART_WIFI5},
 			{"wl_mumimo", "", NULL, EVM_RESTART_WIFI5},
 #endif
 			{"wl_country_code", "", NULL, EVM_RESTART_WIFI5},
