@@ -68,6 +68,9 @@ function initial(){
 	if (support_5g_txbf())
 		showhide_div("row_txbf", 1);
 
+	if (support_5g_band_steering())
+		showhide_div("row_band_steering", 1);
+
 	if (support_5g_mumimo())
 		showhide_div("row_mumimo", 1);
 
@@ -326,7 +329,7 @@ function done_validating(action){
                                                 </select>
                                             </td>
                                         </tr>
-					 <tr id="row_80211kv">
+					 					<tr id="row_80211kv">
                                             <th><#WLANConfig11n_80211kv#></th>
                                             <td>
                                                 <select name="wl_HT_80211KV" class="input">
@@ -335,7 +338,7 @@ function done_validating(action){
                                                 </select>
                                             </td>
                                         </tr>
-					 <tr id="row_80211r">
+					 					<tr id="row_80211r">
                                             <th><#WLANConfig11n_80211r#></th>
                                             <td>
                                                 <select name="wl_HT_80211R" class="input">
@@ -378,6 +381,15 @@ function done_validating(action){
                                                 <option value="0" <% nvram_match_x("","wl_APSDCapable", "0","selected"); %> ><#btn_Disable#></option>
                                                 <option value="1" <% nvram_match_x("","wl_APSDCapable", "1","selected"); %> ><#btn_Enable#> (*)</option>
                                               </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_band_steering" style="display:none">
+                                            <th><#WLANConfig11n_band_steering#></th>
+                                            <td>
+                                                <select name="wl_band_steering" class="input">
+                                                    <option value="0" <% nvram_match_x("","wl_band_steering", "0","selected"); %>><#btn_Disable#> (*)</option>
+                                                    <option value="1" <% nvram_match_x("","wl_band_steering", "1","selected"); %>><#btn_Enable#></option>
+                                                </select>
                                             </td>
                                         </tr>
                                         <tr id="row_mumimo" style="display:none">

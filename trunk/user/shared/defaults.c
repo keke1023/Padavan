@@ -226,6 +226,7 @@ struct nvram_pair router_defaults[] = {
 	{ "wl_HT_AMSDU", "1" },
 	{ "wl_HT_BAWinSize", "256" },
 	{ "wl_mumimo", "0" },
+	{ "wl_band_steering", "0" },
 #else
 	{ "wl_HT_AMSDU", "0" },
 	{ "wl_HT_BAWinSize", "64" },

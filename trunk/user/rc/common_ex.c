@@ -349,6 +349,8 @@ get_eeprom_params(void)
 #endif
 #endif
 
+#if defined (USE_MT7615_AP) || defined (USE_MT7915_AP)
+	// TXBF, not used yet
 	{
 		int i, count_0xff = 0;
 		unsigned char txbf_para[33];
@@ -362,10 +364,10 @@ get_eeprom_params(void)
 					count_0xff++;
 			}
 		}
-		
+
 		nvram_wlan_set_int(1, "txbf_en", (count_0xff == 33) ? 0 : 1);
 	}
-
+#endif
 }
 
 void
