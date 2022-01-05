@@ -13,7 +13,7 @@ extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
 		tar xJf $(SRC_NAME).tar.xz ; \
 		patch -d $(SRC_NAME) -p1 -i ../disable-doc-test.patch ; \
-		patch -d $(SRC_NAME) -p1 -i ../0001-CVE-2017-14160-fix-bounds-check-on-very-low-sample-rates.patch ; \
+		#patch -d $(SRC_NAME) -p1 -i ../0001-CVE-2017-14160-fix-bounds-check-on-very-low-sample-rates.patch ; \
 	fi )
 
 config_test:
