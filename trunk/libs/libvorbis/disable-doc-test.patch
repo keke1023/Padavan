@@ -1,6 +1,6 @@
-diff -urw libvorbis-1.3.6-ref/Makefile.am libvorbis-1.3.6/Makefile.am
---- libvorbis-1.3.6-ref/Makefile.am	2015-09-26 03:13:05.000000000 +0300
-+++ libvorbis-1.3.6/Makefile.am	2018-03-22 08:13:34.385494000 +0300
+diff -urw libvorbis-1.3.7-ref/Makefile.am libvorbis-1.3.7/Makefile.am
+--- libvorbis-1.3.7-ref/Makefile.am	2015-09-26 03:13:05.000000000 +0300
++++ libvorbis-1.3.7/Makefile.am	2018-03-22 08:13:34.385494000 +0300
 @@ -4,7 +4,7 @@
  
  ACLOCAL_AMFLAGS = -I m4
@@ -10,9 +10,9 @@ diff -urw libvorbis-1.3.6-ref/Makefile.am libvorbis-1.3.6/Makefile.am
  
  if BUILD_EXAMPLES 
  SUBDIRS += examples 
-diff -urw libvorbis-1.3.6-ref/Makefile.in libvorbis-1.3.6/Makefile.in
---- libvorbis-1.3.6-ref/Makefile.in	2018-03-16 06:36:56.000000000 +0300
-+++ libvorbis-1.3.6/Makefile.in	2018-03-22 08:13:34.385494000 +0300
+diff -urw libvorbis-1.3.7-ref/Makefile.in libvorbis-1.3.7/Makefile.in
+--- libvorbis-1.3.7-ref/Makefile.in	2018-03-16 06:36:56.000000000 +0300
++++ libvorbis-1.3.7/Makefile.in	2018-03-22 08:13:34.385494000 +0300
 @@ -193,7 +193,7 @@
  ETAGS = etags
  CTAGS = ctags
