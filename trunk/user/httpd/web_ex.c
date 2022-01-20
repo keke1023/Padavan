@@ -2777,6 +2777,8 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 
 	websWrite(wp,
 		"function found_utl_hdparm() { return %d;}\n"
+		"function found_app_vpnsvr() { return %d;}\n"
+		"function found_app_vpncli() { return %d;}\n"
 		"function found_app_ovpn() { return %d;}\n"
 		"function found_app_dlna() { return %d;}\n"
 		"function found_app_ffly() { return %d;}\n"
@@ -2810,6 +2812,8 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function found_app_xupnpd() { return %d;}\n"
 		"function found_app_mentohust() { return %d;}\n",
 		found_utl_hdparm,
+		found_app_vpnsvr,
+		found_app_vpncli,
 		found_app_ovpn,
 		found_app_dlna,
 		found_app_ffly,
