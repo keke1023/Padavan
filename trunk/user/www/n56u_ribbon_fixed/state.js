@@ -617,9 +617,33 @@ if (found_app_npc()){
 } else menuL2_link.push("");
 
 //Level 1 Menu in Gateway, Router mode
-menuL1_title = new Array("", "<#menu1#>", "", "<#menu2#>", "<#menu6#>", "<#menu4#>", "<#menu5_8#>", "<#menu5#>");
-menuL1_link = new Array("", "index.asp", "", "vpnsrv.asp", "vpncli.asp", "Main_TrafficMonitor_realtime.asp", "Advanced_System_Info.asp", "as.asp");
-menuL1_icon = new Array("", "icon-home", "icon-hdd", "icon-retweet", "icon-globe", "icon-tasks", "icon-random", "icon-wrench");
+#menuL1_title = new Array("", "<#menu1#>", "", "<#menu2#>", "<#menu6#>", "<#menu4#>", "<#menu5_8#>", "<#menu5#>");
+#menuL1_link = new Array("", "index.asp", "", "vpnsrv.asp", "vpncli.asp", "Main_TrafficMonitor_realtime.asp", "Advanced_System_Info.asp", "as.asp");
+#menuL1_icon = new Array("", "icon-home", "icon-hdd", "icon-retweet", "icon-globe", "icon-tasks", "icon-random", "icon-wrench");
+menuL1_title = ["", "<#menu1#>", ""];
+menuL1_link = ["", "index.asp", ""];
+menuL1_icon = ["", "icon-home", "icon-hdd"];
+if (found_app_vpnsvr()) {
+  menuL1_title.push("<#menu2#>");
+  menuL1_link.push("vpnsrv.asp");
+  menuL1_icon.push("icon-retweet")
+}
+if (found_app_vpncli()) {
+  menuL1_title.push("<#menu6#>");
+  menuL1_link.push("vpncli.asp");
+  menuL1_icon.push("icon-globe")
+}
+menuL1_title.push("<#menu4#>");
+menuL1_link.push("Main_TrafficMonitor_realtime.asp");
+menuL1_icon.push("icon-tasks");
+
+menuL1_title.push("<#menu5_8#>");
+menuL1_link.push("Advanced_System_Info.asp");
+menuL1_icon.push("icon-random");
+
+menuL1_title.push("<#menu5#>");
+menuL1_link.push("as.asp");
+menuL1_icon.push("icon-wrench");
 
 function show_menu(L1, L2, L3){
 	var i;
