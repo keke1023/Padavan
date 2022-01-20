@@ -200,10 +200,12 @@ ifneq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
 	rm -f $(INSTALLDIR)/www/Shadowsocks_log.asp
 endif
 
-ifeq ($(CONFIG_FIRMWARE_WEBUI_HIDE_VPN),y)
+ifeq ($(CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_SERVER),y)
+	rm -f $(INSTALLDIR)/www/vpnsrv.asp
+endif
+ifeq ($(CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CLIENT),y)
 	rm -f $(INSTALLDIR)/www/vpn_clients.asp
 	rm -f $(INSTALLDIR)/www/vpncli.asp
-	rm -f $(INSTALLDIR)/www/vpnsrv.asp
 endif
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_ADBYBY),y)
 	rm -f $(INSTALLDIR)/www/Advanced_adbyby.asp
