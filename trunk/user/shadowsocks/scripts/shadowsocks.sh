@@ -27,6 +27,7 @@ chinadnsng_enable_flag=0
 wan_bp_ips="/tmp/whiteip.txt"
 wan_fw_ips="/tmp/blackip.txt"
 lan_fp_ips="/tmp/lan_ip.txt"
+lan_gm_ips="/tmp/lan_gmip.txt"
 run_mode=`nvram get ss_run_mode`
 ss_turn=`nvram get ss_turn`
 lan_con=`nvram get lan_con`
@@ -121,7 +122,7 @@ start_rules() {
 	elif [ "$server" != "${server#*:[0-9a-fA-F]}" ]; then
 		server=${server}
 	else
-		server=$(ping ${server} -s 1 -c 1 | grep PING | cut -d'(' -f 2 | cut -d')' -f1)
+		server=$(resolveip -4 -t 3 $server | awk 'NR==1{print}')
 		if echo $server | grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" >/dev/null; then
 			echo $server >/etc/storage/ssr_ip
 		else
@@ -166,6 +167,8 @@ start_rules() {
 		lancons="指定IP走代理,请到规则管理页面添加需要走代理的IP。"
 		cat /etc/storage/ss_lan_bip.sh | grep -v '^!' | grep -v "^$" >$lan_fp_ips
 	fi
+	rm -f $lan_gm_ips
+	cat /etc/storage/ss_lan_gmip.sh | grep -v '^!' | grep -v "^$" >$lan_gm_ips
 	dports=$(nvram get s_dports)
 	if [ $dports = "0" ]; then
 		proxyport=" "
@@ -182,7 +185,6 @@ start_rules() {
 	-b "$wan_bp_ips" \
 	-w "$wan_fw_ips" \
 	-p "$lan_fp_ips" \
-	-G "$lan_gm_ips" \
 	-G "$lan_gm_ips" \
 	-D "$proxyport" \
 	-k "$lancon" \
@@ -221,11 +223,11 @@ start_redir_tcp() {
 		echo "$(date "+%Y-%m-%d %H:%M:%S") $($bin --version 2>&1 | head -1) Started!" >>/tmp/ssrplus.log
 		;;
 	v2ray)
-		$bin -config $v2_json_file >/dev/null 2>&1 &
+		SSL_CERT_FILE=/usr/bin/cacert.pem $bin -config $v2_json_file >/dev/null 2>&1 &
 		echo "$(date "+%Y-%m-%d %H:%M:%S") $($bin -version | head -1) 启动成功!" >>/tmp/ssrplus.log
 		;;
 	xray)
-		$bin -config $v2_json_file >/dev/null 2>&1 &
+		SSL_CERT_FILE=/usr/bin/cacert.pem $bin -config $v2_json_file >/dev/null 2>&1 &
 		echo "$(date "+%Y-%m-%d %H:%M:%S") $($bin -version | head -1) 启动成功!" >>/tmp/ssrplus.log
 		;;
 	socks5)
@@ -255,11 +257,11 @@ start_redir_udp() {
 			;;
 		v2ray)
 			gen_config_file $UDP_RELAY_SERVER 1
-			$bin -config /tmp/v2-ssr-reudp.json >/dev/null 2>&1 &
+			SSL_CERT_FILE=/usr/bin/cacert.pem $bin -config /tmp/v2-ssr-reudp.json >/dev/null 2>&1 &
 			;;
 		xray)
 			gen_config_file $UDP_RELAY_SERVER 1
-			$bin -config /tmp/v2-ssr-reudp.json >/dev/null 2>&1 &
+			SSL_CERT_FILE=/usr/bin/cacert.pem $bin -config /tmp/v2-ssr-reudp.json >/dev/null 2>&1 &
 			;;
 		trojan)
 			gen_config_file $UDP_RELAY_SERVER 1
@@ -285,44 +287,30 @@ start_redir_udp() {
 
 
 start_dns() {
-case "$run_mode" in
-	router)
 		echo "create china hash:net family inet hashsize 1024 maxelem 65536" >/tmp/china.ipset
 		awk '!/^$/&&!/^#/{printf("add china %s'" "'\n",$0)}' /etc/storage/chinadns/chnroute.txt >>/tmp/china.ipset
 		ipset -! flush china
 		ipset -! restore </tmp/china.ipset 2>/dev/null
 		rm -f /tmp/china.ipset
-		if [ $(nvram get ss_chdns) = 1 ]; then
-			chinadnsng_enable_flag=1			
-			if [ ! -f "/tmp/cdn.txt" ]; then
-				logger -t "SS" "cdn域名文件下载失败，可能是地址失效或者网络异常！可能会影响部分国内域名解析了国外的IP！"
-			else
-				logger -t "SS" "下载cdn域名文件..."
-				wget --no-check-certificate --timeout=8 -qO - https://raw.githubusercontent.com/hq450/fancyss/master/rules/cdn.txt > /tmp/cdn.txt
-				logger -t "SS" "cdn域名文件下载成功"
-			fi
-			logger -st "SS" "启动chinadns..."
-			dns2tcp -L"127.0.0.1#5353" -R"$(nvram get tunnel_forward)" >/dev/null 2>&1 &
-			chinadns-ng -b 0.0.0.0 -l 65353 -c $(nvram get china_dns) -t 127.0.0.1#5353 -4 china -M -m /tmp/cdn.txt >/dev/null 2>&1 &
-			sed -i '/no-resolv/d' /etc/storage/dnsmasq/dnsmasq.conf
-			sed -i '/server=127.0.0.1/d' /etc/storage/dnsmasq/dnsmasq.conf
-			cat >> /etc/storage/dnsmasq/dnsmasq.conf << EOF
-no-resolv
-server=127.0.0.1#65353
-EOF
-    		fi
+case "$run_mode" in
+	router)
+		dnsstr="$(nvram get tunnel_forward)"
+		dnsserver=$(echo "$dnsstr" | awk -F '#' '{print $1}')
+		#dnsport=$(echo "$dnsstr" | awk -F '#' '{print $2}')
+		logger -st "SS" "启动dns2tcp：5353端口..."
+		dns2tcp -L"127.0.0.1#5353" -R"$dnsstr" >/dev/null 2>&1 &
+		pdnsd_enable_flag=0	
+		logger -st "SS" "开始处理gfwlist..."
 	;;
 	gfw)
-		if [ $(nvram get pdnsd_enable) = 0 ]; then
-			dnsstr="$(nvram get tunnel_forward)"
-			dnsserver=$(echo "$dnsstr" | awk -F '#' '{print $1}')
-			#dnsport=$(echo "$dnsstr" | awk -F '#' '{print $2}')
-			ipset add gfwlist $dnsserver 2>/dev/null
-			logger -st "SS" "启动dns2tcp：5353端口..."
-			dns2tcp -L"127.0.0.1#5353" -R"$dnsstr" >/dev/null 2>&1 &
-			pdnsd_enable_flag=0	
-			logger -st "SS" "开始处理gfwlist..."
-		fi
+		dnsstr="$(nvram get tunnel_forward)"
+		dnsserver=$(echo "$dnsstr" | awk -F '#' '{print $1}')
+		#dnsport=$(echo "$dnsstr" | awk -F '#' '{print $2}')
+		ipset add gfwlist $dnsserver 2>/dev/null
+		logger -st "SS" "启动dns2tcp：5353端口..."
+		dns2tcp -L"127.0.0.1#5353" -R"$dnsstr" >/dev/null 2>&1 &
+		pdnsd_enable_flag=0	
+		logger -st "SS" "开始处理gfwlist..."
 		;;
 	oversea)
 		ipset add gfwlist $dnsserver 2>/dev/null
@@ -383,13 +371,13 @@ start_local() {
 	v2ray)
 		lua /etc_ro/ss/genv2config.lua $local_server tcp 0 $s5_port >/tmp/v2-ssr-local.json
 		sed -i 's/\\//g' /tmp/v2-ssr-local.json
-		$bin -config /tmp/v2-ssr-local.json >/dev/null 2>&1 &
+		SSL_CERT_FILE=/usr/bin/cacert.pem $bin -config /tmp/v2-ssr-local.json >/dev/null 2>&1 &
 		echo "$(date "+%Y-%m-%d %H:%M:%S") Global_Socks5:$($bin -version | head -1) Started!" >>/tmp/ssrplus.log
 		;;
 	xray)
 		lua /etc_ro/ss/genxrayconfig.lua $local_server tcp 0 $s5_port >/tmp/v2-ssr-local.json
 		sed -i 's/\\//g' /tmp/v2-ssr-local.json
-		$bin -config /tmp/v2-ssr-local.json >/dev/null 2>&1 &
+		SSL_CERT_FILE=/usr/bin/cacert.pem $bin -config /tmp/v2-ssr-local.json >/dev/null 2>&1 &
 		echo "$(date "+%Y-%m-%d %H:%M:%S") Global_Socks5:$($bin -version | head -1) Started!" >>/tmp/ssrplus.log
 		;;
 	trojan)
@@ -621,4 +609,5 @@ reserver)
 	#exit 0
 	;;
 esac
+
 

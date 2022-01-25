@@ -500,7 +500,7 @@ start_dns_dhcpd(int is_ap_mode)
 
 	fprintf(fp, "conf-file=%s/dnsmasq.conf\n", storage_dir);
 	fclose(fp);
-
+	doSystem("/usr/bin/dnsmasq.sh");
 	if (is_dns_used)
 		fill_dnsmasq_servers();
 

@@ -55,17 +55,15 @@ log = {
 		},
 	-- 底层传输配置
 		streamSettings = {
-			network = server.transport,
+			network = server.transport or "tcp",
 			security = (server.tls == '1') and "tls" or "none",
 			tlsSettings = {allowInsecure = (server.insecure ~= "0") and true or false,serverName=server.tls_host,},
 		tcpSettings = (server.transport == "tcp") and {
 			header = {
 				type = server.tcp_guise,
 				request = {
-					path = server.http_path or {"/"},
-					headers = {
-						Host = server.http_host or {}
-					}
+					path = {server.http_path} or {"/"},
+					headers = {Host = {server.http_host} or {}}
 				} or {}
 			}
         } or nil,
@@ -81,11 +79,13 @@ log = {
 					type = server.kcp_guise
 				}
 			} or nil,
-			wsSettings = (server.transport == "ws") and (server.ws_path ~= nil or server.ws_host ~= nil) and {
+			wsSettings = (server.transport == "ws") and (server.ws_path or server.ws_host or server.tls_host) and {
+				-- ws
 				path = server.ws_path,
-				headers = (server.ws_host ~= nil) and {
-					Host = server.ws_host
-				} or nil,
+				headers = (server.ws_host or server.tls_host) and {
+					-- headers
+					Host = server.ws_host or server.tls_host
+				} or nil
 			} or nil,
 			httpSettings = (server.transport == "h2") and {
 				path = server.h2_path,

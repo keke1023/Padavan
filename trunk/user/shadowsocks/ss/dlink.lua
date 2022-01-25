@@ -261,7 +261,7 @@ local function processData(szType, content)
 					result.flow = "2"
 				else
 					result.flow = "1"
-				end	
+				end
 			else
 				result.tls = "0"
 			end
@@ -303,9 +303,12 @@ local function processData(szType, content)
 				else
 					result.plugin = plugin_info
 				end
+				if result.plugin == "simple-obfs" then
+					result.plugin = "obfs-local"
+				end
 			end
 		else
-			result.server_port = host[2]
+			result.server_port = host[2]:gsub("/","")
 		end
 		result.encrypt_method_ss = method
 		result.password = password
@@ -318,6 +321,15 @@ local function processData(szType, content)
 		result.plugin = content.plugin
 		result.plugin_opts = content.plugin_options
 		result.alias = "[" .. content.airport .. "] " .. content.remarks
+	elseif szType == "sip008" then
+		result.type = "ss"
+		result.server = content.server
+		result.server_port = content.server_port
+		result.password = content.password
+		result.encrypt_method_ss = content.method
+		result.plugin = content.plugin
+		result.plugin_opts = content.plugin_opts
+		result.alias = content.remarks
 	elseif szType == "trojan" then
 		local idx_sp = 0
 		local alias = ""
@@ -345,9 +357,9 @@ local function processData(szType, content)
 				params[t[1]] = t[2]
 			end
 			
-			if params.peer then
+			if params.sni then
 				-- 未指定peer（sni）默认使用remote addr
-				result.tls_host = params.peer
+				result.tls_host = params.sni
 			end
 			
 			if params.allowInsecure == "1" then
@@ -426,6 +438,13 @@ end
 						tinsert(servers, setmetatable(server, { __index = extra }))
 					end
 					nodes = servers
+				-- SS SIP008 直接使用 Json 格式
+					local info = cjson.decode(raw)
+				elseif info then
+					nodes = info.servers or info
+					if nodes[1].server and nodes[1].method then
+						szType = 'sip008'
+					end
 				else
 					-- ssd 外的格式
 					nodes = split(base64Decode(raw):gsub(" ", "_"), "\n")
@@ -433,7 +452,7 @@ end
 				for _, v in ipairs(nodes) do
 					if v then
 						local result
-						if szType == 'ssd' then
+						if szType  then
 							result = processData(szType, v)
 						elseif not szType then
 							local node = trim(v)
@@ -529,3 +548,5 @@ end
 		log('新增节点数量: ' .. add, '删除节点数量: ' .. del)
 		log('订阅更新成功')
 		end
+
+
