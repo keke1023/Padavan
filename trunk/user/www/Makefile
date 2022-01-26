@@ -209,6 +209,7 @@ ifeq ($(CONFIG_FIRMWARE_INCLUDE_SOFTETHERVPN_CLIENT),y)
 endif
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_ADBYBY),y)
 	rm -f $(INSTALLDIR)/www/Advanced_adbyby.asp
+	rm -f $(INSTALLDIR)/www/Ad_action.asp
 endif
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_ALIDDNS),y)
 	rm -f $(INSTALLDIR)/www/Advanced_aliddns.asp
@@ -218,6 +219,7 @@ ifneq ($(CONFIG_FIRMWARE_INCLUDE_ADGUARDHOME),y)
 endif
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_KOOLPROXY),y)
 	rm -f $(INSTALLDIR)/www/Advanced_koolproxy.asp
+	rm -f $(INSTALLDIR)/www/Kp_action.asp
 endif
 ifneq ($(CONFIG_FIRMWARE_INCLUDE_CADDY),y)
 	rm -f $(INSTALLDIR)/www/Advanced_caddy.asp
