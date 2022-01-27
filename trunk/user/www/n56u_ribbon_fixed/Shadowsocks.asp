@@ -744,8 +744,8 @@
 			document.getElementById("ss_password").value = getProperty(ss, 'password', '');
 			if (type == 'ss') {
 				document.getElementById("ss_method").value = getProperty(ss, 'encrypt_method_ss', 'none'),
-					document.getElementById("ss_plugin").value = getProperty(ss, 'plugin', ''),
-					document.getElementById("ss_plugin_opts").value = getProperty(ss, 'plugin_opts', '');
+				document.getElementById("ss_plugin").value = getProperty(ss, 'plugin', ''),
+				document.getElementById("ss_plugin_opts").value = getProperty(ss, 'plugin_opts', '');
 			} else if (type == "ssr") {
 				document.getElementById("ss_protocol").value = getProperty(ss, 'protocol', 'origin');
 				document.getElementById("ss_protocol_param").value = getProperty(ss, 'protocol_param', '');
@@ -1418,7 +1418,7 @@
 		}
 		function showsdlinkList() {
 			var value = document.getElementById("nodeList").value;
-			if (value != "nil") {
+			if (value > 0) {
 				var key = "ssconf_basic_json_" + value;
 				var result = JSON.parse(removeUselessChars(db_ss[key]));
 				document.getElementById("d_type").value = result.type;
@@ -1426,7 +1426,7 @@
 		}
 		function showsudlinkList() {
 			var value = document.getElementById("u_nodeList").value;
-			if (value != "nil") {
+			if (value > 0) {
 				var key = "ssconf_basic_json_" + value;
 				var result = JSON.parse(removeUselessChars(db_ss[key]));
 				document.getElementById("ud_type").value = result.type;
@@ -1434,7 +1434,7 @@
 		}
 		function shows5dlinkList() {
 			var value = document.getElementById("s5_nodeList").value;
-			if (value != "nil") {
+			if (value > 0 ) {
 				var key = "ssconf_basic_json_" + value
 				var result = JSON.parse(removeUselessChars(db_ss[key]));
 				document.getElementById("s5_type").value = result.type;
@@ -1488,7 +1488,7 @@
 			<input type="hidden" name="group_id" value="SspList">
 			<input type="hidden" name="action_mode" value="">
 			<input type="hidden" name="action_script" value="">
-			<input type="hidden" name="ssp_staticnum_x_0" value="<% nvram_get_x(" SspList", "ssp_staticnum_x" ); %>"
+			<input type="hidden" name="ssp_staticnum_x_0" value="<% nvram_get_x(" SspList", "ssp_staticnum_x"); %>"
 			readonly="1" />
 			<input type="hidden" id="d_type" name="d_type" value="<% nvram_get_x(""," d_type"); %>">
 			<input type="hidden" id="ud_type" name="ud_type" value="<% nvram_get_x(""," ud_type"); %>">
@@ -2458,7 +2458,7 @@
 														<td>
 															<input type="text" class="input" size="15"
 																name="socks5_port" style="width: 200px"
-																value="<% nvram_get_x("", " socks5_port"); %>">
+																value="<% nvram_get_x("", "socks5_port"); %>">
 														</td>
 													</tr>
 												</table>
@@ -2495,7 +2495,7 @@
 														<td>
 															<input type="text" class="input" size="15"
 																name="ss_chnroute_url" style="width: 200px"
-																value="<% nvram_get_x(""," ss_chnroute_url"); %>" />
+																value="<% nvram_get_x("", "ss_chnroute_url"); %>" />
 														</td>
 													</tr>
 													<tr>

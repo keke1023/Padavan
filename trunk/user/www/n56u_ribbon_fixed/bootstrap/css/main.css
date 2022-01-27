@@ -639,6 +639,9 @@ textarea[readonly] {
     border-radius: 3px 0 0 3px;
 }
 
+.btn.btn-clearlog,  .btn.btn-savelog, .btn.btn-refreshlog{width: 170px;}
+#system_time, #textarea{font-size:13px;}
+
 @media screen and (max-width:800px){
 	#mainMenu .accordion{display:none}
 	#subMenu{display:block}
@@ -677,4 +680,6 @@ textarea[readonly] {
 	#iconRouter{background-position:0 -165px !important}
 	#iconClient{background-position:0 -82px !important}
 	.big-icons-usb,#iconUSBdisk{background-position:0 -333px !important}
+	.btn.btn-clearlog,  .btn.btn-savelog, .btn.btn-refreshlog{width: 80px;}
+	#system_time, #textarea{font-size:13px;}
 }
