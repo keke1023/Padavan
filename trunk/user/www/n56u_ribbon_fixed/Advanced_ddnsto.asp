@@ -41,10 +41,9 @@ function initial(){
 	show_banner(2);
 	show_menu(5,17,0);
 	showmenu();
-	showmenu1()
 	show_footer();
-
 }
+
 function showmenu(){
 showhide_div('allink', found_app_aliddns());
 showhide_div('zeink', found_app_zerotier());
@@ -71,7 +70,7 @@ function done_validating(action){
 </head>
 
 <body onload="initial();" onunLoad="return unload_body();">
-
+<div id="Loading" class="popup_bg"></div>
 <div class="wrapper">
 	<div class="container-fluid" style="padding-right: 0px">
 		<div class="row-fluid">
@@ -82,7 +81,7 @@ function done_validating(action){
 		</div>
 	</div>
 
-	<div id="Loading" class="popup_bg"></div>
+	
 
 	<iframe name="hidden_frame" id="hidden_frame" src="" width="0" height="0" frameborder="0"></iframe>
 
