@@ -532,7 +532,7 @@ void restart_frp(void){
 }
 #endif
 
-#if defined(APP_NPC)
+/*#if defined(APP_NPC)
 void stop_npc(void){
 	eval("/usr/bin/npc.sh","stop");
 }
@@ -544,6 +544,22 @@ void start_npc(void){
 void restart_npc(void){
 	stop_npc();
 	start_npc();
+}
+#endif*/
+#if defined(APP_DDNSTO)
+void stop_ddnsto(void){
+	eval("/usr/bin/ddnsto.sh","stop");
+}
+
+void start_ddnsto(void){
+	int ddnsto_enable = nvram_get_int("ddnsto_enable");
+	if ( ddnsto_enable == 1)
+		eval("/usr/bin/ddnsto.sh","start");
+}
+
+void restart_ddnsto(void){
+	stop_ddnsto();
+	start_ddnsto();
 }
 #endif
 
@@ -805,37 +821,12 @@ doSystem("/usr/sbin/skipd -d /etc/storage/db");
 #if defined(APP_DNSFORWARDER)
 	start_dnsforwarder();
 #endif
-//#if defined(APP_SHADOWSOCKS)
-//	start_ss();
-//	start_ss_tunnel();
-//#endif
 #if defined(APP_TTYD)
 	start_ttyd();
 #endif
-//#if defined(APP_FRP)
-//	start_frp();
-//#endif
-//#if defined(APP_NPC)
-//	start_npc();
-//#endif
 #if defined(APP_VLMCSD)
 	start_vlmcsd();
 #endif
-//#if defined(APP_KOOLPROXY)
-//	start_koolproxy();
-//#endif
-//#if defined(APP_ADBYBY)
-//	start_adbyby();
-//#endif
-//#if defined(APP_ALIDDNS)
-//	start_aliddns();
-//#endif
-//#if defined(APP_SMARTDNS)
-//	start_smartdns();
-//#endif
-//#if defined(APP_CADDY)
-//	start_caddy();
-//#endif
 	start_lltd();
 	start_watchdog_cpu();
 	start_crond();
@@ -880,8 +871,11 @@ stop_services(int stopall)
 #if defined(APP_FRP)
 	stop_frp();
 #endif
-#if defined(APP_NPC)
+/*#if defined(APP_NPC)
 	stop_npc();
+#endif*/
+#if defined(APP_DDNSTO)
+	stop_ddnsto();
 #endif
 #if defined(APP_KOOLPROXY)
 	stop_koolproxy();

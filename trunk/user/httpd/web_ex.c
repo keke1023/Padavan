@@ -2334,11 +2334,20 @@ static int frps_status_hook(int eid, webs_t wp, int argc, char **argv)
 }
 #endif
 
-#if defined (APP_NPC)
+/*#if defined (APP_NPC)
 static int npc_status_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	int npc_status_code = pids("npc");
 	websWrite(wp, "function npc_status() { return %d;}\n", npc_status_code);
+	return 0;
+}
+#endif*/
+
+#if defined (APP_DDNSTO)
+static int ddnsto_status_hook(int eid, webs_t wp, int argc, char **argv)
+{
+	int ddnsto_status_code = pids("ddnsto");
+	websWrite(wp, "function ddnsto_status() { return %d;}\n", ddnsto_status_code);
 	return 0;
 }
 #endif
@@ -2581,6 +2590,11 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int found_app_zerotier = 0;
 #endif
+#if defined(APP_DDNSTO)
+	int found_app_ddnsto = 1;
+#else
+	int found_app_ddnsto = 0;
+#endif
 #if defined(APP_ADBYBY)
 	int found_app_adbyby = 1;
 #else
@@ -2601,11 +2615,11 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int found_app_nvpproxy = 0;
 #endif
-#if defined(APP_NPC)
+/*#if defined(APP_NPC)
 	int found_app_npc = 1;
 #else
 	int found_app_npc = 0;
-#endif
+#endif*/
 #if defined(APP_ALIDDNS)
 	int found_app_aliddns = 1;
 #else
@@ -2808,6 +2822,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function found_app_npc() { return %d;}\n"
 		"function found_app_wyy() { return %d;}\n"
 		"function found_app_zerotier() { return %d;}\n"
+		"function found_app_ddnsto() { return %d;}\n"
 		"function found_app_aliddns() { return %d;}\n"
 		"function found_app_xupnpd() { return %d;}\n"
 		"function found_app_mentohust() { return %d;}\n",
@@ -2840,9 +2855,10 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		found_app_smartdns,
 		found_app_frp,
 		found_app_nvpproxy,
-		found_app_npc,
+		0,
 		found_app_wyy,
 		found_app_zerotier,
+		found_app_ddnsto,
 		found_app_aliddns,
 		found_app_xupnpd,
 		found_app_mentohust
@@ -4638,8 +4654,11 @@ struct ej_handler ej_handlers[] =
 #if defined (APP_NVPPROXY)
 	{ "nvpproxy_status", nvpproxy_status_hook},
 #endif
-#if defined (APP_NPC)
+/*#if defined (APP_NPC)
 	{ "npc_status", npc_status_hook},
+#endif*/
+#if defined (APP_DDNSTO)
+	{ "ddnsto_status", ddnsto_status_hook},
 #endif
 	{ "update_action", update_action_hook},
 	{ "openssl_util_hook", openssl_util_hook},

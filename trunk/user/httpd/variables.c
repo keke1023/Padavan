@@ -954,7 +954,7 @@
 	};
 #endif
 
-#if defined(APP_NPC)
+/*#if defined(APP_NPC)
 	struct variable variables_NpcConf[] = {
 			{"npc_enable", "", NULL, EVM_RESTART_NPC},
 			{"npc_server_addr", "", NULL, EVM_RESTART_NPC},
@@ -967,7 +967,7 @@
 			{"scripts.npc_script.sh", "File", NULL, EVM_RESTART_NPC},
 			{0,0,0,0}
 	};
-#endif
+#endif*/
 
 #if defined(APP_CADDY)
 	struct variable variables_CaddyConf[] = {
@@ -1011,6 +1011,14 @@
 			{"zerotier_nat", "", NULL, EVM_RESTART_ZEROTIER},
 			{"zero_staticnum_x", "", NULL, EVM_RESTART_ZEROTIER},
 			{"ZeroList", "Group", ARGV((char*)variables_ZeroConf_ZeroList, "8", "55", "zero_staticnum_x"), EVM_RESTART_ZEROTIER},
+			{0,0,0,0}
+	};
+#endif
+
+#if defined(APP_DDNSTO)
+	struct variable variables_DDNSTO[] = {
+			{"ddnsto_enable", "", NULL, EVM_RESTART_DDNSTO},
+			{"ddnsto_id", "", NULL, EVM_RESTART_DDNSTO},
 			{0,0,0,0}
 	};
 #endif
@@ -1104,6 +1112,7 @@
 			{"scripts.ss_ip.sh", "File", NULL, EVM_RESTART_SHADOWSOCKS},
 			{"scripts.ss_lan_ip.sh", "File", NULL, EVM_RESTART_SHADOWSOCKS},
 			{"scripts.ss_lan_bip.sh", "File", NULL, EVM_RESTART_SHADOWSOCKS},
+			{"scripts.ss_lan_gmip.sh", "File", NULL, EVM_RESTART_SHADOWSOCKS},
 			{"scripts.ss_wan_ip.sh", "File", NULL, EVM_RESTART_SHADOWSOCKS},
 			{"scripts.ss_dlink.sh", "File", NULL, FALSE},
 			{"SspList", "Group", ARGV((char*)variables_SspConf_SspList, "8", "55", "ssp_staticnum_x"), EVM_RESTART_SHADOWSOCKS},
@@ -1240,9 +1249,9 @@
 			{"w_ss", "", NULL, FALSE},
 			{"w_men", "", NULL, FALSE},
 			{"w_adbyby", "", NULL, FALSE},
-			{"w_pdnsd", "", NULL, FALSE},
-
+			{"w_pdnsd", "", NULL, FALSE}
 	};
+
 	struct variable variables_WLANConfig11b[] = {
 			{"rt_ssid", "", NULL, EVM_RESTART_WIFI2},
 			{"rt_ssid2", "", NULL, EVM_RESTART_WIFI2},
@@ -1360,9 +1369,9 @@
 #if defined(APP_FRP)
 		{"FrpConf",		variables_FrpConf},
 #endif
-#if defined(APP_NPC)
+/*#if defined(APP_NPC)
 		{"NpcConf",		variables_NpcConf},
-#endif
+#endif*/
 #if defined(APP_SCUT)
 		{"ScutclientConf",		variables_ScutclientConf},
 #endif
@@ -1386,6 +1395,9 @@
 #endif
 #if defined(APP_ZEROTIER)
 		{"ZeroConf",		variables_ZeroConf},
+#endif
+#if defined(APP_DDNSTO)
+		{"DDNSTO",		variables_DDNSTO},
 #endif
 #if defined(APP_ADBYBY)
 		{"AdbybyConf",		variables_AdbybyConf},
@@ -1498,6 +1510,9 @@
 #if defined(APP_ZEROTIER)
 		{EVM_RESTART_ZEROTIER,		EVT_RESTART_ZEROTIER,		RCN_RESTART_ZEROTIER,	0},
 #endif
+#if defined(APP_DDNSTO)
+		{EVM_RESTART_DDNSTO,		EVT_RESTART_DDNSTO,		RCN_RESTART_DDNSTO,	0},
+#endif
 #if defined(APP_ADBYBY)
 		{EVM_RESTART_ADBYBY,		EVT_RESTART_ADBYBY,		RCN_RESTART_ADBYBY,	0},
 #endif
@@ -1510,13 +1525,12 @@
 #if defined(APP_ALIDDNS)
 		{EVM_RESTART_ALIDDNS,		EVT_RESTART_ALIDDNS,		RCN_RESTART_ALIDDNS,	0},
 #endif
-#if defined(APP_NPC)
+/*#if defined(APP_NPC)
 		{EVM_RESTART_NPC,		EVT_RESTART_NPC,		RCN_RESTART_NPC,	0},
-#endif
+#endif*/
 #if defined(APP_SMBD) || defined(APP_NMBD)
 		{EVM_RESTART_NMBD,		EVT_RESTART_NMBD,		RCN_RESTART_NMBD,	0},
 #endif
 		{EVM_RESTART_FIREWALL,		EVT_RESTART_FIREWALL,		RCN_RESTART_FIREWALL,	0},
 		{0,0,0,0}
 	};
-

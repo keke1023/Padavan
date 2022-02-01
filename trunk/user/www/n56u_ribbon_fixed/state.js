@@ -624,21 +624,45 @@ if (found_app_smartdns() && found_app_adguardhome()) {
 	menuL2.push(mx);
 	tabMenuHash.put('16', mx2);
 }
-if (found_app_aliddns() && !found_app_zerotier()) {
+if (found_app_aliddns() && !found_app_ddnsto() && !found_app_zerotier()) {
 	var mx = { "title": "<#menu5_30#>", "link": "Advanced_aliddns.asp", index: "17" };
 	var mx2 = [{ "title": "<#menu5_23_1#>", "link": "Advanced_aliddns.asp" }];
 	menuL2.push(mx);
 	tabMenuHash.put('17', mx2);
 }
-if (!found_app_aliddns() && found_app_zerotier()) {
+if (!found_app_aliddns() && found_app_ddnsto() && !found_app_zerotier()) {
+	var mx = { "title": "<#menu5_30#>", "link": "Advanced_ddnsto.asp", index: "17" };
+	var mx2 = [{ "title": "<#menu5_32_2#>", "link": "Advanced_ddnsto.asp" }];
+	menuL2.push(mx);
+	tabMenuHash.put('17', mx2);
+}
+if (!found_app_aliddns() && !found_app_ddnsto() && found_app_zerotier()) {
 	var mx = { "title": "<#menu5_30#>", "link": "Advanced_zerotier.asp", index: "17" };
 	var mx2 = [{ "title": "<#menu5_32_1#>", "link": "Advanced_zerotier.asp" }];
 	menuL2.push(mx);
 	tabMenuHash.put('17', mx2);
 }
-if (found_app_aliddns() && found_app_zerotier()) {
+if (found_app_aliddns() && found_app_ddnsto() && !found_app_zerotier()) {
 	var mx = { "title": "<#menu5_30#>", "link": "Advanced_aliddns.asp", index: "17" };
-	var mx2 = [{ "title": "<#menu5_32_1#>", "link": "Advanced_zerotier.asp" }, { "title": "<#menu5_32_1#>", "link": "Advanced_zerotier.asp" }];
+	var mx2 = [{ "title": "<#menu5_23_1#>", "link": "Advanced_aliddns.asp" }, { "title": "<#menu5_32_2#>", "link": "Advanced_ddnsto.asp" }];
+	menuL2.push(mx);
+	tabMenuHash.put('17', mx2);
+}
+if (found_app_aliddns() && !found_app_ddnsto() && found_app_zerotier()) {
+	var mx = { "title": "<#menu5_30#>", "link": "Advanced_aliddns.asp", index: "17" };
+	var mx2 = [{ "title": "<#menu5_23_1#>", "link": "Advanced_aliddns.asp" }, { "title": "<#menu5_32_1#>", "link": "Advanced_zerotier.asp" }];
+	menuL2.push(mx);
+	tabMenuHash.put('17', mx2);
+}
+if (!found_app_aliddns() && found_app_ddnsto() && found_app_zerotier()) {
+	var mx = { "title": "<#menu5_30#>", "link": "Advanced_ddnsto.asp", index: "17" };
+	var mx2 = [{ "title": "<#menu5_32_2#>", "link": "Advanced_ddnsto.asp" }, { "title": "<#menu5_32_1#>", "link": "Advanced_zerotier.asp" }];
+	menuL2.push(mx);
+	tabMenuHash.put('17', mx2);
+}
+if (found_app_aliddns() && found_app_ddnsto() && found_app_zerotier()) {
+	var mx = { "title": "<#menu5_30#>", "link": "Advanced_aliddns.asp", index: "17" };
+	var mx2 = [{ "title": "<#menu5_23_1#>", "link": "Advanced_aliddns.asp" }, { "title": "<#menu5_32_2#>", "link": "Advanced_ddnsto.asp" }, { "title": "<#menu5_32_1#>", "link": "Advanced_zerotier.asp" }];
 	menuL2.push(mx);
 	tabMenuHash.put('17', mx2);
 }

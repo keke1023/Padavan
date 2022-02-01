@@ -57,6 +57,7 @@ showMRULESList();
 }
 function showmenu(){
 showhide_div('allink', found_app_aliddns());
+showhide_div('dtolink', found_app_ddnsto());
 }
 function applyRule(){
 //	if(validForm()){
@@ -193,6 +194,9 @@ function showMRULESList(){
                             <ul class="nav nav-tabs" style="margin-bottom: 10px;">
 								<li id="allink" style="display:none">
                                     <a href="Advanced_aliddns.asp"><#menu5_23_1#></a>
+                                </li>
+                                <li id="dtolink" style="display:none">
+                                    <a href="Advanced_ddnsto.asp"><#menu5_32_2#></a>
                                 </li>
 								<li class="active">
                                     <a href="Advanced_zerotier.asp"><#menu5_32_1#></a>

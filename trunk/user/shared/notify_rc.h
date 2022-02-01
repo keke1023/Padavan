@@ -84,7 +84,8 @@
 #define RCN_RESTART_WYY		"restart_wyy"
 #define RCN_RESTART_ZEROTIER		"restart_zerotier"
 #define RCN_RESTART_NVPPROXY		"restart_nvpproxy"
-#define RCN_RESTART_NPC				"restart_npc"
+//#define RCN_RESTART_NPC				"restart_npc"
+#define RCN_RESTART_DDNSTO      "restart_ddnsto"
 #define RCN_RESTART_REBOOT		"restart_reboot"
 
 ////////////////////////////////////////////////////////////
