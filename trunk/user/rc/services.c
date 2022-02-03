@@ -612,6 +612,23 @@ void restart_nvpproxy(void){
 }
 #endif
 
+#if defined(APP_WIREGUARD)
+void stop_wireguard(void){
+	eval("/usr/bin/wireguard.sh","stop");
+}
+
+void start_wireguard(void){
+	int wireguard_enable = nvram_get_int("wireguard_enable");
+	if ( wireguard_enable == 1)
+		eval("/usr/bin/wireguard.sh","start");
+}
+
+void restart_wireguard(void){
+	stop_wireguard();
+	start_wireguard();
+}
+#endif
+
 void
 start_httpd(int restart_fw)
 {
@@ -904,6 +921,9 @@ stop_services(int stopall)
 #endif
 #if defined(APP_CADDY)
 	stop_caddy();
+#endif
+#if defined(APP_WIREGUARD)
+	stop_wireguard();
 #endif
 	stop_networkmap();
 	stop_lltd();

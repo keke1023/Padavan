@@ -612,6 +612,11 @@ void stop_nvpproxy(void);
 void start_nvpproxy(void);
 void restart_nvpproxy(void);
 #endif
+#if defined(APP_WIREGUARD)
+void stop_wireguard(void);
+void start_wireguard(void);
+void restart_wireguard(void);
+#endif
 
 /* services_ex.c */
 int fill_dnsmasq_servers(void);

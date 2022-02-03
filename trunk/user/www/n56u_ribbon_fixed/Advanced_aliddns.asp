@@ -47,8 +47,9 @@ function initial(){
 }
 
 function showmenu(){
-showhide_div('dtolink', found_app_ddnsto());
-showhide_div('zelink', found_app_zerotier());
+	showhide_div('dtolink', found_app_ddnsto());
+	showhide_div('zelink', found_app_zerotier());
+	showhide_div('wirlink', found_app_wireguard());
 }
 
 function textarea_scripts_enabled(v){
@@ -56,15 +57,13 @@ function textarea_scripts_enabled(v){
 }
 
 function applyRule(){
-//	if(validForm()){
-		showLoading();
-		
-		document.form.action_mode.value = " Apply ";
-		document.form.current_page.value = "/Advanced_aliddns.asp";
-		document.form.next_page.value = "";
-		
-		document.form.submit();
-//	}
+	showLoading();
+	
+	document.form.action_mode.value = " Apply ";
+	document.form.current_page.value = "/Advanced_aliddns.asp";
+	document.form.next_page.value = "";
+	
+	document.form.submit();
 }
 
 
@@ -140,18 +139,21 @@ function change_aliddns_enable_bridge(mflag){
 							<h2 class="box_head round_top"><#menu5_23#> - <#menu5_30#></h2>
 							<div class="round_bottom">
 							<div>
-                            <ul class="nav nav-tabs" style="margin-bottom: 10px;">
+							    <ul class="nav nav-tabs" style="margin-bottom: 10px;">
 								<li class="active">
-                                    <a href="Advanced_aliddns.asp"><#menu5_23_1#></a>
-                                </li>
-                                <li id="dtolink" style="display:none">
-                                    <a href="Advanced_ddnsto.asp"><#menu5_32_2#></a>
-                                </li>
+								    <a href="Advanced_aliddns.asp"><#menu5_23_1#></a>
+								</li>
+								<li id="dtolink" style="display:none">
+								    <a href="Advanced_ddnsto.asp"><#menu5_32_2#></a>
+								</li>
 								<li id="zelink" style="display:none">
-                                    <a href="Advanced_zerotier.asp"><#menu5_32_1#></a>
-                                </li>
-                            </ul>
-                        </div>
+								    <a href="Advanced_zerotier.asp"><#menu5_32_1#></a>
+								</li>
+								<li id="wirlink" style="display:none">
+								    <a href="Advanced_wireguard.asp"><#menu5_35_1#></a>
+								</li>
+							    </ul>
+							</div>
 								<div class="row-fluid">
 									<div id="tabMenu" class="submenuBlock"></div>
 									<div class="alert alert-info" style="margin: 10px;">使用 Aliddns 实现顶级个人域名的 ddns 服务。 <a href="https://www.aliyun.com" target="blank"><i><u>Aliddns 主页</u></i></a>

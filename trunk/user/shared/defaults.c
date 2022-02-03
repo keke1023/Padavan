@@ -863,6 +863,15 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_black", "0" },
 #endif
 
+#if defined(APP_WIREGUARD)
+	/*WIREGUARD*/
+	{ "wireguard_enable", "0" },
+	{ "wireguard_localip", "" },
+	{ "wireguard_localkey", "" },
+	{ "wireguard_peerip", "" },
+	{ "wireguard_peerkey", "" },
+#endif
+
 	/* DHCP server parameters */
 	{ "dhcp_start", DEF_LAN_DHCP_BEG },	/* First assignable DHCP address */
 	{ "dhcp_end", DEF_LAN_DHCP_END },	/* Last assignable DHCP address */

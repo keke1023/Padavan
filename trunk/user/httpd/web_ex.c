@@ -2640,6 +2640,11 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int has_ipv6 = 0;
 #endif
+#if defined(APP_WIREGUARD)
+	int found_app_wireguard = 1;
+#else
+	int found_app_wireguard = 0;
+#endif
 
 #if defined(USE_HW_NAT)
 	int has_ipv4_ppe = 1;
@@ -2824,6 +2829,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		"function found_app_zerotier() { return %d;}\n"
 		"function found_app_ddnsto() { return %d;}\n"
 		"function found_app_aliddns() { return %d;}\n"
+		"function found_app_wireguard() { return %d;}\n"
 		"function found_app_xupnpd() { return %d;}\n"
 		"function found_app_mentohust() { return %d;}\n",
 		found_utl_hdparm,
@@ -2860,6 +2866,7 @@ ej_firmware_caps_hook(int eid, webs_t wp, int argc, char **argv)
 		found_app_zerotier,
 		found_app_ddnsto,
 		found_app_aliddns,
+		found_app_wireguard,
 		found_app_xupnpd,
 		found_app_mentohust
 	);

@@ -86,6 +86,7 @@
 #define RCN_RESTART_NVPPROXY		"restart_nvpproxy"
 //#define RCN_RESTART_NPC				"restart_npc"
 #define RCN_RESTART_DDNSTO      "restart_ddnsto"
+#define RCN_RESTART_WIREGUARD	"restart_wireguard"
 #define RCN_RESTART_REBOOT		"restart_reboot"
 
 ////////////////////////////////////////////////////////////

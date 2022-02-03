@@ -1405,6 +1405,12 @@ handle_notifications(void)
 			restart_nvpproxy();
 		}
 #endif
+#if defined(APP_WIREGUARD)
+		else if (strcmp(entry->d_name, RCN_RESTART_WIREGUARD) == 0)
+		{
+			restart_wireguard();
+		}
+#endif
 #if defined(APP_SMBD) || defined(APP_NMBD)
 		else if (strcmp(entry->d_name, RCN_RESTART_NMBD) == 0)
 		{

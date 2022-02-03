@@ -1235,6 +1235,19 @@
 	};
 #endif
 
+
+#if defined(APP_WIREGUARD)
+	struct variable variables_WIREGUARD[] = {
+			{"wireguard_enable", "", NULL, EVM_RESTART_WIREGUARD},
+			{"wireguard_localip", "", NULL, EVM_RESTART_WIREGUARD},
+			{"wireguard_localkey", "", NULL, EVM_RESTART_WIREGUARD},
+			{"wireguard_peerkey", "", NULL, EVM_RESTART_WIREGUARD},
+			{"wireguard_peerip", "", NULL, EVM_RESTART_WIREGUARD},
+			{"wireguard_localip", "", NULL, EVM_RESTART_WIREGUARD},
+			{0,0,0,0}
+	};
+#endif
+
     struct variable variables_DwebConf[] = {
 			{"w_ai", "", NULL, FALSE},
 			{"w_vpn_s", "", NULL, FALSE},
@@ -1408,6 +1421,9 @@
 #if defined(APP_NVPPROXY)
 		{"NvpproxyConf",		variables_NvpproxyConf},
 #endif
+#if defined(APP_WIREGUARD)
+		{"WIREGUARD",		variables_WIREGUARD},
+#endif
 		{"DwebConf",		variables_DwebConf},
 		{"LANGUAGE",			variables_Language},
 		{0,0}
@@ -1530,6 +1546,9 @@
 #endif*/
 #if defined(APP_SMBD) || defined(APP_NMBD)
 		{EVM_RESTART_NMBD,		EVT_RESTART_NMBD,		RCN_RESTART_NMBD,	0},
+#endif
+#if defined(APP_WIREGUARD)
+		{EVM_RESTART_WIREGUARD,		EVT_RESTART_WIREGUARD,		RCN_RESTART_WIREGUARD,	0},
 #endif
 		{EVM_RESTART_FIREWALL,		EVT_RESTART_FIREWALL,		RCN_RESTART_FIREWALL,	0},
 		{0,0,0,0}
