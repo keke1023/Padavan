@@ -617,6 +617,11 @@ void stop_wireguard(void);
 void start_wireguard(void);
 void restart_wireguard(void);
 #endif
+#if defined(APP_ALDRIVER)
+void stop_aldriver(void);
+void start_aldriver(void);
+void restart_aldriver(void);
+#endif
 
 /* services_ex.c */
 int fill_dnsmasq_servers(void);

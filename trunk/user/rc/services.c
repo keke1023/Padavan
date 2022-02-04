@@ -629,6 +629,23 @@ void restart_wireguard(void){
 }
 #endif
 
+#if defined(APP_ALDRIVER)
+void stop_aldriver(void){
+	eval("/usr/bin/aliyundrive-webdav.sh","stop");
+}
+
+void start_aldriver(void){
+	int aldriver_enable = nvram_get_int("aliyundrive_enable");
+	if ( aldriver_enable == 1)
+		eval("/usr/bin/aliyundrive-webdav.sh","start");
+}
+
+void restart_aldriver(void){
+	stop_aldriver();
+	start_aldriver();
+}
+#endif
+
 void
 start_httpd(int restart_fw)
 {
@@ -924,6 +941,9 @@ stop_services(int stopall)
 #endif
 #if defined(APP_WIREGUARD)
 	stop_wireguard();
+#endif
+#if defined(APP_ALDRIVER)
+	stop_aldriver();
 #endif
 	stop_networkmap();
 	stop_lltd();

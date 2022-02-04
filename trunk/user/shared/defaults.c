@@ -872,6 +872,23 @@ struct nvram_pair router_defaults[] = {
 	{ "wireguard_peerkey", "" },
 #endif
 
+#if defined(APP_ALDRIVER)
+	/*阿里云盘*/
+	{ "aliyundrive_enable", "0" },
+	{ "ald_refresh_token", "" },
+	{ "ald_auth_user", "" },
+	{ "ald_auth_password", "" },
+	{ "ald_read_buffer_size", "10485760" },
+	{ "ald_cache_size", "1000" },
+	{ "ald_cache_ttl", "600" },
+	{ "ald_host", "0.0.0.0" },
+	{ "ald_port", "8080" },
+	{ "ald_root", "/" },
+	{ "ald_domain_id", "0" },
+	{ "ald_no_trash", "0" },
+	{ "ald_read_only", "0" },
+#endif
+
 	/* DHCP server parameters */
 	{ "dhcp_start", DEF_LAN_DHCP_BEG },	/* First assignable DHCP address */
 	{ "dhcp_end", DEF_LAN_DHCP_END },	/* Last assignable DHCP address */
