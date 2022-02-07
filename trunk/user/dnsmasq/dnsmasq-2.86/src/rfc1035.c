@@ -2046,7 +2046,7 @@ size_t answer_request(struct dns_header *header, char *limit, size_t qlen,
       {
          //return a null reply
          ans = 1;
-         if (!dryrun) log_query(F_CONFIG | F_IPV6 | F_NEG, name, &addr, NULL);
+         if (!dryrun) log_query(F_CONFIG | F_IPV6 | F_NEG, name, &addr, NULL, 0);
          break;
       }
       //end of patch
