@@ -10,7 +10,7 @@
 https://github.com/hanwckf/rt-n56u  
 https://github.com/chongshengB/rt-n56u  
 https://github.com/padavanonly/rt-n56u  
-https://github.com/immortalwrt/padavan  
+https://github.com/immortalwrt/padavan
   
 最后编译出的固件对7612无线的支持已知是有问题的，包含7612的机型比如B70是无法正常工作的  
 已测试的机型为MSG1500-7615，JCG-Q20，CR660x  
@@ -28,3 +28,7 @@ wifi密码
 管理账号密码
  - admin
  - admin
+
+**最近的更新代码都来自于hanwckf和MelsReallyBa大佬的4.4内核代码**
+https://github.com/hanwckf/padavan-4.4
+https://github.com/MeIsReallyBa/padavan-4.4
