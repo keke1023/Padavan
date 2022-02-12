@@ -2361,6 +2361,24 @@ static int nvpproxy_status_hook(int eid, webs_t wp, int argc, char **argv)
 }
 #endif
 
+#if defined (APP_SHADOWSOCKS)
+static int dns2tcp_status_hook(int eid, webs_t wp, int argc, char **argv)
+{
+	int dns2tcp_status_code = pids("dns2tcp");
+	websWrite(wp, "function dns2tcp_status() { return %d;}\n", dns2tcp_status_code);
+	return 0;
+}
+#endif
+
+#if defined (APP_ALDRIVER)
+static int aliyundrive_status_hook(int eid, webs_t wp, int argc, char **argv)
+{
+	int aliyundrive_status_code = pids("aliyundrive-webdav");
+	websWrite(wp, "function aliyundrive_status() { return %d;}\n", aliyundrive_status_code);
+	return 0;
+}
+#endif
+
 static int update_action_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	char *up_action = websGetVar(wp, "connect_action", "");
@@ -4650,6 +4668,7 @@ struct ej_handler ej_handlers[] =
 	{ "shadowsocks_status", shadowsocks_status_hook},
 	{ "rules_count", rules_count_hook},
 	{ "pdnsd_status", pdnsd_status_hook},
+	{ "dns2tcp_status", dns2tcp_status_hook},
 #endif
 #if defined (APP_KOOLPROXY)
 	{ "koolproxy_action", koolproxy_action_hook},
@@ -4678,8 +4697,14 @@ struct ej_handler ej_handlers[] =
 /*#if defined (APP_NPC)
 	{ "npc_status", npc_status_hook},
 #endif*/
+#if defined (APP_ZEROTIER)
+	{ "zerotier_status", zerotier_status_hook},
+#endif
 #if defined (APP_DDNSTO)
 	{ "ddnsto_status", ddnsto_status_hook},
+#endif
+#if defined (APP_ALDRIVER)
+	{ "aliyundrive_status", aliyundrive_status_hook},
 #endif
 	{ "update_action", update_action_hook},
 	{ "openssl_util_hook", openssl_util_hook},
