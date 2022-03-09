@@ -428,7 +428,7 @@ if (found_app_zerotier()){
 }
 }
 if (found_app_frp()){
-	tabtitle[17] = new Array("", "<#menu5_25_1#>");
+	tabtitle[17] = new Array("", "<#menu5_25#>");
 }
 if (found_app_caddy()){
 	tabtitle[18] = new Array("", "<#menu5_27_1#>");
@@ -488,7 +488,7 @@ if (found_app_aliddns()){
 if (found_app_frp()){
 	frp_array = new Array("","Advanced_frp.asp");
 	tablink[17] = (frp_array);
-  tabtitle[9].push('<#menu5_25_1#>');
+	tabtitle[9].push('<#menu5_25_1#>');
 	tablink[9].push('Advanced_frp_log.asp');
 }
 if (found_app_caddy()){

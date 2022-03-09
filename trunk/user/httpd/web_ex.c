@@ -4595,7 +4595,7 @@ struct ej_handler ej_handlers[] =
 	{ "frpc_status", frpc_status_hook},
 	{ "frps_status", frps_status_hook},
 #endif
-    { "update_action", update_action_hook},
+	{ "update_action", update_action_hook},
 	{ "openssl_util_hook", openssl_util_hook},
 	{ "openvpn_srv_cert_hook", openvpn_srv_cert_hook},
 	{ "openvpn_cli_cert_hook", openvpn_cli_cert_hook},
