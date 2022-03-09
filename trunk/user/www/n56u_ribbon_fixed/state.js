@@ -488,6 +488,8 @@ if (found_app_aliddns()){
 if (found_app_frp()){
 	frp_array = new Array("","Advanced_frp.asp");
 	tablink[17] = (frp_array);
+  tabtitle[9].push('<#menu5_25_1#>');
+	tablink[9].push('Advanced_frp_log.asp');
 }
 if (found_app_caddy()){
 	caddy_array = new Array("","Advanced_caddy.asp");

@@ -444,43 +444,6 @@ struct nvram_pair router_defaults[] = {
 	{ "kp_ip_x", "0" },
 	{ "kp_staticnum_x", "0" },
 	
-	/*Adbyby PlUS+*/
-	{ "adbyby_enable", "0" },
-	{ "adbyby_set", "0" },
-	{ "adbyby_adb_update", "0" },
-	{ "adbyby_update", "2" },
-	{ "adbyby_update_hour", "03" },
-	{ "adbyby_update_min", "30" },
-	{ "adbyby_ip_x", "0" },
-	{ "adbyby_rules_x", "0" },
-	{ "adbybyip_staticnum_x", "0" },
-	{ "adbybyrules_staticnum_x", "0" },
-	{ "block_ios", "0" },
-	{ "block_douyin", "0" },
-	{ "anti_ad", "0" },
-	{ "anti_ad_link", "https://anti-ad.net/anti-ad-for-dnsmasq.conf" },
-	{ "anti_ad_count", "0" },
-	/* Pdnsd */
-	{ "dns_enable", "0" },
-	{ "dns_server", "223.5.5.5,114.114.114.114" },
-	{ "dns_server_port", "5333" },
-	{ "dns_server_bind", "0.0.0.0" },
-
-	/* Aliddns */
-	{ "aliddns_enable", "0" },
-	{ "aliddns_interval", "600" },
-	{ "aliddns_ttl", "600" },
-	{ "aliddns_ak", ""  },
-	{ "aliddns_sk", "" },
-	{ "aliddns_name", "" },
-	{ "aliddns_name2", "" },
-	{ "aliddns_name6", "" },
-	{ "aliddns_domain", "" },
-	{ "aliddns_domain2", "" },
-	{ "aliddns_domain6", "" },
-	
-	{ "hdd_spindt", "0" },
-	{ "hdd_apmoff", "0" },
 	/*WEB DIY*/
 	{ "w_ai", "1" },
 	{ "w_vpn_s", "1" },
@@ -662,7 +625,7 @@ struct nvram_pair router_defaults[] = {
 	{ "socks5_s_username", "" },
 	{ "socks5_s_password", "" },
 	{ "ss_turn", "0" },
-	{ "ss_watchcat", "0" },
+	{ "ss_watchcat", "1" },
 	{ "ss_turn_s", "600" },
 	{ "ss_turn_ss", "5" },
 	{ "lan_con", "0" },
@@ -672,7 +635,7 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_schedule", "00000000000" },
 
 	{ "ss_enable", "0" },
-	{ "ss_mode", "2" },
+	{ "ss_mode", "1" },
 	{ "ss_server", "127.0.0.1" },
 	{ "ss_server_port", "8989" },
 	{ "ss_key", "Secret" },
@@ -739,12 +702,50 @@ struct nvram_pair router_defaults[] = {
 	{ "d_keyword_y", "" },
 	{ "d_update_link", "" },
 	{ "ss_keyword", "过期时间/剩余流量" },
-
+#endif
 	
+	/*Adbyby PlUS+*/
+	{ "adbyby_enable", "0" },
+	{ "adbyby_set", "0" },
+	{ "adbyby_adb_update", "0" },
+	{ "adbyby_update", "2" },
+	{ "hosts_ad", "1" },
+	{ "adbyby_update_hour", "03" },
+	{ "adbyby_update_min", "30" },
+	{ "adbyby_ip_x", "0" },
+	{ "adbyby_rules_x", "0" },
+	{ "adbybyip_staticnum_x", "0" },
+	{ "adbybyrules_staticnum_x", "0" },
+	{ "block_ios", "0" },
+	{ "block_douyin", "0" },
+	{ "anti_ad", "0" },
+	{ "anti_ad_link", "https://anti-ad.net/anti-ad-for-dnsmasq.conf" },
+	{ "anti_ad_count", "0" },
+	/* Pdnsd */
+	{ "dns_enable", "0" },
+	{ "dns_server", "223.5.5.5,114.114.114.114" },
+	{ "dns_server_port", "5333" },
+	{ "dns_server_bind", "0.0.0.0" },
+	/* Aliddns */
+	{ "aliddns_enable", "0" },
+	{ "aliddns_interval", "600" },
+	{ "aliddns_ttl", "600" },
+	{ "aliddns_ak", ""  },
+	{ "aliddns_sk", "" },
+	{ "aliddns_name", "" },
+	{ "aliddns_name2", "" },
+	{ "aliddns_name6", "" },
+	{ "aliddns_domain", "" },
+	{ "aliddns_domain2", "" },
+	{ "aliddns_domain6", "" },
+	
+#if defined(APP_ADGUARDHOME)	
 	/* AdguargHome */
 	{ "adg_enable", "0" },
 	{ "adg_redirect", "0" },
+#endif
 	
+#if defined(APP_CADDY)	
 	/*caddy*/
 	{ "caddy_enable", "0" },
 	{ "caddy_file", "0" },
@@ -756,11 +757,15 @@ struct nvram_pair router_defaults[] = {
 	{ "caddy_wip6", "0" },
 	{ "caddy_wname", "admin" },
 	{ "caddy_wpassword", "admin" },
+#endif
 	
+#if defined(APP_FRP)
 	/*frp*/
 	{ "frpc_enable", "0" },
 	{ "frps_enable", "0" },
+#endif
 	
+#if defined(APP_SMARTDNS)	
 	/*SmartDns*/
 	{ "sdns_enable", "0" },
 	{ "snds_name", "smartdns" },
@@ -793,7 +798,8 @@ struct nvram_pair router_defaults[] = {
 	{ "sdnse_cache", "0" },
 	{ "ss_white", "0" },
 	{ "ss_black", "0" },
-
+#endif
+	
 	/*UnblockNeteaseMusic*/
 	{ "wyy_enable", "0" },
 	{ "wyy_apptype", "cloud" },
@@ -814,7 +820,6 @@ struct nvram_pair router_defaults[] = {
 	{ "ss_watchcat", "1" },
 	{ "ss_update_chnroute", "0" },
 	{ "ss_update_gfwlist", "0" },
-#endif
 
 	/* DHCP server parameters */
 	{ "dhcp_start", DEF_LAN_DHCP_BEG },	/* First assignable DHCP address */
@@ -1137,7 +1142,7 @@ struct nvram_pair tables_defaults[] = {
 	{ "sr_gateway_x", "" },
 	{ "sr_matric_x", "" },
 	{ "sr_if_x", "" },
-
+#if defined(APP_SHADOWSOCKS)
 	{ "ssp_type_x", "" },
 	{ "ssp_name_x", "" },
 	{ "ssp_server_x", "" },
@@ -1170,13 +1175,15 @@ struct nvram_pair tables_defaults[] = {
 	{ "v2_http2_host_x", "" },
 	{ "v2_http2_path_x", "" },
 	{ "v2_tls_x", "0" },
-	
+#endif
+#if defined(APP_SMARTDNS)
 	{ "sdnss_enable_x", "" },
 	{ "sdnss_name_x", "" },
 	{ "sdnss_ip_x", "" },
 	{ "sdnss_port_x", "" },
 	{ "sdnss_type_x", "" },
 	{ "sdnss_ipc_x", "" },
+#endif
 
 	{"koolproxy_mac_x", "" },
 	{"koolproxy_ip_x", "" },

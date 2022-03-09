@@ -28,7 +28,7 @@
 	<script>
 		var node_global_max = 0;
 		<% shadowsocks_status(); %>
-		<% pdnsd_status(); %>
+		<% dns2tcp_status(); %>
 		<% rules_count(); %>
 		node_global_max = 0;
 		editing_ss_id = 0;
@@ -118,6 +118,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			show_menu(13, 13, 0);
 			show_footer();
 			fill_ss_status(shadowsocks_status());
+			fill_dns2tcp_status(dns2tcp_status())
 			$("chnroute_count").innerHTML = '<#menu5_17_3#>' + chnroute_count();
 			$("gfwlist_count").innerHTML = '<#menu5_17_3#>' + gfwlist_count();
 			switch_ss_type();
@@ -196,8 +197,6 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			showhide_div('row_ssp_insecure', 0);
 			showhide_div('row_tj_tls_host', 0);
 			showhide_div('row_v2_aid', 0);
-			showhide_div('row_v2_http_host', 0);
-			showhide_div('row_v2_http_path', 0);
 			showhide_div('row_v2_http2_host', 0);
 			showhide_div('row_v2_http2_path', 0);
 			showhide_div('row_v2_mkcp_congestion', 0);
@@ -220,7 +219,8 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			showhide_div('row_s5_enable', 0);
 			showhide_div('row_s5_username', 0);
 			showhide_div('row_s5_password', 0);
-			
+			showhide_div('row_v2_http_host', 0);
+			showhide_div('row_v2_http_path', 0);
 			var b = document.form.ssp_type.value;
 			if (b == "ss") {
 				showhide_div('row_ss_password', 1);
@@ -236,15 +236,14 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				showhide_div('row_ss_method', 1);
 			} else if (b == "trojan") {
 				showhide_div('row_ss_password', 1);
-				showhide_div('row_v2_tls', 1);
-				//showhide_div('row_tj_tls_host', 1);
+				//showhide_div('row_v2_tls', 1);
+				showhide_div('row_tj_tls_host', 1);
 				showhide_div('row_ssp_insecure', 1);
 			} else if (b == "v2ray" || b == "xray") {
 				switch_v2_type();
 				showhide_div('row_v2_aid', 1);
 				showhide_div('row_v2_vid', 1);
 				showhide_div('row_v2_security', 1);
-				document.getElementById("v2_security").value = 'none';
 				showhide_div('row_v2_net', 1);
 				showhide_div('row_v2_type', 1);
 				showhide_div('row_v2_tls', 1);
@@ -281,8 +280,8 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			showhide_div('v2_tcp_guise', 0);
 			var b = document.form.v2_transport.value;
 			if (b == "tcp") {
-				showhide_div('v2_tcp_guise', 1);
 				showhide_div('row_v2_type', 1);
+				showhide_div('v2_tcp_guise', 1);
 				showhide_div('row_v2_http_host', 1);
 				showhide_div('row_v2_http_path', 1);
 			} else if (b == "kcp") {
@@ -306,6 +305,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				showhide_div('row_quic_key', 1);
 				showhide_div('row_quic_header', 1);
 			}
+			
 		}
 		function switch_dns() {
 			var b = document.form.pdnsd_enable.value;
@@ -333,6 +333,9 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				}
 			}
 			showLoading();
+			showsdlinkList();
+			showsudlinkList();
+			shows5dlinkList();
 			document.form.action_mode.value = " Restart ";
 			document.form.current_page.value = "Shadowsocks.asp";
 			document.form.next_page.value = "";
@@ -366,6 +369,15 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			else if (status_code == 1)
 				stext = "<#Running#>";
 			$("ss_status").innerHTML = '<span class="label label-' + (status_code != 0 ? 'success' : 'warning') + '">' +
+				stext + '</span>';
+		}
+		function fill_dns2tcp_status(status_code) {
+			var stext = "Unknown";
+			if (status_code == 0)
+				stext = "<#Stopped#>";
+			else if (status_code == 1)
+				stext = "<#Running#>";
+			$("dns2tcp_status").innerHTML = '<span class="label label-' + (status_code != 0 ? 'success' : 'warning') + '">' +
 				stext + '</span>';
 		}
 		var arrHashes = ["cfg", "add", "ssl", "cli", "log", "help"];
@@ -441,6 +453,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 					alert("脚本执行失败！！！")
 				},
 				success: function (response) {
+					node_global_max=0;
 					setTimeout("dtime();$j('#table99').bootstrapTable('refresh');document.getElementById('btn_rest_link').value='清空所有节点';",1000);
 				}
 			});
@@ -469,14 +482,16 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 							//显示节点下拉列表 by 花妆男
 					// 渲染父节点  obj 需要渲染的数据 keyStr key需要去除的字符串
 					var keyStr = "ssconf_basic_json_";
-					var nodeList = document.getElementById("nodeList"); // 获取节点
-					var unodeList = document.getElementById("u_nodeList"); // 获取节点
-					var s5nodeList = document.getElementById("s5_nodeList"); // 获取节点
+					var nodeList = document.getElementById("nodeList"); // 获取TCP节点
+					var unodeList = document.getElementById("u_nodeList"); // 获取UDP节点
+					var s5nodeList = document.getElementById("s5_nodeList"); // 获取SOCK5节点
+					nodeList.options.length=1; // 清除TCP旧节点，准备获取新列表信息
+					unodeList.options.length=1;// 清除UDP旧节点，准备获取新列表信息
+					s5nodeList.options.length=1;// 清除SOCK5旧节点，准备获取新列表信息
 					for (var key in db_ss) { // 遍历对象
 						var optionObj = JSON.parse(db_ss[key]); // 字符串转为对象
 						//if(optionObj.ping != "failed"){   //过滤ping不通的节点
-						var text = '[ ' + (optionObj.type ? optionObj.type : "类型获取失败") + ' ] ' + (optionObj
-							.alias ? optionObj.alias : "名字获取失败"); // 判断下怕获取失败 ，括号是运算的问题
+					var text = '[ ' + (optionObj.type ? optionObj.type : "类型获取失败") + ' ] ' + (optionObj.alias ? optionObj.alias : "名字获取失败"); // 判断下怕获取失败 ，括号是运算的问题
 						// 添加 
 						nodeList.options.add(new Option(text, key.replace(keyStr, ''))); // 通过 replacce把不要的字符去掉
 						unodeList.options.add(new Option(text, key.replace(keyStr, ''))); // 通过 replacce把不要的字符去掉
@@ -669,12 +684,11 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			document.getElementById('ssp_prot').value = '';
 			document.getElementById("ss_password").value = '';
 			//ssr
-			document.getElementById("ss_method").value = 'none';
+			document.getElementById("ss_method").value = 'rc4-md5';
 			document.getElementById("ss_plugin").value = '';
 			document.getElementById("ss_plugin_opts").value = '';
 			document.getElementById("ss_protocol").value = 'origin';
 			document.getElementById("ss_protocol_param").value = '';
-			document.getElementById("ss_method").value = 'none';
 			document.getElementById("ss_obfs").value = 'plain';
 			document.getElementById("ss_obfs_param").value = '';
 			//v2
@@ -682,15 +696,15 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			document.getElementById("ssp_insecure").checked = false;				
 			document.getElementById("v2_mux").value = 0;
 			document.getElementById("v2_mux").checked = false;
-			document.getElementById("v2_security").value = 'auto';
+			document.getElementById("v2_security").value = 'zero';
 			document.getElementById("v2_vmess_id").value = '';
 			document.getElementById("v2_alter_id").value = '';
 			document.getElementById("v2_transport").value = 'tcp';
 			document.getElementById("v2_tcp_guise").value = 'none';
-			document.getElementById("v2_http_host").value = '';
-			document.getElementById("v2_http_path").value = '';
 			document.getElementById("v2_tls").value = '0';
 			document.getElementById("v2_flow").value = '0';
+			document.getElementById("v2_http_host").value = '';
+			document.getElementById("v2_http_path").value = '/';
 			//document.getElementById("v2_tls").checked = false;
 			document.getElementById("ssp_tls_host").value = '';
 			//"v2 tcp"
@@ -711,12 +725,9 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			document.getElementById("v2_quic_key").value = '';
 			document.getElementById("v2_quic_guise").value = 'none';
 			document.getElementById("v2_quic_security").value = 'none';
-			//trojan				
-			// document.getElementById("ssp_insecure").value = 0;
-			// document.getElementById("ssp_insecure").checked = false;
-			// document.getElementById("v2_tls").value = 1;
-			// document.getElementById("v2_tls").checked = true;
-			// document.getElementById("ssp_tls_host").value = '';
+			//sock5
+			document.getElementById("s5_password").value = '';
+			document.getElementById("s5_username").value = '';
 			switch_ss_type();
 		}
 		//编辑节点
@@ -779,7 +790,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			} else if (type == "trojan") {
 				document.getElementById("ssp_insecure").value = getProperty(ss, 'insecure', 0);
 				document.getElementById("ssp_insecure").checked =  document.getElementById("ssp_insecure").value != 0;
-				document.getElementById("v2_tls").value = getProperty(ss, 'tls', '0');
+				document.getElementById("v2_tls").value = 1;
 				//document.getElementById("v2_tls").checked =  document.getElementById("v2_tls") != 0;
 				document.getElementById("ssp_tls_host").value = getProperty(ss, 'tls_host', '');
 			} else if (type == "socks5") {
@@ -950,6 +961,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				s.innerHTML = "<font color='red'>用户取消</font>";
 				return false;
 			}
+			initSSParams();
 			s.innerHTML = "";
 			//var ssu = ssrurl.match(/ssr:\/\/([A-Za-z0-9_-]+)/i);
 			var ssu = ssrurl.split('://');
@@ -960,6 +972,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			}
 			var event = document.createEvent("HTMLEvents");
 			event.initEvent("change", true, true);
+			initSSParams();
 			if (ssu[0] == "ssr") {
 				var sstr = b64decsafe(ssu[1]);
 				var ploc = sstr.indexOf("/?");
@@ -995,6 +1008,8 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				s.innerHTML = "<font color='green'>导入ShadowsocksR配置信息成功</font>";
 				return false;
 			} else if (ssu[0] == "ss") {
+				var url0, param = "";
+				var sipIndex = ssu[1].indexOf("@");
 				var ploc = ssu[1].indexOf("#");
 				if (ploc > 0) {
 					url0 = ssu[1].substr(0, ploc);
@@ -1002,6 +1017,40 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				} else {
 					url0 = ssu[1]
 				}
+				if (sipIndex != -1) {
+				var userInfo = b64decsafe(url0.substr(0, sipIndex));
+				var temp = url0.substr(sipIndex + 1).split("/?");
+				var serverInfo = temp[0].split(":");
+				var server = serverInfo[0];
+				var port = serverInfo[1].replace("/","");
+				var method, password, plugin, pluginOpts;
+				if (temp[1]) {
+					var pluginInfo = decodeURIComponent(temp[1]);
+					var pluginIndex = pluginInfo.indexOf(";");
+					var pluginNameInfo = pluginInfo.substr(0, pluginIndex);
+					plugin = pluginNameInfo.substr(pluginNameInfo.indexOf("=") + 1);
+					pluginOpts = pluginInfo.substr(pluginIndex + 1);
+				}
+				var userInfoSplitIndex = userInfo.indexOf(":");
+				if (userInfoSplitIndex != -1) {
+					method = userInfo.substr(0, userInfoSplitIndex);
+					password = userInfo.substr(userInfoSplitIndex + 1);
+				}
+				document.getElementById('ssp_type').value = "ss";
+				document.getElementById('ssp_type').dispatchEvent(event);
+				document.getElementById('ssp_server').value = server;
+				document.getElementById('ssp_prot').value = port;
+				document.getElementById('ss_password').value = password || "";
+				document.getElementById('ss_method').value = method || "";
+				document.getElementById('ss_plugin').value = plugin || "";
+				if (plugin != undefined && plugin != "") {
+				document.getElementById('ss_plugin_opts').value = pluginOpts || "";
+				}
+				if (param != undefined) {
+				document.getElementById('ssp_name').value = decodeURI(param);
+				}				
+				s.innerHTML = "<font color='green'>导入Shadowsocks配置信息成功</font>";					}
+			 else {
 				var sstr = b64decsafe(url0);
 				document.getElementById('ssp_type').value = "ss";
 				document.getElementById('ssp_type').dispatchEvent(event);
@@ -1013,12 +1062,14 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				document.getElementById('ssp_prot').value = part2[1];
 				document.getElementById('ss_password').value = part1[1];
 				document.getElementById('ss_method').value = part1[0];
+				s.innerHTML = "<font color='green'>导入Shadowsocks配置信息成功</font>";
+				}
 				if (param != undefined) {
 					document.getElementById('ssp_name').value = decodeURI(param);
 				}
-				s.innerHTML = "<font color='green'>导入Shadowsocks配置信息成功</font>";
 				return false;
 			} else if (ssu[0] == "trojan") {
+				var url0, param = "";
 				var ploc = ssu[1].indexOf("#");
 				if (ploc > 0) {
 					url0 = ssu[1].substr(0, ploc);
@@ -1031,11 +1082,23 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				document.getElementById('ssp_type').dispatchEvent(event);
 				var team = sstr.split('@');
 				var password = team[0]
-				var serverPart = team[1].split(':');
-				var port = serverPart[1].split('?')[0];
+				var serverPart = team[1].split(':');		
+				var others = serverPart[1].split('?');
+				var port = parseInt(others[0]);
+				var queryParam = {}
+				if (others.length > 1) {
+				var queryParams = others[1]
+				var queryArray = queryParams.split('&');
+				for (i = 0; i < queryArray.length; i++) {
+					var params = queryArray[i].split('=');
+					queryParam[decodeURIComponent(params[0])] = decodeURIComponent(params[1] || '');
+				}
+			}
 				document.getElementById('ssp_server').value = serverPart[0];
-				document.getElementById('ssp_prot').value = port;
+				document.getElementById('ssp_prot').value = port || '443';;
 				document.getElementById('ss_password').value = password;
+				document.getElementById('v2_tls').value = '1';
+				document.getElementById('ssp_tls_host').value = queryParam.sni || '';
 				if (param != undefined) {
 					document.getElementById('ssp_name').value = decodeURI(param);
 				}
@@ -1058,15 +1121,22 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				document.getElementById('ssp_prot').value = ssm.port;
 				document.getElementById('v2_alter_id').value = ssm.aid;
 				document.getElementById('v2_vmess_id').value = ssm.id;
-				if (ssm.net == "tcp") {
-					document.getElementById('v2_tcp_guise').value = ssm.type;
-					document.getElementById('v2_http_host').value = ssm.host;
-					document.getElementById('v2_http_path').value = ssm.path;
-				} else {
-					document.getElementById('v2_kcp_guise').value = ssm.type;
-				}
 				document.getElementById('v2_transport').value = ssm.net;
 				document.getElementById('v2_transport').dispatchEvent(event);
+				if (ssm.net == "tcp") {
+					if (ssm.type && ssm.type != "http") {
+					ssm.type = "none"
+					}
+					document.getElementById('v2_tcp_guise').value = ssm.type;
+					document.getElementById('v2_http_host').value = ssm.host;
+					 if (ssm.path != undefined){
+					            document.getElementById('v2_http_path').value = ssm.path;
+						}
+					    else
+					    	{
+						    document.getElementById('v2_http_path').value = '/';
+						}
+				} 
 				if (ssm.net == "ws") {
 					document.getElementById('v2_ws_host').value = ssm.host;
 					document.getElementById('v2_ws_path').value = ssm.path;
@@ -1085,6 +1155,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				s.innerHTML = "<font color='green'>导入V2ray配置信息成功</font>";
 				return false;
 			} else if (ssu[0] == "vless") {
+				var url0, param = "";
 				var ploc = ssu[1].indexOf("#");
 				if (ploc > 0) {
 					url0 = ssu[1].substr(0, ploc);
@@ -1099,77 +1170,52 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				var team = sstr.split('@');
 				var password = team[0]
 				var serverPart = team[1].split(':');
-				var port = serverPart[1].split('?')[0];
+				var others = serverPart[1].split('?');
+				var port = others[0]
+				var queryParam = {}
+				if (others.length > 1) {
+				var queryParams = others[1]
+				var queryArray = queryParams.split('&');
+				for (i = 0; i < queryArray.length; i++) {
+					var params = queryArray[i].split('=');
+					queryParam[decodeURIComponent(params[0])] = decodeURIComponent(params[1] || '');
+									}
+							}
 				document.getElementById('ssp_server').value = serverPart[0];
 				document.getElementById('ssp_prot').value = port;
 				document.getElementById('v2_vmess_id').value = password;
 				document.getElementById('v2_alter_id').value = "0";		
-				
-				ploc = sstr.indexOf("?");
-				if (ploc > 0) {
-					url0 = sstr.substr(0, ploc);
-					param = sstr.substr(ploc + 1);
-				}
-				var pdict = {};
-				if (param.length > 2) {
-					var a = param.split('&');
-					for (var i = 0; i < a.length; i++) {
-						var b = a[i].split('=');
-						pdict[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || '');
-					}
-				}
-				
 				document.getElementById('ssp_type').value = "xray";
 				document.getElementById('ssp_type').dispatchEvent(event);
-						
-				document.getElementById('v2_security').value = pdict['encryption'];
-				
-				
-				if (pdict['type'] == "tcp") {
-					if (pdict['guise'] != undefined) {
-					    document.getElementById('v2_tcp_guise').value = "http";
-					    document.getElementById('v2_http_host').value = pdict['host'];
-					    if (pdict['path'] != undefined){
-					            document.getElementById('v2_http_path').value = pdict['path'];
-						}
-					    else
-					    	{
-						    document.getElementById('v2_http_path').value = '/';
-						}
-					}
-					else
-					{
-					    document.getElementById('v2_kcp_guise').value = "none";
-					}
-				} else {
-					document.getElementById('v2_kcp_guise').value = "none";
-				}
-				document.getElementById('v2_transport').value = pdict['type'];
+				document.getElementById('v2_security').value = queryParam.encryption || "none";
+				document.getElementById('v2_transport').value = queryParam.type || "tcp";
 				document.getElementById('v2_transport').dispatchEvent(event);
 				
-				if (pdict['type'] == "ws") {
-					document.getElementById('v2_ws_host').value = pdict['host'];
-					document.getElementById('v2_ws_path').value = pdict['path'];
-				}
-				if (pdict['type'] == "h2") {
-					document.getElementById('v2_h2_host').value = pdict['host'];
-					document.getElementById('v2_h2_path').value = pdict['path'];
-				}
-				if (pdict['security'] == "tls") {
+				if (queryParam.security == "tls") {
 					document.getElementById('v2_tls').value = '1';
 					document.getElementById('v2_flow').value = '0';
 					//document.getElementById('v2_tls').checked = true;
 					document.getElementById('ssp_insecure').value = 0;
 					document.getElementById('ssp_insecure').checked = false;
-					document.getElementById('ssp_tls_host').value = pdict['host'];
+					document.getElementById('ssp_tls_host').value = queryParam.sni || serverPart[0];
 				}
-				if (pdict['security'] == "xtls") {
+				
+				if (queryParam.type == "ws") {
+					document.getElementById('v2_ws_host').value = queryParam.host;
+					document.getElementById('v2_ws_path').value =  queryParam.path;
+				}
+				if (queryParam.type == "h2") {
+					document.getElementById('v2_h2_host').value = queryParam.host;
+					document.getElementById('v2_h2_path').value = queryParam.path;
+				}
+				
+				if (queryParam.security == "xtls") {
 					document.getElementById('v2_tls').value = '2';
-					if (pdict['flow'] != undefined) {
-					    if(pdict['flow'] == 'xtls-rprx-direct'){
+					if (queryParam.flow != undefined) {
+					    if(queryParam.flow == 'xtls-rprx-direct'){
 					    	document.getElementById('v2_flow').value = '1';
 					    }
-					    else if(pdict['flow'] == 'xtls-rprx-splice'){
+					    else if(queryParam.flow == 'xtls-rprx-splice'){
 					    	document.getElementById('v2_flow').value = '2';
 					    }
 					    else
@@ -1185,7 +1231,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 					//document.getElementById('v2_tls').checked = true;
 					document.getElementById('ssp_insecure').value = 0;
 					document.getElementById('ssp_insecure').checked = false;
-					document.getElementById('ssp_tls_host').value = pdict['host'];
+					document.getElementById('ssp_tls_host').value = queryParam.sni || serverPart[0];
 				}
 				s.innerHTML = "<font color='green'>导入Xray配置信息成功</font>";
 				return false;
@@ -1285,6 +1331,8 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 					coustom: "1",
 				}
 			} else if (type == "v2ray" || type == "xray") {
+				var http_pathnew = document.getElementById("v2_http_path").value;
+				if (http_pathnew == '') { document.getElementById("v2_http_path").value='/';}
 				var DataObj = {
 					type: document.getElementById("ssp_type").value,
 					alias: document.getElementById("ssp_name").value,
@@ -1377,19 +1425,25 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 			});
 		}
 		function showsdlinkList() {
-			var key = "ssconf_basic_json_" + document.getElementById("nodeList").value;
+			var value = document.getElementById("nodeList").value;
+			if (value >0){
+			var key = "ssconf_basic_json_" + value;		
 			var result = JSON.parse(db_ss[key]);
-			document.getElementById("d_type").value = result.type;
+			document.getElementById("d_type").value = result.type;}
 		}
 		function showsudlinkList() {
-			var key = "ssconf_basic_json_" + document.getElementById("u_nodeList").value;
+			var value = document.getElementById("u_nodeList").value;
+			if (value >0){
+			var key = "ssconf_basic_json_" + value;
 			var result = JSON.parse(db_ss[key]);
-			document.getElementById("ud_type").value = result.type;
+			document.getElementById("ud_type").value = result.type;}
 		}
 		function shows5dlinkList() {
-			var key = "ssconf_basic_json_" + document.getElementById("s5_nodeList").value;
+			var value = document.getElementById("s5_nodeList").value;
+			if (value >0){
+			var key = "ssconf_basic_json_" + value
 			var result = JSON.parse(db_ss[key]);
-			document.getElementById("s5_type").value = result.type;
+			document.getElementById("s5_type").value = result.type;}
 		}
 	</script>
 	<style>
@@ -1471,7 +1525,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 										<div>
 											<ul class="nav nav-tabs" style="margin-bottom: 10px;">
 												<li class="active">
-													<a id="tab_ss_cfg" href="#cfg">客户端</a>
+													<a id="tab_ss_cfg" href="#cfg" >客户端</a>
 												</li>
 												<li>
 													<a id="tab_ss_add" href="#add">节点管理</a>
@@ -1494,13 +1548,13 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 											<div id="tabMenu" class="submenuBlock"></div>
 											<div id="wnd_ss_cfg">
 												<div class="alert alert-info" style="margin: 10px;">
-													一个兼容Shadowsocks、ShadowsocksR 、Vmess等协议的游戏加速工具。
-													<div><span style="color:#E53333;">注意:</span></div>
+										一个兼容Shadowsocks、ShadowsocksR 、Vmess、Vless、Trojan、Sock5协议的游戏加速工具。
+										<div><span style="color:#E53333;">注意:</span></div>
 													<div><span
-															style="color:#E53333;">1.chinadns-ng仅当绕过大陆模式有域名污染时才建议打开来分流防止污染！当然会占用一部分内存。</span>
+															style="color:#E53333;">若被编辑的节点正在运行使用，请完成后点击“应用设置”更新节点信息并重连</span>
 													</div>
 													<div><span
-															style="color:#E53333;">2.服务器确定连上后,网页还是打不开,可尝试切换国外DNS</span>
+															style="color:#E53333;">运行状态不会实时更新，启动节点后需等待一段时间手动刷新页面获取运行状态</span>
 													</div>
 												</div>
 												<table width="100%" cellpadding="4" cellspacing="0" class="table">
@@ -1511,10 +1565,10 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 													</tr>
 													</th>
 													</tr>
-													<tr id="row_pdnsd_run" style="display:none;">
-														<th>PDNSD<#running_status#>
+													<tr id="row_pdnsd_run">
+														<th>dns2tcp<#running_status#>
 														</th>
-														<td id="pdnsd_status"></td>
+														<td id="dns2tcp_status"></td>
 													</tr>
 													</th>
 													</tr>
@@ -1628,7 +1682,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 														</td>
 													</tr>
 													<tr id="row_pdnsd_enable">
-														<th width="50%">DNS解析方式(仅GFW模式生效)</th>
+														<th width="50%">DNS解析方式</th>
 														<td>
 															<select name="pdnsd_enable" id="pdnsd_enable" class="input"
 																style="width: 200px;" onchange="switch_dns()">
@@ -1828,9 +1882,9 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 				<input type="button" id="btn_update_link" class="btn btn-info" value="更新所有订阅服务器节点" onclick="dlink();">
 				</td>
 			</tr>
-			<tr><th>删除所有订阅服务器节点</th>
+			<tr><th>删除列表所有服务器节点</th>
 				<td>
-				<input type="button" id="btn_rest_link" class="btn btn-danger" value="删除所有订阅服务器节点" onclick="ddlink();">
+				<input type="button" id="btn_rest_link" class="btn btn-danger" value="删除列表所有服务器节点" onclick="ddlink();">
 				</td>
 			</tr>
 												
@@ -1885,8 +1939,8 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 																	<option value="ss">SS</option>
 																	<option value="ssr">SSR</option>
 																	<option value="trojan">Trojan</option>
-																	<option value="v2ray">V2ray</option>
-																	<option value="xray">Xray</option>
+																	<option value="v2ray">Vmess</option>
+																	<option value="xray">VLess</option>
 																	<option value="socks5">SOCKS5</option>
 																</select>
 															</td>
@@ -2081,6 +2135,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 																	<option value="auto">AUTO</option>
 																	<option value="none">NONE</option>
 																	<option value="aes-128-gcm">AES-128-GCM</option>
+																															<option value="zero">ZERO</option>
 																	<option value="chacha20-poly1305">CHACHA20-POLY1305
 																	</option>
 																</select>
@@ -2278,7 +2333,7 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 																	<option value="1">xtls-rprx-direct</option>
 																	<option value="2">xtls-rprx-splice</option>
 																</select>
-																
+
 															</td>
 														</tr>
 														<tr id="row_tj_tls_host" style="display:none;">
@@ -2545,6 +2600,18 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 													<tr>
 														<td colspan="3">
 															<i class="icon-hand-right"></i> <a
+																href="javascript:spoiler_toggle('script8')"><span>游戏模式LAN IP（客户端UDP所有端口,TCP跟随主服务器端口模式,强制走绕过大陆模式）:</span></a>
+															<div id="script8">
+																<textarea rows="8" wrap="off" spellcheck="false"
+																	maxlength="314571" class="span12"
+																	name="scripts.ss_lan_gmip.sh"
+																	style="font-family:'Courier New'; font-size:12px;"><% nvram_dump("scripts.ss_lan_gmip.sh",""); %></textarea>
+															</div>
+														</td>
+													</tr>
+													<tr>
+														<td colspan="3">
+															<i class="icon-hand-right"></i> <a
 																href="javascript:spoiler_toggle('script11')"><span>强制走SS代理的WAN
 																	IP:</span></a>
 															<div id="script11">
@@ -2654,3 +2721,4 @@ setTimeout('document.getElementById("btn_ctime").style.display="none";',1000);
 </body>
 
 </html>
+
