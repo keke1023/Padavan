@@ -847,7 +847,7 @@ function show_menu(L1, L2, L3) {
 		if (title2 == "") { continue; }
 		var link2 = menuL2[i].link;
 		var icon2 = "icon-minus";
-		if (L2 == (i + 1))
+		if( L2 == menuL2[i].index)
 			navL2 += '<a href="javascript: void(0)" class="current"><i class="' + icon2 + '"></i><b>&nbsp;&nbsp;' + title2 + '</b></a>';
 		else
 			navL2 += '<a href="' + link2 + '"><i class="' + icon2 + '"></i>&nbsp;&nbsp;' + title2 + '</a>';
