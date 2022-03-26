@@ -1,3 +1,7 @@
+新增了对交换芯片RTL8367S的支持，相关的机型为以MTK7620A/DA为主控外接交换芯片实现千兆有线的水星D12G，Tplink C5 v4等等  
+源码来自于https://gitlab.com/dm38/padavan-ng  
+相关提交为https://gitlab.com/dm38/padavan-ng/-/commit/4ec2acb96dccc268ec23aa71b8f5fcb283b9e122  
+  
 新增了对xtls的支持，源码来自于xumng123  
 https://github.com/xumng123/rt-n56u  
 感谢vb1980持续对代码做出的测试和改进，他在原本的基础上新增了对xray的编译，而我之前就直接替换了v2ray的bin，所以是殊途同归啦  

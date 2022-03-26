@@ -31,10 +31,10 @@ configure:
 	)
 
 clean:
-	if [ -f $(SRC_NAME)/Makefile ] ; then \
-		$(MAKE) -C $(SRC_NAME) distclean ; \
-	fi ; \
-	rm -f config_done
+#	if [ -f $(SRC_NAME)/Makefile ] ; then \
+#		$(MAKE) -C $(SRC_NAME) distclean ; \
+#	fi ; \
+#	rm -f config_done
 
 romfs:
 	$(ROMFSINST) -p +x $(THISDIR)/$(SRC_NAME)/src/obfs-server /usr/bin/obfs-server

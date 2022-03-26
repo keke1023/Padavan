@@ -56,7 +56,6 @@
 #include "nvram_x.h"
 #include "httpd.h"
 #include "dbapi.h"
-
 #define GROUP_FLAG_REFRESH 	0
 #define GROUP_FLAG_DELETE 	1
 #define GROUP_FLAG_ADD 		2
@@ -73,16 +72,13 @@ static int wl_modified = 0;
 static int rt_modified = 0;
 static u64 restart_needed_bits = 0;
 
-//static char post_buf[32768] = {0};
 static char post_buf[65535] = {0};
 static char post_buf_backup[65535] = {0};
 static char post_json_buf[65535] = {0};
 static char next_host[128] = {0};
 static char SystemCmd[128] = {0};
 static int  group_del_map[MAX_GROUP_COUNT+2];
-
 extern void unescape(char *s);
-
 extern struct evDesc events_desc[];
 extern int auth_nvram_changed;
 #if defined (SUPPORT_HTTPS)
@@ -2013,6 +2009,7 @@ static int shadowsocks_action_hook(int eid, webs_t wp, int argc, char **argv)
 	websWrite(wp, "<script>restart_needed_time(%d);</script>\n", needed_seconds);
 	return 0;
 }
+
 #if defined(APP_SHADOWSOCKS)
 static int
 applydb_cgi(webs_t wp, char *urlPrefix, char *webDir, int arg,
@@ -2031,7 +2028,6 @@ applydb_cgi(webs_t wp, char *urlPrefix, char *webDir, int arg,
 	char *name = websGetVar(wp, "p","");
 	char scPath[128];
 	char *post_db_buf = post_json_buf;
-
 	action_mode = websGetVar(wp, "action_mode", "");
 	action_script = websGetVar(wp, "action_script", "");
 	char userm[] = "deleting";
@@ -2039,7 +2035,7 @@ applydb_cgi(webs_t wp, char *urlPrefix, char *webDir, int arg,
 	char useaping[] = "allping";
 	char usedlink[] = "dlink";
 	char useddlink[] = "ddlink";
-	
+
 	dbclient client;
 	dbclient_start(&client);
 	if (strlen(name) <= 0) {
@@ -2170,6 +2166,7 @@ do_dbconf(char *url, FILE *stream)
 	dbclient_end(&client);
 }
 #endif
+
 static int shadowsocks_status_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	int ss_status_code = pids("ss-redir");
@@ -2184,7 +2181,7 @@ static int shadowsocks_status_hook(int eid, webs_t wp, int argc, char **argv)
 		ss_status_code = pids("trojan");
 	}
 	if (ss_status_code == 0){
-		ss_status_code = pids("kumasocks");
+		ss_status_code = pids("ipt2socks");
 	}
 	websWrite(wp, "function shadowsocks_status() { return %d;}\n", ss_status_code);
 	int ss_tunnel_status_code = pids("ss-local");
@@ -2267,7 +2264,7 @@ static int adbyby_action_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	int needed_seconds = 3;
 	char *ad_action = websGetVar(wp, "connect_action", "");
-	
+
 	if (!strcmp(ad_action, "updateadb")) {
 		notify_rc(RCN_RESTART_UPDATEADB);
 	}
@@ -2282,12 +2279,20 @@ static int adbyby_status_hook(int eid, webs_t wp, int argc, char **argv)
 	return 0;
 }
 #endif
-
 #if defined (APP_SHADOWSOCKS)
 static int pdnsd_status_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	int pdnsd_status_code = pids("pdnsd");
 	websWrite(wp, "function pdnsd_status() { return %d;}\n", pdnsd_status_code);
+	return 0;
+}
+#endif
+
+#if defined (APP_SHADOWSOCKS)
+static int dns2tcp_status_hook(int eid, webs_t wp, int argc, char **argv)
+{
+	int dns2tcp_status_code = pids("dns2tcp");
+	websWrite(wp, "function dns2tcp_status() { return %d;}\n", dns2tcp_status_code);
 	return 0;
 }
 #endif
@@ -2337,7 +2342,7 @@ static int frps_status_hook(int eid, webs_t wp, int argc, char **argv)
 static int update_action_hook(int eid, webs_t wp, int argc, char **argv)
 {
 	char *up_action = websGetVar(wp, "connect_action", "");
-	
+
 	if (!strcmp(up_action, "bigtmp")) {
 		system("mount -t tmpfs -o remount,rw,size=50M tmpfs /tmp");
 	}
@@ -4567,6 +4572,7 @@ struct ej_handler ej_handlers[] =
 	{ "shadowsocks_status", shadowsocks_status_hook},
 	{ "rules_count", rules_count_hook},
 	{ "pdnsd_status", pdnsd_status_hook},
+	{ "dns2tcp_status", dns2tcp_status_hook},
 #endif
 #if defined (APP_KOOLPROXY)
 	{ "koolproxy_action", koolproxy_action_hook},
@@ -4589,9 +4595,10 @@ struct ej_handler ej_handlers[] =
 	{ "frpc_status", frpc_status_hook},
 	{ "frps_status", frps_status_hook},
 #endif
-    { "update_action", update_action_hook},
+	{ "update_action", update_action_hook},
 	{ "openssl_util_hook", openssl_util_hook},
 	{ "openvpn_srv_cert_hook", openvpn_srv_cert_hook},
 	{ "openvpn_cli_cert_hook", openvpn_cli_cert_hook},
 	{ NULL, NULL }
 };
+

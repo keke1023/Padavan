@@ -141,15 +141,16 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_RPL2TP)			+= rp-l2tp
 dir_y							+= lldt
 dir_y							+= scripts
 dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)		+= skipdbv2
-dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)		+= chinadns-ng
 dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)		+= lua51
-dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)		+= microsocks
 dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)		+= ipt2socks
+dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)              += resolveip
 dir_$(CONFIG_FIRMWARE_INCLUDE_ADGUARDHOME)      	+= adguardhome
 dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)	        += dns2tcp
+
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS),y)
-dir_$(CONFIG_FIRMWARE_INCLUDE_V2RAY)			+= v2ray
-dir_$(CONFIG_FIRMWARE_INCLUDE_TROJAN)			+= trojan
+dir_$(CONFIG_FIRMWARE_INCLUDE_V2RAY)	        += v2ray
+dir_$(CONFIG_FIRMWARE_INCLUDE_XRAY)	        += xray
+dir_$(CONFIG_FIRMWARE_INCLUDE_TROJAN)	        += trojan
 endif
 dir_$(CONFIG_FIRMWARE_INCLUDE_SSOBFS)			+= simple-obfs
 dir_$(CONFIG_FIRMWARE_INCLUDE_ZEROTIER)			+= zerotier
@@ -194,8 +195,11 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_MENTOHUST)		+= mentohust
 dir_$(CONFIG_FIRMWARE_INCLUDE_SMARTDNS)			+= smartdns
 dir_$(CONFIG_FIRMWARE_INCLUDE_CADDY)			+= caddy
 dir_$(CONFIG_FIRMWARE_INCLUDE_xTUN) 			+= xTun
-dir_$(CONFIG_FIRMWARE_INCLUDE_WING) 			+= wing
-dir_$(CONFIG_FIRMWARE_INCLUDE_WING) 			+= ipt2socks
+ifeq ($(CONFIG_FIRMWARE_INCLUDE_WING),y)
+dir_y 			+= wing
+dir_y 			+= ipt2socks
+endif
+
 dir_$(CONFIG_FIRMWARE_INCLUDE_REDSOCKS)			+= redsocks
 dir_$(CONFIG_FIRMWARE_INCLUDE_3PROXY)			+= 3proxy
 

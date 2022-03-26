@@ -75,6 +75,13 @@ choice
 	depends on RTL8367
 endchoice
 
+config  RTL8367_MDIO_PHYID
+	int "Switch PHY address at MDIO Bus"
+	depends on RTL8367 && RTL8367_CIF_MDIO
+	default 0
+	help
+	please choose switch phy address at mdio bus (usually 0 or 29)
+
 config  RTL8367_SMI_BUS_CPU_GPIO_DATA
 	int "Ralink GPIO Pin for SMI Bus Data"
 	depends on RTL8367 && RTL8367_CIF_SMI
