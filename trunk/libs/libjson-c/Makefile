@@ -1,6 +1,6 @@
-SRC_NAME=json-c-json-c-0.15-20200726
-SRC_URL=https://github.com/json-c/json-c/archive/refs/tags/json-c-0.15-20200726.tar.gz
-ARCHIVE_NAME=json-c-json-c-0.15-20200726
+SRC_NAME=json-c-json-c-0.16-20220414
+SRC_URL=https://github.com/json-c/json-c/archive/refs/tags/json-c-0.16-20220414.tar.gz
+ARCHIVE_NAME=json-c-json-c-0.16-20220414
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)/build
