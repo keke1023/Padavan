@@ -1,18 +1,8 @@
-SRC_NAME=libxml2-2.9.12
+SRC_NAME=libxml2-2.9.13
 SRC_URL=http://xmlsoft.org/sources/$(SRC_NAME).tar.gz
 
-all: download_test extract_test config_test
+all: config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
-
-download_test:
-	( if [ ! -f $(SRC_NAME).tar.gz ]; then \
-		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
-	fi )
-
-extract_test:
-	( if [ ! -d $(SRC_NAME) ]; then \
-		tar zxf $(SRC_NAME).tar.gz ; \
-	fi )
 
 config_test:
 	( if [ -f ./config_done ]; then \
@@ -23,6 +13,7 @@ config_test:
 
 configure:
 	( cd $(SRC_NAME) ; \
+        ./autogen.sh;\
 	./configure \
 		--prefix=$(STAGEDIR) \
 		--enable-static \
