@@ -1,4 +1,4 @@
-SRC_NAME=openssl-1.1.1l
+SRC_NAME=openssl-1.1.1n
 SRC_URL=https://www.openssl.org/source/$(SRC_NAME).tar.gz
 
 # openssl use CROSS_COMPILE prefix
@@ -30,7 +30,8 @@ ifeq (,$(filter y,$(CONFIG_FIRMWARE_INCLUDE_OPENSSL_EC) $(CONFIG_FIRMWARE_INCLUD
 OPENSSL_OPTIONS += no-ec
 endif
 
-all: download_test extract_test config_test
+#all: download_test extract_test config_test
+all: config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
 download_test:
