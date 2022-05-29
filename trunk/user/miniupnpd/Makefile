@@ -1,4 +1,4 @@
-SRC_NAME=miniupnpd-2.2.2
+SRC_NAME=miniupnpd-2.3.0
 SRC_URL=http://miniupnp.free.fr/files/download.php?file=$(SRC_NAME).tar.gz
 
 # reference to iptables package
