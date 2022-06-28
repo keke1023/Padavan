@@ -1,5 +1,4 @@
-SRC_NAME=libxml2-2.9.13
-SRC_URL=http://xmlsoft.org/sources/$(SRC_NAME).tar.gz
+SRC_NAME=libxml2-2.9.14
 
 all: config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
