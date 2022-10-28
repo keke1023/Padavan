@@ -1,5 +1,5 @@
-SRC_NAME=mbedtls-2.7.19
-SRC_URL=https://tls.mbed.org/download/mbedtls-2.7.19.tar.gz
+SRC_NAME=mbedtls-2.28.1
+SRC_URL=https://tls.mbed.org/download/mbedtls-2.28.1.tar.gz
 
 all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)/build
@@ -26,12 +26,12 @@ configure:
 	cmake \
 	-DCMAKE_INSTALL_PREFIX=$(STAGEDIR) \
 	-DCMAKE_TOOLCHAIN_FILE=../../cross-mipsel-linux.cmake \
-	-DUSE_SHARED_MBEDTLS_LIBRARY=On \
-	-DUSE_STATIC_MBEDTLS_LIBRARY=Off \
-	-DENABLE_TESTING=Off \
-	-DENABLE_PROGRAMS=Off \
-	-DLINK_WITH_PTHREAD=On \
-	-DENABLE_ZLIB_SUPPORT=On \
+	-DUSE_SHARED_MBEDTLS_LIBRARY=ON \
+	-DUSE_STATIC_MBEDTLS_LIBRARY=OFF \
+	-DENABLE_TESTING=OFF \
+	-DENABLE_PROGRAMS=OFF \
+	-DLINK_WITH_PTHREAD=ON \
+	-DENABLE_ZLIB_SUPPORT=ON \
 	.. \
 	)
 
