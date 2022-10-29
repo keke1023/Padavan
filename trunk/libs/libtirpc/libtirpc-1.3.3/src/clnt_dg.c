@@ -101,9 +101,10 @@ extern mutex_t clnt_fd_lock;
 #define	release_fd_lock(fd_lock, mask) {	\
 	mutex_lock(&clnt_fd_lock);	\
 	fd_lock->active = FALSE;	\
-	mutex_unlock(&clnt_fd_lock);	\
+	fd_lock->pending--;		\
 	thr_sigsetmask(SIG_SETMASK, &(mask), NULL); \
 	cond_signal(&fd_lock->cv);	\
+	mutex_unlock(&clnt_fd_lock);    \
 }
 
 static const char mem_err_clnt_dg[] = "clnt_dg_create: out of memory";
@@ -172,12 +173,15 @@ clnt_dg_create(fd, svcaddr, program, version, sendsz, recvsz)
 	if (dg_fd_locks == (fd_locks_t *) NULL) {
 		dg_fd_locks = fd_locks_init();
 		if (dg_fd_locks == (fd_locks_t *) NULL) {
+			mutex_unlock(&clnt_fd_lock);
 			goto err1;
 		}
 	}
 	fd_lock = fd_lock_create(fd, dg_fd_locks);
-	if (fd_lock == (fd_lock_t *) NULL)
+	if (fd_lock == (fd_lock_t *) NULL) {
+		mutex_unlock(&clnt_fd_lock);
 		goto err1;
+	}
 
 	mutex_unlock(&clnt_fd_lock);
 	thr_sigsetmask(SIG_SETMASK, &(mask), NULL);
@@ -308,6 +312,7 @@ clnt_dg_call(cl, proc, xargs, argsp, xresults, resultsp, utimeout)
 	sigfillset(&newmask);
 	thr_sigsetmask(SIG_SETMASK, &newmask, &mask);
 	mutex_lock(&clnt_fd_lock);
+	cu->cu_fd_lock->pending++;
 	while (cu->cu_fd_lock->active)
 		cond_wait(&cu->cu_fd_lock->cv, &clnt_fd_lock);
 	cu->cu_fd_lock->active = TRUE;
@@ -456,9 +461,9 @@ get_reply:
 		 cmsg = CMSG_NXTHDR (&msg, cmsg))
 	      if (cmsg->cmsg_level == SOL_IP && cmsg->cmsg_type == IP_RECVERR)
 		{
-		  mem_free(cbuf, (outlen + 256));
 		  e = (struct sock_extended_err *) CMSG_DATA(cmsg);
 		  cu->cu_error.re_errno = e->ee_errno;
+		  mem_free(cbuf, (outlen + 256));
 		  release_fd_lock(cu->cu_fd_lock, mask);
 		  return (cu->cu_error.re_status = RPC_CANTRECV);
 		}
@@ -568,14 +573,15 @@ clnt_dg_freeres(cl, xdr_res, res_ptr)
 	sigfillset(&newmask);
 	thr_sigsetmask(SIG_SETMASK, &newmask, &mask);
 	mutex_lock(&clnt_fd_lock);
+	cu->cu_fd_lock->pending++;
 	while (cu->cu_fd_lock->active)
 		cond_wait(&cu->cu_fd_lock->cv, &clnt_fd_lock);
-	cu->cu_fd_lock->active = TRUE;
 	xdrs->x_op = XDR_FREE;
 	dummy = (*xdr_res)(xdrs, res_ptr);
-	mutex_unlock(&clnt_fd_lock);
+	cu->cu_fd_lock->pending--;
 	thr_sigsetmask(SIG_SETMASK, &mask, NULL);
 	cond_signal(&cu->cu_fd_lock->cv);
+	mutex_unlock(&clnt_fd_lock);
 	return (dummy);
 }
 
@@ -600,6 +606,7 @@ clnt_dg_control(cl, request, info)
 	sigfillset(&newmask);
 	thr_sigsetmask(SIG_SETMASK, &newmask, &mask);
 	mutex_lock(&clnt_fd_lock);
+	cu->cu_fd_lock->pending++;
 	while (cu->cu_fd_lock->active)
 		cond_wait(&cu->cu_fd_lock->cv, &clnt_fd_lock);
 	cu->cu_fd_lock->active = TRUE;
@@ -740,8 +747,14 @@ clnt_dg_destroy(cl)
 	sigfillset(&newmask);
 	thr_sigsetmask(SIG_SETMASK, &newmask, &mask);
 	mutex_lock(&clnt_fd_lock);
-	while (cu_fd_lock->active)
+	/* wait until all pending operations on client are completed. */
+	while (cu_fd_lock->pending > 0) {
+		/* If a blocked operation can be awakened, then do it. */
+		if (cu_fd_lock->active == FALSE)
+			cond_signal(&cu_fd_lock->cv);
+		/* keep waiting... */
 		cond_wait(&cu_fd_lock->cv, &clnt_fd_lock);
+	}
 	if (cu->cu_closeit)
 		(void)close(cu_fd);
 	XDR_DESTROY(&(cu->cu_outxdrs));

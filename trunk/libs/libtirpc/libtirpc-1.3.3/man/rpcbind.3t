@@ -187,6 +187,8 @@ in
 .El
 .Sh AVAILABILITY
 These functions are part of libtirpc.
+.Sh ENVIRONMENT
+If RPCB_V2FIRST is defined, rpcbind protocol version tryout algorithm changes from v4,v2,v3 to v2,v4,v3.
 .Sh SEE ALSO
 .Xr rpc_clnt_calls 3 ,
 .Xr rpc_svc_calls 3 ,

@@ -84,6 +84,8 @@
 #define PMAPPROC_DUMP		((u_long)4)
 #define PMAPPROC_CALLIT		((u_long)5)
 
+#define V2FIRST		"RPCB_V2FIRST"
+
 struct pmap {
 	long unsigned pm_prog;
 	long unsigned pm_vers;

@@ -50,6 +50,7 @@ static unsigned int fd_locks_prealloc = 0;
 /* per-fd lock */
 struct fd_lock_t {
 	bool_t active;
+	int pending;        /* Number of pending operations on fd */
 	cond_t cv;
 };
 typedef struct fd_lock_t fd_lock_t;
@@ -180,6 +181,7 @@ fd_lock_t* fd_lock_create(int fd, fd_locks_t *fd_locks) {
 		item->fd = fd;
 		item->refs = 1;
 		item->fd_lock.active = FALSE;
+		item->fd_lock.pending = 0;
 		cond_init(&item->fd_lock.cv, 0, (void *) 0);
 		TAILQ_INSERT_HEAD(list, item, link);
 	} else {

@@ -12,7 +12,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/tirpc -include config.h -DPORTMAP -DINET6 \
 
 lib_LTLIBRARIES = libtirpc.la
 
-libtirpc_la_LDFLAGS = @LDFLAG_NOUNDEFINED@ -no-undefined -lpthread
+libtirpc_la_LDFLAGS = @LDFLAG_NOUNDEFINED@ -no-undefined @PTHREAD_LIBS@
 libtirpc_la_LDFLAGS += -version-info @LT_VERSION_INFO@
 
 libtirpc_la_SOURCES = auth_none.c auth_unix.c authunix_prot.c \

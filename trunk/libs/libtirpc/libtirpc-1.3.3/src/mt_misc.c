@@ -13,7 +13,7 @@ pthread_rwlock_t	svc_lock = PTHREAD_RWLOCK_INITIALIZER;
 pthread_rwlock_t	svc_fd_lock = PTHREAD_RWLOCK_INITIALIZER;
 
 /* protects the RPCBIND address cache */
-pthread_rwlock_t	rpcbaddr_cache_lock = PTHREAD_RWLOCK_INITIALIZER;
+pthread_mutex_t	rpcbaddr_cache_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /* protects authdes cache (svcauth_des.c) */
 pthread_mutex_t	authdes_lock = PTHREAD_MUTEX_INITIALIZER;

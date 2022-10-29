@@ -85,7 +85,7 @@ static int cachesize;
 
 extern int __rpc_lowvers;
 
-static struct address_cache *check_cache(const char *, const char *);
+static struct address_cache *copy_of_cached(const char *, char *);
 static void delete_cache(struct netbuf *);
 static void add_cache(const char *, const char *, struct netbuf *, char *);
 static CLIENT *getclnthandle(const char *, const struct netconfig *, char **);
@@ -93,6 +93,82 @@ static CLIENT *local_rpcb(void);
 #ifdef NOTUSED
 static struct netbuf *got_entry(rpcb_entry_list_ptr, const struct netconfig *);
 #endif
+
+/*
+ * Destroys a cached address entry structure.
+ *
+ */
+static void
+destroy_addr(addr)
+	struct address_cache *addr;
+{
+	if (addr == NULL)
+		return;
+	if(addr->ac_host != NULL)
+		free(addr->ac_host);
+	if(addr->ac_netid != NULL)
+		free(addr->ac_netid);
+	if(addr->ac_uaddr != NULL)
+		free(addr->ac_uaddr);
+	if(addr->ac_taddr != NULL) {
+		if(addr->ac_taddr->buf != NULL)
+			free(addr->ac_taddr->buf);
+	}
+	free(addr);
+}
+
+/*
+ * Creates an unlinked copy of an address cache entry. If the argument is NULL
+ * or the new entry cannot be allocated then NULL is returned.
+ */
+static struct address_cache *
+copy_addr(addr)
+	const struct address_cache *addr;
+{
+	struct address_cache *copy;
+
+	if (addr == NULL)
+		return (NULL);
+
+	copy = calloc(1, sizeof(*addr));
+	if (copy == NULL)
+		return (NULL);
+
+	if (addr->ac_host != NULL) {
+		copy->ac_host = strdup(addr->ac_host);
+		if (copy->ac_host == NULL)
+			goto err;
+	}
+	if (addr->ac_netid != NULL) {
+		copy->ac_netid = strdup(addr->ac_netid);
+		if (copy->ac_netid == NULL)
+			goto err;
+	}
+	if (addr->ac_uaddr != NULL) {
+		copy->ac_uaddr = strdup(addr->ac_uaddr);
+		if (copy->ac_uaddr == NULL)
+			goto err;
+	}
+
+	if (addr->ac_taddr == NULL)
+		return (copy);
+
+	copy->ac_taddr = calloc(1, sizeof(*addr->ac_taddr));
+	if (copy->ac_taddr == NULL)
+		goto err;
+
+	memcpy(copy->ac_taddr, addr->ac_taddr, sizeof(*addr->ac_taddr));
+	copy->ac_taddr->buf = malloc(addr->ac_taddr->len);
+	if (copy->ac_taddr->buf == NULL)
+		goto err;
+
+	memcpy(copy->ac_taddr->buf, addr->ac_taddr->buf, addr->ac_taddr->len);
+	return (copy);
+
+err:
+	destroy_addr(copy);
+	return (NULL);
+}
 
 /*
  * This routine adjusts the timeout used for calls to the remote rpcbind.
@@ -125,17 +201,18 @@ __rpc_control(request, info)
 }
 
 /*
- *	It might seem that a reader/writer lock would be more reasonable here.
- *	However because getclnthandle(), the only user of the cache functions,
- *	may do a delete_cache() operation if a check_cache() fails to return an
- *	address useful to clnt_tli_create(), we may as well use a mutex.
+ * Protect against concurrent access to the address cache and modifications
+ * (esp. deletions) of cache entries.
+ *
+ * Previously a bidirectional R/W lock was used. However, R/W locking is
+ * dangerous as it allows concurrent modification (e.g. deletion with write
+ * lock) at the same time as the deleted element is accessed via check_cache()
+ * and a read lock). We absolutely need a single mutex for all access to
+ * prevent cache corruption. If the mutexing is restricted to only the
+ * relevant code sections, deadlocking should be avoided even with recursed
+ * client creation.
  */
-/*
- * As it turns out, if the cache lock is *not* a reader/writer lock, we will
- * block all clnt_create's if we are trying to connect to a host that's down,
- * since the lock will be held all during that time.
- */
-extern rwlock_t	rpcbaddr_cache_lock;
+extern pthread_mutex_t	rpcbaddr_cache_lock;
 
 /*
  * The routines check_cache(), add_cache(), delete_cache() manage the
@@ -143,49 +220,52 @@ extern rwlock_t	rpcbaddr_cache_lock;
  */
 
 static struct address_cache *
-check_cache(host, netid)
-	const char *host, *netid;
+copy_of_cached(host, netid)
+	const char *host; 
+	char *netid;
 {
-	struct address_cache *cptr;
+	struct address_cache *cptr, *copy = NULL;
 
-	/* READ LOCK HELD ON ENTRY: rpcbaddr_cache_lock */
-
+	mutex_lock(&rpcbaddr_cache_lock);
 	for (cptr = front; cptr != NULL; cptr = cptr->ac_next) {
 		if (!strcmp(cptr->ac_host, host) &&
 		    !strcmp(cptr->ac_netid, netid)) {
 			LIBTIRPC_DEBUG(3, ("check_cache: Found cache entry for %s: %s\n", 
 				host, netid));
-			return (cptr);
+			copy = copy_addr(cptr);
+			break;
 		}
 	}
-	return ((struct address_cache *) NULL);
+	mutex_unlock(&rpcbaddr_cache_lock);
+	return copy;
 }
 
 static void
 delete_cache(addr)
 	struct netbuf *addr;
 {
-	struct address_cache *cptr, *prevptr = NULL;
+	struct address_cache *cptr = NULL, *prevptr = NULL;
 
-	/* WRITE LOCK HELD ON ENTRY: rpcbaddr_cache_lock */
+	/* LOCK HELD ON ENTRY: rpcbaddr_cache_lock */
+	mutex_lock(&rpcbaddr_cache_lock);
+
 	for (cptr = front; cptr != NULL; cptr = cptr->ac_next) {
 		if (!memcmp(cptr->ac_taddr->buf, addr->buf, addr->len)) {
-			free(cptr->ac_host);
-			free(cptr->ac_netid);
-			free(cptr->ac_taddr->buf);
-			free(cptr->ac_taddr);
+			/* Unlink from cache. We'll destroy it after releasing the mutex. */
 			if (cptr->ac_uaddr)
 				free(cptr->ac_uaddr);
 			if (prevptr)
 				prevptr->ac_next = cptr->ac_next;
 			else
 				front = cptr->ac_next;
-			free(cptr);
 			cachesize--;
 			break;
 		}
 		prevptr = cptr;
 	}
+
+	mutex_unlock(&rpcbaddr_cache_lock);
+	destroy_addr(cptr);
 }
 
 static void
@@ -217,7 +297,7 @@ add_cache(host, netid, taddr, uaddr)
 
 /* VARIABLES PROTECTED BY rpcbaddr_cache_lock:  cptr */
 
-	rwlock_wrlock(&rpcbaddr_cache_lock);
+	mutex_lock(&rpcbaddr_cache_lock);
 	if (cachesize < CACHESIZE) {
 		ad_cache->ac_next = front;
 		front = ad_cache;
@@ -250,7 +330,7 @@ add_cache(host, netid, taddr, uaddr)
 		}
 		free(cptr);
 	}
-	rwlock_unlock(&rpcbaddr_cache_lock);
+	mutex_unlock(&rpcbaddr_cache_lock);
 	return;
 
 out_free:
@@ -260,6 +340,7 @@ out_free:
 	free(ad_cache->ac_taddr);
 	free(ad_cache);
 }
+
 
 /*
  * This routine will return a client handle that is connected to the
@@ -275,11 +356,9 @@ getclnthandle(host, nconf, targaddr)
 	char **targaddr;
 {
 	CLIENT *client;
-	struct netbuf *addr, taddr;
-	struct netbuf addr_to_delete;
+	struct netbuf taddr;
 	struct __rpc_sockinfo si;
 	struct addrinfo hints, *res, *tres;
-	struct address_cache *ad_cache;
 	char *tmpaddr;
 
 	if (nconf == NULL) {
@@ -294,47 +373,35 @@ getclnthandle(host, nconf, targaddr)
 		return NULL;
 	}
 
-/* VARIABLES PROTECTED BY rpcbaddr_cache_lock:  ad_cache */
+
 
 	/* Get the address of the rpcbind.  Check cache first */
 	client = NULL;
 	if (targaddr)
 		*targaddr = NULL;
-	addr_to_delete.len = 0;
-	rwlock_rdlock(&rpcbaddr_cache_lock);
-	ad_cache = NULL;
 
-	if (host != NULL)
-		ad_cache = check_cache(host, nconf->nc_netid);
-	if (ad_cache != NULL) {
-		addr = ad_cache->ac_taddr;
-		client = clnt_tli_create(RPC_ANYFD, nconf, addr,
-		    (rpcprog_t)RPCBPROG, (rpcvers_t)RPCBVERS4, 0, 0);
-		if (client != NULL) {
-			if (targaddr && ad_cache->ac_uaddr)
-				*targaddr = strdup(ad_cache->ac_uaddr);
-			rwlock_unlock(&rpcbaddr_cache_lock);
-			return (client);
-		}
-		addr_to_delete.len = addr->len;
-		addr_to_delete.buf = (char *)malloc(addr->len);
-		if (addr_to_delete.buf == NULL) {
-			addr_to_delete.len = 0;
-		} else {
-			memcpy(addr_to_delete.buf, addr->buf, addr->len);
+	if (host != NULL)  {
+		struct address_cache *ad_cache;
+
+		/* Get an MT-safe copy of the cached address (if any) */
+		ad_cache = copy_of_cached(host, nconf->nc_netid);
+		if (ad_cache != NULL) {
+			client = clnt_tli_create(RPC_ANYFD, nconf, ad_cache->ac_taddr,
+							(rpcprog_t)RPCBPROG, (rpcvers_t)RPCBVERS4, 0, 0);
+			if (client != NULL) {
+				if (targaddr && ad_cache->ac_uaddr) {
+					*targaddr = ad_cache->ac_uaddr;
+					ad_cache->ac_uaddr = NULL; /* De-reference before destruction */
+				}
+				destroy_addr(ad_cache);
+				return (client);
+			}
+
+			delete_cache(ad_cache->ac_taddr);
+			destroy_addr(ad_cache);
 		}
 	}
-	rwlock_unlock(&rpcbaddr_cache_lock);
-	if (addr_to_delete.len != 0) {
-		/*
-		 * Assume this may be due to cache data being
-		 *  outdated
-		 */
-		rwlock_wrlock(&rpcbaddr_cache_lock);
-		delete_cache(&addr_to_delete);
-		rwlock_unlock(&rpcbaddr_cache_lock);
-		free(addr_to_delete.buf);
-	}
+
 	if (!__rpc_nconf2sockinfo(nconf, &si)) {
 		rpc_createerr.cf_stat = RPC_UNKNOWNPROTO;
 		assert(client == NULL);
@@ -798,6 +865,10 @@ __try_protocol_version_2(program, version, nconf, host, tp)
 	pmapaddress->len = pmapaddress->maxlen = remote.len;
 
 	CLNT_DESTROY(client);
+
+	if (parms.r_addr != NULL && parms.r_addr != nullstring)
+		free(parms.r_addr);
+
 	return pmapaddress;
 
 error:
@@ -806,6 +877,10 @@ error:
 		client = NULL;
 
 	}
+
+	if (parms.r_addr != NULL && parms.r_addr != nullstring)
+		free(parms.r_addr);
+
 	return (NULL);
 
 }
@@ -818,7 +893,8 @@ error:
  * The algorithm used: If the transports is TCP or UDP, it first tries
  * version 4 (srv4), then 3 and then fall back to version 2 (portmap).
  * With this algorithm, we get performance as well as a plan for
- * obsoleting version 2.
+ * obsoleting version 2. This behaviour is reverted to old algorithm
+ * if RPCB_V2FIRST environment var is defined
  *
  * For all other transports, the algorithm remains as 4 and then 3.
  *
@@ -838,6 +914,10 @@ __rpcb_findaddr_timed(program, version, nconf, host, clpp, tp)
 {
 #ifdef NOTUSED
 	static bool_t check_rpcbind = TRUE;
+#endif
+
+#ifdef PORTMAP
+	static bool_t portmap_first = FALSE;
 #endif
 	CLIENT *client = NULL;
 	RPCB parms;
@@ -895,8 +975,18 @@ __rpcb_findaddr_timed(program, version, nconf, host, clpp, tp)
 		parms.r_addr = (char *) &nullstring[0];
 	}
 
-	/* First try from start_vers(4) and then version 3 (RPCBVERS) */
+	/* First try from start_vers(4) and then version 3 (RPCBVERS), except
+	 * if env. var RPCB_V2FIRST is defined */
 
+#ifdef PORTMAP
+	if (getenv(V2FIRST)) {
+		portmap_first = TRUE;
+		LIBTIRPC_DEBUG(3, ("__rpcb_findaddr_timed: trying v2-port first\n"));
+		goto portmap;
+	}
+#endif
+
+rpcbind:
 	CLNT_CONTROL(client, CLSET_RETRY_TIMEOUT, (char *) &rpcbrmttime);
 	for (vers = start_vers;  vers >= RPCBVERS; vers--) {
 		/* Set the version */
@@ -944,10 +1034,17 @@ __rpcb_findaddr_timed(program, version, nconf, host, clpp, tp)
 	}
 
 #ifdef PORTMAP 	/* Try version 2 for TCP or UDP */
+	if (portmap_first)
+		goto error; /* we tried all versions if reached here */
+portmap:
 	if (strcmp(nconf->nc_protofmly, NC_INET) == 0) {
 		address = __try_protocol_version_2(program, version, nconf, host, tp);
-		if (address == NULL)
-			goto error;
+		if (address == NULL) {
+			if (portmap_first)
+				goto rpcbind;
+			else
+				goto error;
+		}
 	}
 #endif		/* PORTMAP */
 

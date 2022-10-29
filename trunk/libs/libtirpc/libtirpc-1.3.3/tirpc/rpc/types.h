@@ -71,6 +71,11 @@ typedef   int32_t rpc_inline_t;
 # define __daddr_t_defined
 #endif
 
+#if defined __BIONIC__
+typedef int64_t quad_t;
+typedef uint64_t u_quad_t;
+#endif
+
 #ifndef __u_char_defined
 typedef __u_char u_char;
 typedef __u_short u_short;

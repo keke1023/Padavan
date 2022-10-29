@@ -8,5 +8,5 @@ Description: Transport Independent RPC Library
 Requires:
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -ltirpc
-Libs.private: -lpthread
+Libs.private: @PTHREAD_LIBS@
 Cflags: -I${includedir}/tirpc
