@@ -1,12 +1,13 @@
-SRC_NAME=e2fsprogs-1.45.6
-SRC_URL=https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.45.6/$(SRC_NAME).tar.xz
+SRC_NAME=e2fsprogs-1.46.5
+SRC_URL=https://www.kernel.org/pub/linux/kernel/people/tytso/e2fsprogs/v1.46.5/$(SRC_NAME).tar.xz
 
 THISDIR = $(shell pwd)
 
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections
 
-all: download_test extract_test config_test
+#all: download_test extract_test config_test
+all: config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
 download_test:
