@@ -1,12 +1,13 @@
-SRC_NAME=util-linux-2.36.1
-SRC_URL=https://www.kernel.org/pub/linux/utils/util-linux/v2.36/util-linux-2.36.1.tar.xz
+SRC_NAME=util-linux-2.38
+SRC_URL=https://www.kernel.org/pub/linux/utils/util-linux/v2.38/util-linux-2.38.tar.xz
 
 THISDIR = $(shell pwd)
 
 CFLAGS += -ffunction-sections -fdata-sections
 LDFLAGS += -Wl,--gc-sections
 
-all: download_test extract_test config_test
+#all: download_test extract_test config_test
+all: config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME) && \
 	$(MAKE) -C $(SRC_NAME) install DESTDIR=""
 
@@ -35,7 +36,11 @@ configure:
 	scanf_cv_type_modifier=no \
 	./configure \
 		--prefix=$(STAGEDIR) \
+		--without-tinfo \
 		--without-ncurses \
+		--without-user \
+		--without-cap-ng \
+		--without-util \
 		--without-ncursesw \
 		--without-slang \
 		--without-selinux \
@@ -45,10 +50,35 @@ configure:
 		--without-systemd \
 		--without-btrfs \
 		--without-readline \
-		--disable-all-programs \
 		--enable-libblkid \
 		--enable-libuuid \
-		--enable-blkid \
+		--disable-cal \
+		--disable-fdformat \
+		--disable-hwclock \
+		--disable-bfs \
+		--disable-minix \
+		--disable-ipcrm \
+		--disable-ipcs \
+		--disable-setterm \
+		--disable-nsenter \
+		--disable-rfkill \
+		--disable-setpriv \
+		--disable-logger \
+		--disable-lslogins \
+		--disable-runuser \
+		--disable-libsmartcols \
+		--disable-raw \
+		--disable-ul \
+		--disable-chfn-chsh \
+		--disable-last \
+		--disable-fdisks \
+		--disable-libfdisk \
+		--disable-zramctl \
+		--disable-mesg \
+		--disable-nologin \
+		--disable-more \
+		--disable-chmem \
+		--disable-lsmem \
 		--disable-bash-completion \
 		--disable-nls \
 		--disable-libmount \
