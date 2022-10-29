@@ -1,5 +1,5 @@
 THISDIR = $(shell pwd)
-SRC_NAME=openvpn-2.5.6
+SRC_NAME=openvpn-2.5.7
 
 CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
