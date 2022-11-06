@@ -1,0 +1,23 @@
+[package]
+name = "zeroidc"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+publish = false
+
+[lib]
+crate-type = ["staticlib","rlib"]
+
+[dependencies]
+openidconnect = { version = "2.2", default-features = false, features = ["reqwest", "native-tls", "accept-rfc3339-timestamps"] }
+base64 = "0.13"
+url = "2.2"
+reqwest = "0.11"
+jwt = {version = "0.16", git = "https://github.com/glimberg/rust-jwt"}
+serde = "1.0"
+time = { version = "0.3", features = ["formatting"] }
+bytes = "1.1"
+thiserror = "1"
+
+[build-dependencies]
+cbindgen = "0.20"
