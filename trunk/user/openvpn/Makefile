@@ -1,10 +1,10 @@
 THISDIR = $(shell pwd)
-SRC_NAME=openvpn-2.5.7
+SRC_NAME=openvpn-2.5.8
 
 CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
 
-all: extract_test config_test
+all: config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
 
 extract_test:
