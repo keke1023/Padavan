@@ -24,6 +24,8 @@
 #include <unistd.h>
 #include <linux/if_tun.h>
 
+#include <cerrno>
+
 #ifndef IFNAMSIZ
 #define IFNAMSIZ 16
 #endif

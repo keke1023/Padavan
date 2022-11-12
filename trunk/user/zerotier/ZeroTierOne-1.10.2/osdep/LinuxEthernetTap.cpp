@@ -240,11 +240,11 @@ LinuxEthernetTap::LinuxEthernetTap(
 
 		ifr.ifr_ifru.ifru_hwaddr.sa_family = ARPHRD_ETHER;
 		_mac.copyTo(ifr.ifr_ifru.ifru_hwaddr.sa_data,6);
-		/*if (ioctl(sock,SIOCSIFHWADDR,(void *)&ifr) < 0) {
+		if (ioctl(sock,SIOCSIFHWADDR,(void *)&ifr) < 0) {
 			::close(sock);
 			printf("WARNING: ioctl() failed setting up Linux tap device (set MAC)\n");
 			return;
-		}*/
+		}
 
 		usleep(100000);
 
@@ -273,11 +273,11 @@ LinuxEthernetTap::LinuxEthernetTap(
 		if (!isOldLinuxKernel()) {
 			ifr.ifr_ifru.ifru_hwaddr.sa_family = ARPHRD_ETHER;
 			_mac.copyTo(ifr.ifr_ifru.ifru_hwaddr.sa_data,6);
-			/*if (ioctl(sock,SIOCSIFHWADDR,(void *)&ifr) < 0) {
-				::close(sock);
-				printf("WARNING: ioctl() failed setting up Linux tap device (set MAC)\n");
-				return;
-			}*/
+			// if (ioctl(sock,SIOCSIFHWADDR,(void *)&ifr) < 0) {
+			// 	::close(sock);
+			// 	printf("WARNING: ioctl() failed setting up Linux tap device (set MAC)\n");
+			// 	return;
+			// }
 
 			ifr.ifr_ifru.ifru_mtu = (int)_mtu;
 			if (ioctl(sock,SIOCSIFMTU,(void *)&ifr) < 0) {
