@@ -4574,6 +4574,9 @@ struct ej_handler ej_handlers[] =
 	{ "pdnsd_status", pdnsd_status_hook},
 	{ "dns2tcp_status", dns2tcp_status_hook},
 #endif
+#if defined (APP_ZEROTIER)
+	{ "zerotier_status", zerotier_status_hook},
+#endif	
 #if defined (APP_KOOLPROXY)
 	{ "koolproxy_action", koolproxy_action_hook},
 	{ "koolproxy_status", koolproxy_status_hook},
