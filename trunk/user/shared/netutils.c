@@ -29,11 +29,12 @@
 #include <sys/wait.h>
 #include <sys/ioctl.h>
 
+#include <netinet/ip.h>
+#include <netinet/tcp.h>
+
 #include <net/if.h>
 #include <net/if_arp.h>
 #include <net/ethernet.h>
-#include <netinet/ip.h>
-#include <netinet/tcp.h>
 
 #include <linux/sockios.h>
 #include <linux/if_vlan.h>

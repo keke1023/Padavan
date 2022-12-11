@@ -30,6 +30,7 @@ OBJS  = rc.o init.o auth.o services.o watchdog.o firewall_ex.o common_ex.o
 OBJS += net.o net_lan.o net_wan.o net_wifi.o net_ppp.o services_ex.o rstats.o
 OBJS += ralink.o gpio_pins.o detect_link.o detect_internet.o detect_wan.o
 OBJS += vpn_server.o vpn_client.o
+OBJS += gpio_btn.o btn_action.o
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_OPENVPN),y)
 OBJS += vpn_openvpn.o
 endif
@@ -44,9 +45,9 @@ ifdef CONFIG_RTL8367
 OBJS += switch_rtl8367.o
 CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/rtl8367
 else
-ifdef CONFIG_MT7530_GSW
+ifdef CONFIG_RAETH
 OBJS += switch_mtk_esw.o
-CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/raeth
+CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/ethernet/raeth
 else
 ifdef CONFIG_RAETH_ESW
 OBJS += switch_mtk_esw.o
@@ -79,11 +80,11 @@ romfs:
 	cd $(INSTALLDIR) && rm -f init && ln -sf sbin/rc init
 	cd $(INSTALLDIR)/sbin && ln -sf rc init
 	cd $(INSTALLDIR)/sbin && ln -sf rc watchdog
+	cd $(INSTALLDIR)/sbin && ln -sf rc gpio_btn
 	cd $(INSTALLDIR)/sbin && ln -sf rc hotplug
 	cd $(INSTALLDIR)/sbin && ln -sf rc shutdown
 	cd $(INSTALLDIR)/sbin && ln -sf rc halt
 	cd $(INSTALLDIR)/sbin && ln -sf rc reboot
-	cd $(INSTALLDIR)/sbin && ln -sf rc mtk_gpio
 	cd $(INSTALLDIR)/sbin && ln -sf rc ddns_updated
 	cd $(INSTALLDIR)/sbin && ln -sf rc ntpc_updated
 	cd $(INSTALLDIR)/sbin && ln -sf rc start_ddns
@@ -132,7 +133,7 @@ endif
 ifdef CONFIG_RAETH_ESW
 	cd $(INSTALLDIR)/sbin && ln -sf rc mtk_esw
 endif
-ifdef CONFIG_MT7530_GSW
+ifdef CONFIG_RAETH
 	cd $(INSTALLDIR)/sbin && ln -sf rc mtk_esw
 endif
 ifdef CONFIG_RT3352_INIC_MII

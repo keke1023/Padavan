@@ -17,8 +17,10 @@ fi
 }
 arIpAddress6 () {
 # IPv6地址获取
-# 因为一般ipv6没有nat ipv6的获得可以本机获得
-ifconfig $(nvram get wan0_ifname_t) | awk '/Global/{print $3}' | awk -F/ '{print $1}'
+
+
+#ifconfig $(nvram get wan0_ifname_t) | awk '/Global/{print $3}' | awk -F/ '{print $1}'
+ifconfig br0 | awk '/Global/{print $3}' | awk -F/ '{print $1}'
 }
 if [ "$IPv6" = "1" ] ; then
 arIpAddress=$(arIpAddress6)

@@ -81,35 +81,7 @@ reset_signals(void);
 
 static void
 notify_shutdown(void)
-{
-#if defined (BOARD_GPIO_BTN_PWR_CUT) && defined (BOARD_GPIO_BTN_PWR_INT)
-	unsigned int i_button_value = BTN_PRESSED;
-
-	if (cpu_gpio_get_pin(BOARD_GPIO_BTN_PWR_INT, &i_button_value) < 0)
-		return;
-
-	if (i_button_value == BTN_PRESSED)
-		return;
-
-	/* POWER button is released, shutdown now */
-	cpu_gpio_irq_set(BOARD_GPIO_BTN_PWR_INT, 0, 0, 0);
-
-	reset_signals();
-
-	printf("Button POWER is released, shutdown system...\n");
-
-	shutdown_router(2);
-
-	printf("\nShutdown!\n\n");
-
-	usleep(10000);
-
-	sync();
-
-	/* Power OFF */
-	cpu_gpio_set_pin(BOARD_GPIO_BTN_PWR_CUT, 0);
-#endif
-}
+{ }
 
 /* signals handling */
 static void
@@ -383,18 +355,9 @@ init_time(void)
 static void
 init_nodes(void)
 {
-	mknod("/dev/spiS0",  S_IFCHR | 0666, makedev(217, 0));
-	mknod("/dev/i2cM0",  S_IFCHR | 0666, makedev(218, 0));
 	mknod("/dev/nvram",  S_IFCHR | 0666, makedev(228, 0));
-	mknod("/dev/gpio",   S_IFCHR | 0666, makedev(252, 0));
-	mknod("/dev/rdm0",   S_IFCHR | 0666, makedev(253, 0));
 #if defined (USE_HW_NAT)
 	mknod("/dev/hwnat0", S_IFCHR | 0666, makedev(220, 0));
-#if !defined (USE_HW_NAT_V2)
-	mknod("/dev/acl0",   S_IFCHR | 0666, makedev(230, 0));
-	mknod("/dev/ac0",    S_IFCHR | 0666, makedev(240, 0));
-	mknod("/dev/mtr0",   S_IFCHR | 0666, makedev(250, 0));
-#endif
 #endif
 #if defined (USE_MTK_AES)
 	mknod("/dev/crypto", S_IFCHR | 0666, makedev(10, 60));

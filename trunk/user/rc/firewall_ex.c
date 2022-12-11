@@ -673,14 +673,19 @@ include_vts_nat(FILE *fp)
 }
 
 static void
-include_masquerade(FILE *fp, char *wan_if, char *wan_ip, char *lan_net)
+include_masquerade(FILE *fp, char *wan_if, char *wan_ip, char *lan_net, int is_fullcone)
 {
 	char *dtype = "POSTROUTING";
 
-	if (wan_ip)
-		fprintf(fp, "-A %s -o %s -s %s -j SNAT --to-source %s\n", dtype, wan_if, lan_net, wan_ip);
-	else
-		fprintf(fp, "-A %s -o %s -s %s -j MASQUERADE\n", dtype, wan_if, lan_net);
+	if (is_fullcone) {
+		fprintf(fp, "-A POSTROUTING -o %s -s %s -j FULLCONENAT\n", wan_if, lan_net);
+		fprintf(fp, "-A PREROUTING -i %s -j FULLCONENAT\n", wan_if);
+	} else {
+		if (wan_ip)
+			fprintf(fp, "-A %s -o %s -s %s -j SNAT --to-source %s\n", dtype, wan_if, lan_net, wan_ip);
+		else
+			fprintf(fp, "-A %s -o %s -s %s -j MASQUERADE\n", dtype, wan_if, lan_net);
+	}
 }
 
 static int
@@ -1709,14 +1714,6 @@ ip6t_mangle_rules(char *man_if)
 		doSystem("ip6tables-restore %s", ipt_file);
 }
 
-#if defined (APP_NAPT66)
-static void
-ip6t_disable_filter(void)
-{
-	doSystem("ip6tables -P FORWARD ACCEPT");
-	doSystem("ip6tables -F FORWARD");
-}
-#endif
 #endif
 
 static int
@@ -1809,7 +1806,10 @@ ipt_nat_rules(char *man_if, char *man_ip,
 #endif
 		
 		/* masquerade WAN connection for LAN clients */
-		include_masquerade(fp, wan_if, wan_ip, lan_net);
+		if (nvram_match("nf_nat_type", "1")) /* classical nat: 2, fullcone nat: 1*/
+			include_masquerade(fp, wan_if, wan_ip, lan_net, 1);
+		else
+			include_masquerade(fp, wan_if, wan_ip, lan_net, 0);
 		
 		/* masquerade MAN connection for LAN clients */
 		if (use_man) {
@@ -1818,12 +1818,12 @@ ipt_nat_rules(char *man_if, char *man_ip,
 			if (is_upnp_enabled)
 				fprintf(fp, "-A %s -o %s -j %s\n", "POSTROUTING", man_if, MINIUPNPD_CHAIN_IP4_NAT_POST);
 #endif
-			include_masquerade(fp, man_if, man_ip, lan_net);
+			include_masquerade(fp, man_if, man_ip, lan_net, 0);
 		}
 		
 		/* masquerade VPN client connection for LAN clients */
 		if (vpnc_if && i_vpnc_sfw != 2)
-			include_masquerade(fp, vpnc_if, NULL, lan_net);
+			include_masquerade(fp, vpnc_if, NULL, lan_net, 0);
 		
 		/* masquerade WAN connection for VPN server clients */
 		if (i_vpns_enable) {
@@ -1836,21 +1836,21 @@ ipt_nat_rules(char *man_if, char *man_ip,
 				if (i_vpns_type == 2) {
 					if (i_vpns_ov_mode == 1) {
 						if (i_vpns_actl == 0 || i_vpns_actl == 1 || i_vpns_actl == 4)
-							include_masquerade(fp, wan_if, wan_ip, vpn_net);
+							include_masquerade(fp, wan_if, wan_ip, vpn_net, 0);
 						
 						/* masquerade VPN server clients to LAN */
 						if (i_vpns_vuse == 2)
-							include_masquerade(fp, lan_if, lan_ip, vpn_net);
+							include_masquerade(fp, lan_if, lan_ip, vpn_net, 0);
 					}
 				} else
 #endif
 				{
 					if (i_vpns_vuse && (i_vpns_actl == 0 || i_vpns_actl == 1 || i_vpns_actl == 4))
-						include_masquerade(fp, wan_if, wan_ip, vpn_net);
+						include_masquerade(fp, wan_if, wan_ip, vpn_net, 0);
 					
 					/* masquerade VPN server clients to LAN */
 					if (i_vpns_vuse == 2)
-						include_masquerade(fp, lan_if, lan_ip, vpn_net);
+						include_masquerade(fp, lan_if, lan_ip, vpn_net, 0);
 				}
 			}
 		}
@@ -2123,7 +2123,9 @@ start_firewall_ex(void)
 #if defined (APP_SHADOWSOCKS)
 	const char *shadowsocks_iptables_script = "/tmp/shadowsocks_iptables.save";
 #endif
-
+#if defined (APP_ADBYBY)
+	const char *adbyby_iptables = "/tmp/adbyby.save";
+#endif
 	unit = 0;
 
 	snprintf(lan_if, sizeof(lan_if), "%s", IFNAME_BR);
@@ -2187,15 +2189,15 @@ start_firewall_ex(void)
 
 	/* IPv6 Filter rules */
 	ip6t_filter_rules(man_if, wan_if, lan_if, logaccept, logdrop, i_tcp_mss);
-#if defined (APP_NAPT66)
-	if (nvram_match("napt66_enable", "1"))
-		ip6t_disable_filter();
-#endif
 #endif
 
 #if defined (APP_SHADOWSOCKS)
 	if (check_if_file_exist(shadowsocks_iptables_script))
 		doSystem("sh %s", shadowsocks_iptables_script);
+#endif
+#if defined (APP_ADBYBY)
+	if (check_if_file_exist(adbyby_iptables))
+		doSystem("iptables-restore -n %s", adbyby_iptables);
 #endif
 	if (check_if_file_exist(int_iptables_script))
 		doSystem("%s", int_iptables_script);
@@ -2206,6 +2208,9 @@ start_firewall_ex(void)
 	/* enable IPv4 forward */
 	set_ipv4_forward(1);
 
+	if (nvram_match("pppoemwan_enable", "1"))
+		{doSystem("/usr/bin/detect.sh");}
+		
 	/* try unload unused iptables modules */
 	module_smart_unload("xt_webstr", 0);
 	module_smart_unload("xt_HL", 0);

@@ -26,10 +26,8 @@ var $j = jQuery.noConflict();
 $j(document).ready(function() {
 	init_itoggle('wan_nat_x', change_nat_enable);
 	init_itoggle('nf_nat_loop');
-	init_itoggle('fw_pt_pppoe');
 	init_itoggle('nf_alg_pptp');
 	init_itoggle('nf_alg_h323');
-	init_itoggle('nf_alg_rtsp');
 	init_itoggle('nf_alg_sip');
 });
 
@@ -192,7 +190,6 @@ function done_validating(action){
                                             <td>
                                                 <select name="nf_nat_type" class="input">
                                                     <option value="2" <% nvram_match_x("","nf_nat_type", "2", "selected"); %>>Classical Linux Hybrid NAT</option>
-                                                    <option value="0" <% nvram_match_x("","nf_nat_type", "0", "selected"); %>>Restricted Cone NAT</option>
                                                     <option value="1" <% nvram_match_x("","nf_nat_type", "1", "selected"); %>>Full Cone NAT</option>
                                                 </select>
                                             </td>
@@ -209,21 +206,6 @@ function done_validating(action){
                                                 <div style="position: absolute; margin-left: -10000px;">
                                                     <input type="radio" name="nf_nat_loop" id="nf_nat_loop_1" class="input" value="1" <% nvram_match_x("", "nf_nat_loop", "1", "checked"); %>/><#checkbox_Yes#>
                                                     <input type="radio" name="nf_nat_loop" id="nf_nat_loop_0" class="input" value="0" <% nvram_match_x("", "nf_nat_loop", "0", "checked"); %>/><#checkbox_No#>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><a class="help_tooltip" href="javascript:void(0);" onmouseover="openTooltip(this,7,11);"><#PPPConnection_x_PPPoERelay_itemname#></a></th>
-                                            <td>
-                                                <div class="main_itoggle">
-                                                    <div id="fw_pt_pppoe_on_of">
-                                                        <input type="checkbox" id="fw_pt_pppoe_fake" <% nvram_match_x("", "fw_pt_pppoe", "1", "value=1 checked"); %><% nvram_match_x("", "fw_pt_pppoe", "0", "value=0"); %>>
-                                                    </div>
-                                                </div>
-
-                                                <div style="position: absolute; margin-left: -10000px;">
-                                                    <input type="radio" id="fw_pt_pppoe_1" name="fw_pt_pppoe" value="1" <% nvram_match_x("", "fw_pt_pppoe", "1", "checked selected"); %>><#checkbox_Yes#>
-                                                    <input type="radio" id="fw_pt_pppoe_0" name="fw_pt_pppoe" value="0" <% nvram_match_x("", "fw_pt_pppoe", "0", "checked selected"); %>><#checkbox_No#>
                                                 </div>
                                             </td>
                                         </tr>
@@ -252,21 +234,6 @@ function done_validating(action){
                                                 <div style="position: absolute; margin-left: -10000px;">
                                                     <input type="radio" name="nf_alg_pptp" id="nf_alg_pptp_1" class="input" value="1" <% nvram_match_x("", "nf_alg_pptp", "1", "checked"); %>/><#checkbox_Yes#>
                                                     <input type="radio" name="nf_alg_pptp" id="nf_alg_pptp_0" class="input" value="0" <% nvram_match_x("", "nf_alg_pptp", "0", "checked"); %>/><#checkbox_No#>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th>RTSP ALG</th>
-                                            <td>
-                                                <div class="main_itoggle">
-                                                    <div id="nf_alg_rtsp_on_of">
-                                                        <input type="checkbox" id="nf_alg_rtsp_fake" <% nvram_match_x("", "nf_alg_rtsp", "1", "value=1 checked"); %><% nvram_match_x("", "nf_alg_rtsp", "0", "value=0"); %>>
-                                                    </div>
-                                                </div>
-
-                                                <div style="position: absolute; margin-left: -10000px;">
-                                                    <input type="radio" name="nf_alg_rtsp" id="nf_alg_rtsp_1" class="input" value="1" <% nvram_match_x("", "nf_alg_rtsp", "1", "checked"); %>/><#checkbox_Yes#>
-                                                    <input type="radio" name="nf_alg_rtsp" id="nf_alg_rtsp_0" class="input" value="0" <% nvram_match_x("", "nf_alg_rtsp", "0", "checked"); %>/><#checkbox_No#>
                                                 </div>
                                             </td>
                                         </tr>

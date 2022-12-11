@@ -212,7 +212,7 @@ inline int phy_green_ethernet(unsigned int green_ethernet_on)
 
 int phy_eee_lpi(unsigned int eee_lpi_on)
 {
-	return mtk_esw_ioctl(MTK_ESW_IOCTL_EEE_LPI, 0, &eee_lpi_on);
+	return 0;
 }
 
 int phy_jumbo_frames(unsigned int jumbo_frames_on)

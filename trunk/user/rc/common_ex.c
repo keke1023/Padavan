@@ -411,7 +411,6 @@ restart_all_sysctl(void)
 		set_nf_conntrack();
 		set_tcp_syncookies();
 		set_igmp_mld_version();
-		set_passthrough_pppoe(1);
 	}
 
 #if defined(APP_SMBD)

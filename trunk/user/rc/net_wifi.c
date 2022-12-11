@@ -30,12 +30,20 @@
 #include "rc.h"
 #include "switch.h"
 #include "gpio_pins.h"
+#include <gpioutils.h>
 
 static int
 wif_control(const char *wifname, int is_up)
 {
+	int ret;
 	logmessage(LOGNAME, "%s: ifname: %s, isup: %d", __func__, wifname, is_up);
-	return doSystem("ifconfig %s %s 2>/dev/null", wifname, (is_up) ? "up" : "down");
+	ret = doSystem("ifconfig %s %s 2>/dev/null", wifname, (is_up) ? "up" : "down");
+#if defined (USE_MT7615_AP) || defined (USE_MT7915_AP) || defined (USE_MT76X2_AP)
+	if (is_up && is_module_loaded("hw_nat")) {
+		doSystem("iwpriv %s set hw_nat_register=%d", wifname, 1);
+	}
+#endif
+	return ret;
 }
 
 void
@@ -63,9 +71,8 @@ mlme_radio_wl(int is_on)
 #endif
 	mlme_state_wl(is_on);
 
-#if defined(BOARD_GPIO_LED_SW5G)
-	LED_CONTROL(BOARD_GPIO_LED_SW5G, (is_on) ? LED_ON : LED_OFF);
-#endif
+	LED_CONTROL(LED_SW5G, (is_on) ? LED_ON : LED_OFF);
+
 }
 
 void
@@ -80,9 +87,7 @@ mlme_radio_rt(int is_on)
 
 	mlme_state_rt(is_on);
 
-#if defined(BOARD_GPIO_LED_SW2G)
-	LED_CONTROL(BOARD_GPIO_LED_SW2G, (is_on) ? LED_ON : LED_OFF);
-#endif
+	LED_CONTROL(LED_SW2G, (is_on) ? LED_ON : LED_OFF);
 
 #if defined(USE_RT3352_MII)
 	if (is_on) {
@@ -391,9 +396,7 @@ stop_wifi_all_wl(void)
 	wif_control(IFNAME_5G_GUEST, 0);
 	wif_control(IFNAME_5G_MAIN, 0);
 
-#if defined (BOARD_GPIO_LED_SW5G)
-	LED_CONTROL(BOARD_GPIO_LED_SW5G, LED_OFF);
-#endif
+	LED_CONTROL(LED_SW5G, LED_OFF);
 #endif
 }
 
@@ -419,9 +422,7 @@ stop_wifi_all_rt(void)
 	wif_control(IFNAME_2G_GUEST, 0);
 	wif_control(IFNAME_2G_MAIN, 0);
 
-#if defined (BOARD_GPIO_LED_SW2G)
-	LED_CONTROL(BOARD_GPIO_LED_SW2G, LED_OFF);
-#endif
+	LED_CONTROL(LED_SW2G, LED_OFF);
 }
 
 void 
@@ -751,15 +752,12 @@ restart_wifi_wl(int radio_on, int need_reload_conf)
 
 	check_apcli_wan(1, radio_on);
 
-	if (radio_on)
+	if (radio_on) {
 		update_vga_clamp_wl(0);
-
-#if defined (BOARD_GPIO_LED_SW5G)
-	if (radio_on)
-		LED_CONTROL(BOARD_GPIO_LED_SW5G, LED_ON);
-#endif
-#endif
+		LED_CONTROL(LED_SW5G, LED_ON);
+	}
 	system("/usr/bin/iappd.sh restart");
+#endif
 }
 
 void
@@ -800,13 +798,10 @@ restart_wifi_rt(int radio_on, int need_reload_conf)
 
 	check_apcli_wan(0, radio_on);
 
-	if (radio_on)
+	if (radio_on) {
 		update_vga_clamp_rt(0);
-
-#if defined (BOARD_GPIO_LED_SW2G)
-	if (radio_on)
-		LED_CONTROL(BOARD_GPIO_LED_SW2G, LED_ON);
-#endif
+		LED_CONTROL(LED_SW2G, LED_ON);
+	}
 	system("/usr/bin/iappd.sh restart");
 }
 

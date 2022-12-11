@@ -32,6 +32,7 @@
 
 #include "rc.h"
 #include "switch.h"
+#include <gpioutils.h>
 
 char*
 get_wan_unit_value(int unit, const char* param_name)
@@ -83,7 +84,6 @@ set_wan_unit_param(int unit, const char* param_name)
 static void
 control_wan_led_isp_state(int is_wan_up, int is_modem_unit)
 {
-#if defined (BOARD_GPIO_LED_WAN)
 	int front_led_wan = nvram_get_int("front_led_wan");
 
 	if (front_led_wan == 2) {
@@ -93,18 +93,11 @@ control_wan_led_isp_state(int is_wan_up, int is_modem_unit)
 			if (!get_wan_wisp_active(&has_link) && !is_modem_unit)
 				has_link = get_wan_ether_link_cached();
 		}
-		LED_CONTROL(BOARD_GPIO_LED_WAN, (is_wan_up && has_link) ? LED_ON : LED_OFF);
-#if defined (BOARD_K2P) || defined (BOARD_PSG1218)
-		LED_CONTROL(BOARD_GPIO_LED_WIFI, (is_wan_up && has_link) ? LED_OFF : LED_ON);
-#endif
+		LED_CONTROL(LED_WAN, (is_wan_up && has_link) ? LED_ON : LED_OFF);
 	} else if (front_led_wan == 3) {
 		if (!is_wan_up)
-			LED_CONTROL(BOARD_GPIO_LED_WAN, LED_OFF);
-#if defined (BOARD_K2P) || defined (BOARD_PSG1218)
-		LED_CONTROL(BOARD_GPIO_LED_WIFI, LED_ON);
-#endif
+			LED_CONTROL(LED_WAN, LED_OFF);
 	}
-#endif
 }
 
 static void
@@ -1027,8 +1020,6 @@ start_wan(void)
 #endif
 		}
 	}
-
-	set_passthrough_pppoe(1);
 }
 
 static void
@@ -1114,7 +1105,6 @@ stop_wan(void)
 
 	stop_auth_eapol();
 	stop_auth_kabinet();
-	set_passthrough_pppoe(0);
 
 	kill_services(svcs_wan, 3, 1);
 
@@ -1376,7 +1366,11 @@ wan_up(char *wan_ifname, int unit, int is_static)
 
 	/* call custom user script */
 	if (check_if_file_exist(script_postw))
-		doSystem("%s %s %s %s", script_postw, "up", wan_ifname, wan_addr);
+		{doSystem("%s %s %s %s", script_postw, "up", wan_ifname, wan_addr);}
+	if (nvram_match("zerotier_enable", "1"))
+		{doSystem("/usr/bin/zerotier.sh start");}
+	if (nvram_match("pppoemwan_enable", "1"))
+		{doSystem("/usr/bin/detect.sh");}
 }
 
 void
@@ -1447,7 +1441,9 @@ wan_down(char *wan_ifname, int unit, int is_static)
 	set_wan_unit_value_int(unit, "bytes_tx", 0);
 
 	if (check_if_file_exist(script_postw))
-		doSystem("%s %s %s %s", script_postw, "down", wan_ifname, wan_addr);
+	{doSystem("%s %s %s %s", script_postw, "down", wan_ifname, wan_addr);}
+	if (nvram_match("pppoemwan_enable", "1"))
+	{doSystem("/usr/bin/detect.sh");}
 }
 
 void

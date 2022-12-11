@@ -42,8 +42,8 @@ all:
 endif
 
 clean:
-#	rm -rf $(THISDIR)/v2ray.com
-#	rm -rf $(THISDIR)/bin
+	rm -rf $(THISDIR)/v2ray.com
+	rm -rf $(THISDIR)/bin
 
 romfs:
 ifeq ($(GITHUB_ACTION),n)	

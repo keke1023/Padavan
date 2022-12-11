@@ -1,21 +1,13 @@
-SRC_NAME = njit8021xclient-1.3.1-pdv
-SRC_URL = https://github.com/hanwckf/njit8021xclient/archive/v1.3.1-pdv.tar.gz
+SRC_NAME = njit8021xclient-master
 THISDIR = $(shell pwd)
 
-CFLAGS += -Wno-unused-value
-
-all: download_test extract_test config_test
+all: extract_test config_test
 	$(MAKE) -C $(SRC_NAME)/src
-
-download_test:
-	( if [ ! -f $(SRC_NAME).tar.gz ]; then \
-		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
-	fi )
 
 extract_test:
 	( if [ ! -d $(SRC_NAME) ]; then \
-		tar zxf $(SRC_NAME).tar.gz; \
-		patch -d $(SRC_NAME) -p1 -i ../0001-fix-njit_client-build-error.patch; \
+		unzip $(SRC_NAME).zip; \
+		patch -p1 -d $(SRC_NAME) < $(SRC_NAME).patch; \
 	fi )
 
 config_test:

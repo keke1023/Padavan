@@ -86,7 +86,6 @@ var isMenuopen = 0;
 function initial(){
 	show_banner(2);
 	show_menu(5,15);
-	showmenu();
 	show_footer();
 	fill_adbyby_status(adbyby_status());
 	//change_adbyby_enable();
@@ -98,10 +97,6 @@ function initial(){
 	if (!login_safe())
 		textarea_scripts_enabled(0);
 		//load_body();
-}
-
-function showmenu(){
-showhide_div('adlink', found_app_koolproxy());
 }
 
 function textarea_scripts_enabled(v){
@@ -494,8 +489,8 @@ function changeBgColorrl(obj, num){
 											<a class="help_tooltip" href="javascript: void(0)" onmouseover="openTooltip(this, 0, 1);">过滤方案选择:</a></th>
 											<td>
 												<select name="adbyby_set" class="input">
-													<option value="0" <% nvram_match_x("","adbyby_set", "0","selected"); %>>全局模式（推荐），全部IP走adbyby过滤</option>
-													<option value="1" <% nvram_match_x("","adbyby_set", "1","selected"); %>>Plus + 模式(只过滤列表内域名结合ABP名单)</option>
+													<option value="0" <% nvram_match_x("","adbyby_set", "0","selected"); %>>全局模式，过滤效果最强，但可能造成网络卡顿</option>
+													<option value="1" <% nvram_match_x("","adbyby_set", "1","selected"); %>>Plus + 模式(只过滤列表内域名结合ABP名单,推荐)</option>
 													<option value="2" <% nvram_match_x("","adbyby_set", "2","selected"); %>>内网IP列表控制模式</option>
 												</select>
 											</td>

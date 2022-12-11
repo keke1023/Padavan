@@ -89,11 +89,7 @@ function applyRule(){
 		document.form.next_page.value = "";
 		
 		document.form.submit();
-		
-		
 	}
-	
-
 }
 function change_on(){
 var v = document.form.reboot_schedule_enable_x.value;

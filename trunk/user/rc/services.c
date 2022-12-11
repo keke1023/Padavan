@@ -344,7 +344,6 @@ void update_chnroute(void){
 void update_gfwlist(void){
 	eval("/bin/sh","-c","/usr/bin/update_gfwlist.sh force &");
 }
-
 void update_dlink(void){
 	eval("/bin/sh","-c","/usr/bin/update_dlink.sh start &");
 }
@@ -352,7 +351,6 @@ void update_dlink(void){
 void reset_dlink(void){
 	eval("/bin/sh","-c","/usr/bin/update_dlink.sh reset &");
 }
-
 #endif
 
 #if defined(APP_VLMCSD)
@@ -389,43 +387,6 @@ void restart_dnsforwarder(void){
 }
 #endif
 
-#if defined(APP_NAPT66)
-void start_napt66(void){
-	int napt66_mode = nvram_get_int("napt66_enable");
-	char *wan6_ifname = nvram_get("wan0_ifname_t");
-	if (napt66_mode == 1) {
-		if (wan6_ifname) {
-			char napt66_para[32];
-			logmessage("napt66","wan6 ifname: %s",wan6_ifname);
-			snprintf(napt66_para,sizeof(napt66_para),"wan_if=%s",wan6_ifname);
-			module_smart_load("napt66", napt66_para);
-		} else {
-			logmessage("napt66","Invalid wan6 ifname!");
-		}
-	}
-}
-#endif
-#if defined(APP_KOOLPROXY)
-void stop_koolproxy(void){
-	eval("/usr/bin/koolproxy.sh","stop");
-}
-
-void start_koolproxy(void){
-	int koolproxy_mode = nvram_get_int("koolproxy_enable");
-	if ( koolproxy_mode == 1)
-		eval("/usr/bin/koolproxy.sh","start");
-}
-
-void restart_koolproxy(void){
-	stop_koolproxy();
-	start_koolproxy();
-}
-
-void update_kp(void){
-	eval("/usr/bin/koolproxy.sh","updatekp");
-}
-#endif
-
 #if defined(APP_ADGUARDHOME)
 void stop_adguardhome(void){
 	eval("/usr/bin/adguardhome.sh","stop");
@@ -444,23 +405,6 @@ void restart_adguardhome(void){
 
 #endif
 
-#if defined(APP_WYY)
-void stop_wyy(void){
-	eval("/usr/bin/unblockmusic.sh","stop");
-}
-
-void start_wyy(void){
-	int wyy_enable = nvram_get_int("wyy_enable");
-	if ( wyy_enable == 1)
-		eval("/usr/bin/unblockmusic.sh","start");
-}
-
-void restart_wyy(void){
-	stop_wyy();
-	start_wyy();
-}
-#endif
-
 #if defined(APP_ZEROTIER)
 void stop_zerotier(void){
 	eval("/usr/bin/zerotier.sh","stop");
@@ -475,6 +419,74 @@ void start_zerotier(void){
 void restart_zerotier(void){
 	stop_zerotier();
 	start_zerotier();
+}
+#endif
+
+#if defined(APP_DDNSTO)
+void stop_ddnsto(void){
+	eval("/usr/bin/ddnsto.sh","stop");
+}
+
+void start_ddnsto(void){
+	int ddnsto_enable = nvram_get_int("ddnsto_enable");
+	if ( ddnsto_enable == 1)
+		eval("/usr/bin/ddnsto.sh","start");
+}
+
+void restart_ddnsto(void){
+	stop_ddnsto();
+	start_ddnsto();
+}
+#endif
+
+#if defined(APP_SQM)
+void stop_sqm(void){
+	eval("/usr/lib/sqm/run.sh","stop");
+}
+
+void start_sqm(void){
+	int sqm_mode = nvram_get_int("sqm_enable");
+	if ( sqm_mode == 1)
+		eval("/usr/lib/sqm/run.sh");
+}
+
+void restart_sqm(void){
+	stop_sqm();
+	start_sqm();
+}
+#endif
+
+#if defined(APP_ALDRIVER)
+void stop_aldriver(void){
+	eval("/usr/bin/aliyundrive-webdav.sh","stop");
+}
+
+void start_aldriver(void){
+	int aldriver_enable = nvram_get_int("aliyundrive_enable");
+	if ( aldriver_enable == 1)
+		eval("/usr/bin/aliyundrive-webdav.sh","start");
+}
+
+void restart_aldriver(void){
+	stop_aldriver();
+	start_aldriver();
+}
+#endif
+
+#if defined(APP_WIREGUARD)
+void stop_wireguard(void){
+	eval("/usr/bin/wireguard.sh","stop");
+}
+
+void start_wireguard(void){
+	int wireguard_enable = nvram_get_int("wireguard_enable");
+	if ( wireguard_enable == 1)
+		eval("/usr/bin/wireguard.sh","start");
+}
+
+void restart_wireguard(void){
+	stop_wireguard();
+	start_wireguard();
 }
 #endif
 
@@ -499,7 +511,6 @@ void update_adb(void){
 }
 #endif
 
-
 #if defined(APP_SMARTDNS)
 void stop_smartdns(void){
 	eval("/usr/bin/smartdns.sh","stop");
@@ -517,36 +528,6 @@ void restart_smartdns(void){
 }
 #endif
 
-#if defined(APP_FRP)
-void stop_frp(void){
-	eval("/usr/bin/frp.sh","stop");
-}
-
-void start_frp(void){
-	eval("/usr/bin/frp.sh","start");
-}
-
-void restart_frp(void){
-	stop_frp();
-	start_frp();
-}
-#endif
-
-#if defined(APP_CADDY)
-void stop_caddy(void){
-	eval("/usr/bin/caddy.sh","stop");
-}
-
-void start_caddy(void){
-	eval("/usr/bin/caddy.sh","start");
-}
-
-void restart_caddy(void){
-	stop_caddy();
-	start_caddy();
-}
-#endif
-
 #if defined(APP_ALIDDNS)
 void stop_aliddns(void){
 	eval("/usr/bin/aliddns.sh","stop");
@@ -561,6 +542,21 @@ void start_aliddns(void){
 void restart_aliddns(void){
     stop_aliddns();
 	start_aliddns();
+}
+#endif
+
+#if defined(APP_FRP)
+void stop_frp(void){
+	eval("/usr/bin/frp.sh","stop");
+}
+
+void start_frp(void){
+	eval("/usr/bin/frp.sh","start");
+}
+
+void restart_frp(void){
+	stop_frp();
+	start_frp();
 }
 #endif
 
@@ -748,6 +744,7 @@ start_services_once(int is_ap_mode)
 #endif
 	start_vpn_server();
 	start_watchdog();
+	start_gpio_btn();
 	start_infosvr();
 
 	if (!is_ap_mode) {
@@ -764,43 +761,19 @@ start_services_once(int is_ap_mode)
 		start_xupnpd(IFNAME_BR);
 #endif
 	}
-
 doSystem("/usr/sbin/skipd -d /etc/storage/db");
-
 #if defined(APP_SCUT)
 	start_scutclient();
 #endif
 #if defined(APP_DNSFORWARDER)
 	start_dnsforwarder();
 #endif
-//#if defined(APP_SHADOWSOCKS)
-//	start_ss();
-//	start_ss_tunnel();
-//#endif
 #if defined(APP_TTYD)
 	start_ttyd();
 #endif
-//#if defined(APP_FRP)
-//	start_frp();
-//#endif
 #if defined(APP_VLMCSD)
 	start_vlmcsd();
 #endif
-//#if defined(APP_KOOLPROXY)
-//	start_koolproxy();
-//#endif
-//#if defined(APP_ADBYBY)
-//	start_adbyby();
-//#endif
-//#if defined(APP_ALIDDNS)
-//	start_aliddns();
-//#endif
-//#if defined(APP_SMARTDNS)
-//	start_smartdns();
-//#endif
-//#if defined(APP_CADDY)
-//	start_caddy();
-//#endif
 	start_lltd();
 	start_watchdog_cpu();
 	start_crond();
@@ -809,7 +782,9 @@ doSystem("/usr/sbin/skipd -d /etc/storage/db");
 #if defined(APP_MENTOHUST)
 	start_mentohust();
 #endif
-	system("/usr/bin/iappd.sh start");
+	system("/usr/bin/iappd.sh restart");
+	system("modprobe xt_TPROXY");
+	system("/usr/bin/iappd.sh test");
 	return 0;
 }
 
@@ -839,15 +814,6 @@ stop_services(int stopall)
 #if defined(APP_MENTOHUST)
 	stop_mentohust();
 #endif
-#if defined(APP_TTYD)
-	stop_ttyd();
-#endif
-#if defined(APP_FRP)
-	stop_frp();
-#endif
-#if defined(APP_KOOLPROXY)
-	stop_koolproxy();
-#endif
 #if defined(APP_ADGUARDHOME)
 	stop_adguardhome();
 #endif
@@ -858,20 +824,33 @@ stop_services(int stopall)
 #if defined(APP_ADBYBY)
 	stop_adbyby();
 #endif
-#if defined(APP_WYY)
-	stop_wyy();
+#if defined(APP_DDNSTO)
+	stop_ddnsto();
 #endif
-#if defined(APP_ZEROTIER)
-	stop_zerotier();
+#if defined(APP_SQM)
+	stop_sqm();
 #endif
-#if defined(APP_ALIDDNS)
-	stop_aliddns();
+
+#if defined(APP_ALDRIVER)
+	stop_aldriver();
+#endif
+#if defined(APP_WIREGUARD)
+	stop_wireguard();
 #endif
 #if defined(APP_SMARTDNS)
 	stop_smartdns();
 #endif
-#if defined(APP_CADDY)
-	stop_caddy();
+#if defined(APP_ALIDDNS)
+	stop_aliddns();
+#endif
+#if defined(APP_TTYD)
+	stop_ttyd();
+#endif
+#if defined(APP_WIREGUARD)
+	stop_wireguard();
+#endif
+#if defined(APP_FRP)
+	stop_frp();
 #endif
 	stop_networkmap();
 	stop_lltd();

@@ -1,4 +1,3 @@
-THISDIR = $(shell pwd)
 SRC_NAME=openvpn-2.5.2
 
 CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
@@ -57,4 +56,4 @@ clean:
 
 romfs:
 	$(ROMFSINST) $(SRC_NAME)/src/openvpn/openvpn /usr/sbin/openvpn
-	$(ROMFSINST) -p +x $(THISDIR)/openvpn-cert.sh /usr/bin/openvpn-cert.sh
+	$(ROMFSINST) /usr/bin/openvpn-cert.sh

@@ -117,8 +117,8 @@ void usage(char *cmd)
 int reg_read(int offset, int *value)
 {
 	struct ifreq ifr;
-	esw_reg reg;
-	ra_mii_ioctl_data mii;
+	struct esw_reg reg;
+	struct ra_mii_ioctl_data mii;
 
 	strncpy(ifr.ifr_name, "eth2", 5);
 	ifr.ifr_data = &mii;
@@ -139,8 +139,8 @@ int reg_read(int offset, int *value)
 int reg_write(int offset, int value)
 {
 	struct ifreq ifr;
-	esw_reg reg;
-	ra_mii_ioctl_data mii;
+	struct esw_reg reg;
+	struct ra_mii_ioctl_data mii;
 
 	strncpy(ifr.ifr_name, "eth2", 5);
 	ifr.ifr_data = &mii;
@@ -197,7 +197,7 @@ int reg_write(int offset, int value)
 int phy_dump(int phy_addr)
 {
 	struct ifreq ifr;
-	esw_reg reg;
+	struct esw_reg reg;
 
 	reg.val = phy_addr;
 	strncpy(ifr.ifr_name, "eth2", 5);
@@ -213,7 +213,7 @@ int phy_dump(int phy_addr)
 int ingress_rate_set(int on_off, int port, int bw)
 {
 	struct ifreq ifr;
-	esw_rate reg;
+	struct esw_rate reg;
 
 	reg.on_off = on_off;
 	reg.port = port;
@@ -231,7 +231,7 @@ int ingress_rate_set(int on_off, int port, int bw)
 int egress_rate_set(int on_off, int port, int bw)
 {
 	struct ifreq ifr;
-	esw_rate reg;
+	struct esw_rate reg;
 
 	reg.on_off = on_off;
 	reg.port = port;

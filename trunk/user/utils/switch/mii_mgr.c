@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	char options[] = "gsp:r:v:L:G:?t";
 	int method = 0;
 	struct ifreq ifr;
-	ra_mii_ioctl_data mii;
+	struct ra_mii_ioctl_data mii;
 
 #if defined (CONFIG_RALINK_MT7628)
 	struct ifreq ifr2;

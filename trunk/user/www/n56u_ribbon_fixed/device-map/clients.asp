@@ -157,7 +157,7 @@ function add_client_row(table, atIndex, client, blocked, j){
 	var macCell = row.insertCell(3);
 	var rssiCell = row.insertCell(4);
 	var blockCell = row.insertCell(5);
-
+	
 	var arpon = <% nvram_get_x("","dhcp_static_arp"); %>;
 	var mdhcp = <% nvram_get_x("","dhcp_static_x"); %>;
 	if (arpon == 1 && mdhcp == 1){
@@ -470,3 +470,6 @@ function networkmap_update(s){
 </script>
 </body>
 </html>
+
+
+

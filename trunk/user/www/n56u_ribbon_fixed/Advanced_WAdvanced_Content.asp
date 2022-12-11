@@ -173,10 +173,10 @@ function done_validating(action){
                                             <th width="50%"><#WIFIStreamTX#></th>
                                             <td>
                                                 <select name="wl_stream_tx" class="input">
-                                                    <option value="1" <% nvram_match_x("", "wl_stream_tx", "1", "selected"); %>>1T (433Mbps)</option>
-                                                    <option value="2" <% nvram_match_x("", "wl_stream_tx", "2", "selected"); %>>2T (867Mbps)</option>
-                                                    <option value="3" <% nvram_match_x("", "wl_stream_tx", "3", "selected"); %>>3T (1300Mbps)</option>
-                                                    <option value="4" <% nvram_match_x("", "wl_stream_tx", "4", "selected"); %>>4T (1733Mbps)</option>
+                                                    <option value="1" <% nvram_match_x("", "wl_stream_tx", "1", "selected"); %>>1T</option>
+                                                    <option value="2" <% nvram_match_x("", "wl_stream_tx", "2", "selected"); %>>2T</option>
+                                                    <option value="3" <% nvram_match_x("", "wl_stream_tx", "3", "selected"); %>>3T</option>
+                                                    <option value="4" <% nvram_match_x("", "wl_stream_tx", "4", "selected"); %>>4T</option>
                                                 </select>
                                             </td>
                                         </tr>
@@ -184,10 +184,10 @@ function done_validating(action){
                                             <th><#WIFIStreamRX#></th>
                                             <td>
                                                 <select name="wl_stream_rx" class="input">
-                                                    <option value="1" <% nvram_match_x("", "wl_stream_rx", "1", "selected"); %>>1R (433Mbps)</option>
-                                                    <option value="2" <% nvram_match_x("", "wl_stream_rx", "2", "selected"); %>>2R (867Mbps)</option>
-                                                    <option value="3" <% nvram_match_x("", "wl_stream_rx", "3", "selected"); %>>3R (1300Mbps)</option>
-                                                    <option value="4" <% nvram_match_x("", "wl_stream_rx", "4", "selected"); %>>4R (1733Mbps)</option>
+                                                    <option value="1" <% nvram_match_x("", "wl_stream_rx", "1", "selected"); %>>1R</option>
+                                                    <option value="2" <% nvram_match_x("", "wl_stream_rx", "2", "selected"); %>>2R</option>
+                                                    <option value="3" <% nvram_match_x("", "wl_stream_rx", "3", "selected"); %>>3R</option>
+                                                    <option value="4" <% nvram_match_x("", "wl_stream_rx", "4", "selected"); %>>4R</option>
                                                 </select>
                                             </td>
                                         </tr>

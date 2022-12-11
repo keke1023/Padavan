@@ -13,16 +13,16 @@ TARGETS = pppd
 
 PPPDSRCS = main.c magic.c fsm.c lcp.c ipcp.c upap.c chap-new.c md5.c ccp.c \
 	   ecp.c ipxcp.c auth.c options.c sys-linux.c md4.c chap_ms.c \
-	   demand.c utils.c tty.c eap.c chap-md5.c session.c
+	   demand.c utils.c tty.c eap.c chap-md5.c session.c syncppp.c
 
 HEADERS = ccp.h session.h chap-new.h ecp.h fsm.h ipcp.h \
 	ipxcp.h lcp.h magic.h md5.h patchlevel.h pathnames.h pppd.h \
-	upap.h eap.h
+	upap.h eap.h syncppp.h
 
 MANPAGES = pppd.8
 PPPDOBJS = main.o magic.o fsm.o lcp.o ipcp.o upap.o chap-new.o md5.o ccp.o \
 	   ecp.o auth.o options.o demand.o utils.o sys-linux.o ipxcp.o tty.o \
-	   eap.o chap-md5.o session.o
+	   eap.o chap-md5.o session.o syncppp.o
 
 #
 # include dependencies if present
@@ -32,7 +32,7 @@ endif
 
 # CC = gcc
 #
-COPTS = -O2 -pipe -Wall -g
+COPTS = -pipe -Wall
 LIBS =
 
 # Uncomment the next 2 lines to include support for Microsoft's
@@ -79,7 +79,7 @@ INCLUDE_DIRS= -I../include
 
 COMPILE_FLAGS= #-DHAVE_PATHS_H -DIPX_CHANGE -DHAVE_MMAP
 
-CFLAGS= $(COPTS) $(COMPILE_FLAGS) $(INCLUDE_DIRS) '-DDESTDIR="/usr"'
+CFLAGS += $(COPTS) $(COMPILE_FLAGS) $(INCLUDE_DIRS) '-DDESTDIR="/usr"'
 
 ifdef CHAPMS
 CFLAGS   += -DCHAPMS=1

@@ -4,8 +4,6 @@ CC?=gcc
 
 # the following sucks, but works
 LIBS  = $(IPTABLESPATH)/libiptc/.libs/libip4tc.a
-ifeq ($(ENABLE_IPV6),1)
-LIBS += $(IPTABLESPATH)/libiptc/.libs/libip6tc.a
 endif
 CFLAGS += -DIPTABLES_143 -I$(IPTABLESPATH)/include/
 LDFLAGS += -L$(IPTABLESPATH)/libiptc/.libs

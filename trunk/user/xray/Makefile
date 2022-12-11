@@ -32,8 +32,8 @@ else
 all:
 endif
 clean:
-#	rm -rf $(THISDIR)/xray-core
-#	rm -rf $(THISDIR)/bin
+	rm -rf $(THISDIR)/xray-core
+	rm -rf $(THISDIR)/bin
 
 romfs:
 ifeq ($(GITHUB_ACTION),n)	

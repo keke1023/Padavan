@@ -61,7 +61,3 @@ mkdev	dev/pts/0   c	136	0   $cons
 mkdev	dev/pts/1   c	136	1   $cons
 mkdev	dev/pts/2   c	136	2   $cons
 mkdev	dev/pts/3   c	136	3   $cons
-
-mkdev	dev/flash0  c	200	0   $cons
-mkdev	dev/gpio    c	252	0   $cons
-mkdev	dev/rdm0    c	254	0   $cons

@@ -3,7 +3,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <ctype.h>
-#include <linux/fs.h>
 #include <sys/ioctl.h>
 
 int
@@ -56,7 +55,7 @@ str_to_mac (
 
 int
 str_to_ip (
-        unsigned long * ip,
+        unsigned int * ip,
         char *          str
         )
 {
@@ -78,4 +77,29 @@ str_to_ip (
         return 0;
 }
 
+int
+str_to_ipv6 (
+        unsigned int * ipv6,
+        char *          str,
+        unsigned int byte)
+{
+        int             len;
+        char *          ptr = str;
+        char            buf[128];
+        unsigned short  c[8];
+        int             i;
+        for (i = 0; i < 7; i++) {
+		
+                if ((len = getnext(ptr, ':', buf)) == -1) {
+                        return 1; /* parse error */
+                }
+                c[i] = strtoul(buf, NULL, 16);
+                ptr += len;
+                //printf("len=%d, c[%d]=%x\n",len, i, c[i]);
+                
+        }
+        c[7] = atoi(ptr);
+        *ipv6 = (c[2*byte] <<16) + (c[2*byte + 1]);
+        return 0;
+}
 

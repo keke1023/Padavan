@@ -982,6 +982,7 @@ static int CreatePCPMap_NAT(pcp_info_t *pcp_msg_info)
 				   timestamp);
 	if (r < 0)
 		return PCP_ERR_NO_RESOURCES;
+	pcp_msg_info->ext_port = pcp_msg_info->int_port;
 	return PCP_SUCCESS;
 }
 

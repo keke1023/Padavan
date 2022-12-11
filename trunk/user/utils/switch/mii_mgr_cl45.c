@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 	char options[] = "gsp:d:r:v:?t";
 	int method = 0;
 	struct ifreq ifr;
-	ra_mii_ioctl_data mii;
+	struct ra_mii_ioctl_data mii;
 
 	if (argc < 8) {
 		show_usage();

@@ -231,7 +231,7 @@ typedef struct _PAIR_CHANNEL_FREQ_ENTRY
 #define RT_OID_WSC_PIN_CODE		((RT_OID_SYNC_RT61 + 0x02) & 0xffff)
 
 #define MTD_PART_NAME_FACTORY	"Factory"
-#define MTD_PART_NAME_KERNEL	"Kernel"
+#define MTD_PART_NAME_KERNEL	"kernel"
 #define MTD_PART_NAME_RWFS	"RWFS"
 
 #if defined (BOARD_360P2)

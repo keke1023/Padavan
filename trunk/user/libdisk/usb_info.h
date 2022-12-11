@@ -20,10 +20,10 @@
 
 #define SYS_TTY			"/sys/class/tty"
 #define SYS_NET			"/sys/class/net"
-#define SYS_PRINTER		"/sys/class/usb"
+#define SYS_PRINTER		"/sys/class/usbmisc"
 #define SYS_SG			"/sys/class/scsi_generic"
 #define USB_DEVICE_PATH		"/sys/bus/usb/devices"
-#define USB_BUS_PATH		"/proc/bus/usb/devices"
+#define USB_BUS_PATH		"/sys/kernel/debug/usb/devices"
 
 #if BOARD_USB_PORT_SWAP
 #define USB_EHCI_PORT_2		"1-1"

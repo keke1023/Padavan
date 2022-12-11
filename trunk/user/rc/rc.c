@@ -43,13 +43,13 @@
 #include "gpio_pins.h"
 #include "switch.h"
 #include <ralink_priv.h>
+#include <gpioutils.h>
 
 extern struct nvram_pair router_defaults[];
 
 /* static values */
 static int nvram_modem_type = 0;
 static int nvram_modem_rule = 0;
-static int nvram_nf_nat_type = 0;
 static int nvram_ipv6_type = 0;
 
 static int
@@ -95,7 +95,6 @@ nvram_restore_defaults(void)
 	/* load static values */
 	nvram_modem_type = nvram_get_int("modem_type");
 	nvram_modem_rule = nvram_get_int("modem_rule");
-	nvram_nf_nat_type = nvram_get_int("nf_nat_type");
 	nvram_ipv6_type = get_ipv6_type();
 
 	return restore_defaults;
@@ -118,10 +117,6 @@ load_wireless_modules(void)
 
 #if defined (USE_MT7615_AP)
 	module_smart_load("mt_7615e", NULL);
-#endif
-
-#if defined (USE_MT7915_AP)
-	module_smart_load("mt_7915", NULL);
 #endif
 
 #if defined (USE_RT3090_AP)
@@ -161,6 +156,7 @@ load_usb_modules(void)
 		char xhci_param[32];
 		snprintf(xhci_param, sizeof(xhci_param), "%s=%d", "usb3_disable", nvram_get_int("usb3_disable"));
 		module_smart_load("xhci_hcd", xhci_param);
+		module_smart_load("xhci_mtk", NULL);
 	}
 #else
 	module_smart_load("ehci_hcd", NULL);
@@ -190,7 +186,7 @@ load_mmc_modules(void)
 
 	/* start mmc host */
 #if defined (USE_MTK_MMC)
-	module_smart_load("mtk_sd", NULL);
+	module_smart_load("mt7621-sd", NULL);
 #endif
 }
 #endif
@@ -231,107 +227,10 @@ set_timezone(void)
 static void
 init_gpio_leds_buttons(void)
 {
-	/* hide WiFi 2G soft-led  */
-#if defined (BOARD_GPIO_LED_SW2G)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_SW2G, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_LED_SW2G, LED_OFF);
-	cpu_gpio_led_set(BOARD_GPIO_LED_SW2G, LED_BLINK_STAY_SHOW);
-#endif
-	/* hide WiFi 5G soft-led  */
-#if defined (BOARD_GPIO_LED_SW5G) && (!defined (BOARD_GPIO_LED_SW2G) || (BOARD_GPIO_LED_SW5G != BOARD_GPIO_LED_SW2G))
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_SW5G, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_LED_SW5G, LED_OFF);
-	cpu_gpio_led_set(BOARD_GPIO_LED_SW5G, LED_BLINK_STAY_SHOW);
-#endif
-	/* hide WAN soft-led  */
-#if defined (BOARD_GPIO_LED_WAN)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_WAN, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_LED_WAN, LED_OFF);
-#endif
-	/* hide LAN soft-led  */
-#if defined (BOARD_GPIO_LED_LAN)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_LAN, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_LED_LAN, LED_OFF);
-#endif
-	/* hide USB soft-led  */
-#if defined (BOARD_GPIO_LED_USB)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_USB, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_LED_USB, LED_OFF);
-	cpu_gpio_led_set(BOARD_GPIO_LED_USB, LED_BLINK_STAY_HIDE);
-#if defined (BOARD_GPIO_LED_USB2)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_USB2, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_LED_USB2, LED_OFF);
-	cpu_gpio_led_set(BOARD_GPIO_LED_USB2, LED_BLINK_STAY_HIDE);
-#endif
-#endif
-	/* hide ROUTER soft-led  */
-#if defined (BOARD_GPIO_LED_ROUTER)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_ROUTER, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_LED_ROUTER, LED_OFF);
-#endif
-	/* enable common led trigger */
-#if defined (BOARD_GPIO_LED_ALL)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_ALL, 1);
-	LED_CONTROL(BOARD_GPIO_LED_ALL, LED_ON);
-#endif
 	/* allow WiFi hw-led  */
-#if defined (BOARD_GPIO_LED_WIFI)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_WIFI, 1);
-	LED_CONTROL(BOARD_GPIO_LED_WIFI, LED_ON);
-#endif
+	LED_CONTROL(LED_WIFI, LED_ON);
 	/* show PWR soft-led  */
-#if defined (BOARD_GPIO_LED_POWER)
-#if defined (BOARD_CR660x)
-	cpu_gpio_set_pin_direction(14, 1);
-	cpu_gpio_set_pin(14, LED_OFF);
-#elif defined (BOARD_Q20)
-	cpu_gpio_set_pin_direction(14, 1);
-	cpu_gpio_set_pin(14, LED_ON); // set GPIO to low
-#endif
-	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_POWER, 1);
-	LED_CONTROL(BOARD_GPIO_LED_POWER, LED_ON);
-#endif
-
-	/* enable USB port 5V power */
-#if defined (BOARD_GPIO_PWR_USB)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_PWR_USB, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_PWR_USB, BOARD_GPIO_PWR_USB_ON);
-#endif
-#if defined (BOARD_GPIO_PWR_USB2)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_PWR_USB2, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_PWR_USB2, BOARD_GPIO_PWR_USB_ON);
-#endif
-
-	/* init BTN Reset  */
-#if defined (BOARD_GPIO_BTN_RESET)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_BTN_RESET, 0);
-#endif
-	/* init BTN WPS  */
-#if defined (BOARD_GPIO_BTN_WPS)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_BTN_WPS, 0);
-#endif
-	/* init BTN FN1  */
-#if defined (BOARD_GPIO_BTN_FN1)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_BTN_FN1, 0);
-#endif
-	/* init BTN FN2  */
-#if defined (BOARD_GPIO_BTN_FN2)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_BTN_FN2, 0);
-#endif
-	/* init BTN ROUTER  */
-#if defined (BOARD_GPIO_BTN_ROUTER)
-	cpu_gpio_set_pin_direction(BOARD_GPIO_BTN_ROUTER, 0);
-#endif
-	/* init BTN POWER  */
-#if defined (BOARD_GPIO_BTN_PWR_CUT) && defined (BOARD_GPIO_BTN_PWR_INT)
-	/* Shortcut POWER button */
-	cpu_gpio_set_pin_direction(BOARD_GPIO_BTN_PWR_CUT, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_BTN_PWR_CUT, 1);
-
-	/* IRQ on rising edge POWER, send SIGUSR2 to pid 1 */
-	cpu_gpio_set_pin_direction(BOARD_GPIO_BTN_PWR_INT, 0);
-	cpu_gpio_irq_set(BOARD_GPIO_BTN_PWR_INT, 1, 0, 1);
-#endif
+	LED_CONTROL(LED_PWR, LED_ON);
 }
 
 static void
@@ -427,17 +326,6 @@ nvram_convert_misc_values(void)
 {
 	char buff[64];
 	int sw_mode;
-#if defined (BOARD_GPIO_BTN_ROUTER)
-	int i_router_switch = BTN_PRESSED;
-
-	if (cpu_gpio_get_pin(BOARD_GPIO_BTN_ROUTER, &i_router_switch) < 0)
-		i_router_switch = BTN_PRESSED;
-
-	if (i_router_switch != BTN_PRESSED)
-		nvram_set_int("sw_mode", 3);
-	else if (nvram_get_int("sw_mode") == 3)
-		nvram_set_int("sw_mode", 1);
-#endif
 
 	/* check router mode */
 	sw_mode = nvram_get_int("sw_mode");
@@ -459,10 +347,8 @@ nvram_convert_misc_values(void)
 		nvram_set("wan_route_x", "IP_Routed");
 	}
 
-#if defined (BOARD_GPIO_LED_ROUTER)
 	if (sw_mode != 3)
-		LED_CONTROL(BOARD_GPIO_LED_ROUTER, LED_ON);
-#endif
+		LED_CONTROL(LED_ROUTER, LED_ON);
 
 #if BOARD_HAS_5G_RADIO
 	if (strlen(nvram_wlan_get(1, "ssid")) < 1)
@@ -711,73 +597,46 @@ void
 LED_CONTROL(int gpio_led, int flag)
 {
 	int front_led_x = 1;
-	int is_soft_blink = 0;
+
+	if (!(search_gpio_led() & gpio_led))
+		return;
 
 	switch (gpio_led)
 	{
-#if defined (BOARD_GPIO_LED_ROUTER)
-	case BOARD_GPIO_LED_ROUTER:
+	case LED_ROUTER:
 		break;
-#endif
-#if defined (BOARD_GPIO_LED_WAN)
-	case BOARD_GPIO_LED_WAN:
+	case LED_WAN:
 		front_led_x = nvram_get_int("front_led_wan");
 		break;
-#endif
-#if defined (BOARD_GPIO_LED_LAN)
-	case BOARD_GPIO_LED_LAN:
+	case LED_LAN:
 		front_led_x = nvram_get_int("front_led_lan");
 		break;
-#endif
-#if defined (BOARD_GPIO_LED_WIFI)
-	case BOARD_GPIO_LED_WIFI:
+	case LED_WIFI:
 		front_led_x = nvram_get_int("front_led_wif");
 		break;
-#endif
-#if defined (BOARD_GPIO_LED_SW2G)
-	case BOARD_GPIO_LED_SW2G:
-		is_soft_blink = 1;
+	case LED_SW2G:
 		front_led_x = nvram_get_int("front_led_wif");
 		if (front_led_x) {
-#if defined (BOARD_GPIO_LED_SW5G) && (BOARD_GPIO_LED_SW5G == BOARD_GPIO_LED_SW2G)
-			flag = (is_radio_on_rt() || is_radio_on_wl()) ? LED_ON : LED_OFF;
-#else
 			flag = (is_radio_on_rt()) ? LED_ON : LED_OFF;
-#endif
 		}
 		break;
-#endif
-#if defined (BOARD_GPIO_LED_SW5G) && (!defined (BOARD_GPIO_LED_SW2G) || (BOARD_GPIO_LED_SW5G != BOARD_GPIO_LED_SW2G))
-	case BOARD_GPIO_LED_SW5G:
-		is_soft_blink = 1;
+	case LED_SW5G:
 		front_led_x = nvram_get_int("front_led_wif");
 		if (front_led_x) {
 			flag = (is_radio_on_wl()) ? LED_ON : LED_OFF;
 		}
 		break;
-#endif
-#if defined (BOARD_GPIO_LED_USB)
-	case BOARD_GPIO_LED_USB:
-#if defined (BOARD_GPIO_LED_USB2)
-	case BOARD_GPIO_LED_USB2:
-#endif
+	case LED_USB:
+	case LED_USB2:
 #if defined (USE_USB_SUPPORT)
 		front_led_x = nvram_get_int("front_led_usb");
 #else
 		front_led_x = 0;
 #endif
 		break;
-#endif
-#if defined (BOARD_GPIO_LED_POWER)
-	case BOARD_GPIO_LED_POWER:
+	case LED_PWR:
 		front_led_x = nvram_get_int("front_led_pwr");
 		break;
-#endif
-#if defined (BOARD_GPIO_LED_ALL)
-	case BOARD_GPIO_LED_ALL:
-		front_led_x = nvram_get_int("front_led_all");
-		break;
-#endif
 	default:
 		return;
 	}
@@ -785,45 +644,14 @@ LED_CONTROL(int gpio_led, int flag)
 	if (front_led_x == 0)
 		flag = LED_OFF;
 
-#if !defined (BOARD_GPIO_LED_ALL)
-	if (nvram_get_int("front_led_all") == 0
-#if defined (BOARD_GPIO_LED_POWER)
-	    && gpio_led != BOARD_GPIO_LED_POWER
-#endif
-	)
+	if (nvram_get_int("front_led_all") == 0 && gpio_led != LED_PWR)
 		flag = LED_OFF;
-#endif
 
 	if (flag != LED_OFF && !nvram_get_int("led_front_t"))
 		flag = LED_OFF;
 
-#if defined (BOARD_GPIO_LED_WIFI)
-#if defined (CONFIG_RALINK_MT7620) && (BOARD_GPIO_LED_WIFI == 72)
-	if (gpio_led == BOARD_GPIO_LED_WIFI) {
-		cpu_gpio_mode_set_bit(13, (flag == LED_OFF) ? 1 : 0); // change GPIO Mode for WLED
-		cpu_gpio_set_pin(gpio_led, LED_OFF); // always set GPIO to high
-	} else
-#endif
-#if defined (CONFIG_RALINK_MT7628) && (BOARD_GPIO_LED_WIFI == 44)
-	if (gpio_led == BOARD_GPIO_LED_WIFI) {
-		cpu_gpio_mode_set_bit(32, (flag == LED_OFF) ? 1 : 0); // change GPIO Mode for WLED_AN
-		cpu_gpio_mode_set_bit(48, (flag == LED_OFF) ? 1 : 0); // change GPIO Mode for WLED_KN
-		cpu_gpio_set_pin(gpio_led, LED_OFF); // always set GPIO to high
-	} else
-#endif
-#endif
-	{
-#if defined (BOARD_HC5761A)
-		if (gpio_led == BOARD_GPIO_LED_SW5G) {
-			cpu_gpio_mode_set_bit(40, 1);
-			cpu_gpio_mode_set_bit(41, 0);
-		}
-#endif
-		if (is_soft_blink)
-			cpu_gpio_led_enabled(gpio_led, (flag == LED_OFF) ? 0 : 1);
-		
-		cpu_gpio_set_pin(gpio_led, flag);
-	}
+	gpio_led_set(gpio_led, flag);
+
 }
 
 int
@@ -900,7 +728,7 @@ init_router(void)
 #if defined (USE_IPV6)
 	init_ipv6();
 #endif
-	set_cpu_affinity(is_ap_mode);
+	set_cpu_affinity();
 
 	start_detect_link();
 	start_detect_internet(0);
@@ -908,13 +736,6 @@ init_router(void)
 
 	if (log_remote)
 		start_logger(1);
-
-#if defined (BOARD_HC5761A)
-	cpu_gpio_mode_set_bit(38, 1);
-	cpu_gpio_mode_set_bit(39, 0);
-	cpu_gpio_set_pin_direction(BOARD_GPIO_PWR_USB, 1);
-	cpu_gpio_set_pin(BOARD_GPIO_PWR_USB, BOARD_GPIO_PWR_USB_ON);
-#endif
 
 	start_dns_dhcpd(is_ap_mode);
 #if defined (APP_SMBD) || defined (APP_NMBD)
@@ -935,9 +756,7 @@ init_router(void)
 	notify_leds_detect_link();
 
 	start_rwfs_optware();
-#if defined(APP_NAPT66)
-	start_napt66();
-#endif
+
 	if (init_crontab()) {
 		write_storage_to_mtd();
 		restart_crond();
@@ -974,21 +793,16 @@ shutdown_router(int level)
 #if defined (USE_USB_SUPPORT)
 	stop_usb_printer_spoolers();
 #endif
-#if defined (BOARD_GPIO_LED_USB)
-	LED_CONTROL(BOARD_GPIO_LED_USB, LED_OFF);
-#endif
-#if defined (BOARD_GPIO_LED_USB2)
-	LED_CONTROL(BOARD_GPIO_LED_USB2, LED_OFF);
-#endif
+	LED_CONTROL(LED_USB, LED_OFF);
+	LED_CONTROL(LED_USB2, LED_OFF);
 
 	stop_wan();
 	if (level < 2) {
 		stop_services_lan_wan();
 		set_ipv4_forward(0);
 	}
-#if defined (BOARD_GPIO_LED_WAN)
-	LED_CONTROL(BOARD_GPIO_LED_WAN, LED_OFF);
-#endif
+
+	LED_CONTROL(LED_WAN, LED_OFF);
 
 	storage_save_time(10);
 	write_storage_to_mtd();
@@ -1006,15 +820,10 @@ shutdown_router(int level)
 
 	if (use_halt) {
 		module_smart_unload("hw_nat", 0);
-		module_smart_unload("rt_timer_wdg", 0);
 	}
 
-#if defined (BOARD_GPIO_LED_LAN)
-	LED_CONTROL(BOARD_GPIO_LED_LAN, LED_OFF);
-#endif
-#if defined (BOARD_GPIO_LED_POWER)
-	LED_CONTROL(BOARD_GPIO_LED_POWER, LED_OFF);
-#endif
+	LED_CONTROL(LED_LAN, LED_OFF);
+	LED_CONTROL(LED_PWR, LED_OFF);
 }
 
 void 
@@ -1319,10 +1128,10 @@ handle_notifications(void)
 			restart_vlmcsd();
 		}
 #endif
-#if defined(APP_WYY)
-		else if (strcmp(entry->d_name, RCN_RESTART_WYY) == 0)
+#if defined(APP_ALIDDNS)
+		else if (strcmp(entry->d_name, RCN_RESTART_ALIDDNS) == 0)
 		{
-			restart_wyy();
+			restart_aliddns();
 		}
 #endif
 #if defined(APP_ZEROTIER)
@@ -1331,14 +1140,29 @@ handle_notifications(void)
 			restart_zerotier();
 		}
 #endif
-#if defined(APP_KOOLPROXY)
-		else if (strcmp(entry->d_name, RCN_RESTART_KOOLPROXY) == 0)
+#if defined(APP_DDNSTO)
+		else if (strcmp(entry->d_name, RCN_RESTART_DDNSTO) == 0)
 		{
-			restart_koolproxy();
+			restart_ddnsto();
 		}
-		else if (strcmp(entry->d_name, RCN_RESTART_KPUPDATE) == 0)
+#endif
+
+#if defined(APP_ALDRIVER)
+		else if (strcmp(entry->d_name, RCN_RESTART_ALDRIVER) == 0)
 		{
-			update_kp();
+			restart_aldriver();
+		}
+#endif
+#if defined(APP_WIREGUARD)
+		else if (strcmp(entry->d_name, RCN_RESTART_WIREGUARD) == 0)
+		{
+			restart_wireguard();
+		}
+#endif
+#if defined(APP_SQM)
+		else if (strcmp(entry->d_name, RCN_RESTART_SQM) == 0)
+		{
+			restart_sqm();
 		}
 #endif
 #if defined(APP_ADBYBY)
@@ -1367,18 +1191,6 @@ handle_notifications(void)
 		else if (strcmp(entry->d_name, RCN_RESTART_FRP) == 0)
 		{
 			restart_frp();
-		}
-#endif
-#if defined(APP_CADDY)
-		else if (strcmp(entry->d_name, RCN_RESTART_CADDY) == 0)
-		{
-			restart_caddy();
-		}
-#endif
-#if defined(APP_ALIDDNS)
-		else if (strcmp(entry->d_name, RCN_RESTART_ALIDDNS) == 0)
-		{
-			restart_aliddns();
 		}
 #endif
 #if defined(APP_DNSFORWARDER)
@@ -1506,15 +1318,7 @@ handle_notifications(void)
 		}
 		else if (strcmp(entry->d_name, RCN_RESTART_SYSCTL) == 0)
 		{
-			int nf_nat_type = nvram_get_int("nf_nat_type");
-			
 			restart_all_sysctl();
-			
-			/* flush conntrack after NAT model changing */
-			if (nvram_nf_nat_type != nf_nat_type) {
-				nvram_nf_nat_type = nf_nat_type;
-				flush_conntrack_table(NULL);
-			}
 		}
 		else if (!strcmp(entry->d_name, RCN_RESTART_WIFI5))
 		{
@@ -1678,9 +1482,9 @@ static const applet_rc_t applets_rc[] = {
 	{ "detect_internet",	detect_internet_main	},
 
 	{ "watchdog",		watchdog_main		},
+	{ "gpio_btn",		btn_main		},
 	{ "rstats",		rstats_main		},
 
-	{ "mtk_gpio",		cpu_gpio_main		},
 #if defined (USE_MTK_ESW) || defined (USE_MTK_GSW)
 	{ "mtk_esw",		mtk_esw_main		},
 #endif
@@ -1969,19 +1773,6 @@ main(int argc, char **argv)
 		}
 	}
 #if defined (USE_USB_SUPPORT)
-	else if (!strcmp(base, "usb5v")) {
-		if (argc > 1) {
-#if defined (BOARD_GPIO_PWR_USB) || defined (BOARD_GPIO_PWR_USB2)
-			int port = 0;
-			int power_on = atoi(argv[1]);
-			if (argc > 2)
-				port = atoi(argv[2]);
-			power_control_usb_port(port, power_on);
-#endif
-		} else {
-			printf("Usage: %s <power> [port]\n\n", base);
-		}
-	}
 	else if (!strcmp(base, "ejusb")) {
 		int port = 0;
 		char *devn = NULL;

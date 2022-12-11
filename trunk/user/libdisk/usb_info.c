@@ -17,7 +17,7 @@
 
 int get_usb_root_port_by_sd_device(const char *device_name)
 {
-	char usb_path[PATH_MAX];
+	char usb_path[PATH_MAX] = {0};
 
 	if (!get_blk_sd_path_by_device(device_name, usb_path, sizeof(usb_path)))
 		return -1;
@@ -311,7 +311,7 @@ char *get_usb_interface_subclass(const char *usb_interface_id, char *buf, const 
 int get_usb_interface_Int_endpoint(const char *usb_interface_id)
 {
 	FILE *fp;
-	char interface_path[128], bmAttributes_file[128], buf[8], *ptr;
+	char interface_path[128], bmAttributes_file[270], buf[8], *ptr;
 	DIR *interface_dir = NULL;
 	struct dirent *end_name;
 	int bNumEndpoints, end_count, got_Int = 0;
@@ -425,7 +425,7 @@ int has_usb_devices(void)
 			continue;
 		
 		id_parent = get_param_int(line, "Prnt=", 10, -1);
-#if defined (BOARD_GPIO_LED_USB2)
+#if 1
 		if (id_parent == 1) {
 			int id_port = get_param_int(line, "Port=", 10, 0);
 #if BOARD_USB_PORT_SWAP

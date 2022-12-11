@@ -547,19 +547,10 @@ void stop_vlmcsd(void);
 void start_vlmcsd(void);
 void restart_vlmcsd(void);
 #endif
-#if defined(APP_NAPT66)
-void start_napt66(void);
-#endif
-#if defined(APP_KOOLPROXY)
-void stop_koolproxy(void);
-void start_koolproxy(void);
-void restart_koolproxy(void);
-void update_kp(void);
-#endif
-#if defined(APP_ADGUARDHOME)
-void stop_adguardhome(void);
-void start_adguardhome(void);
-void restart_adguardhome(void);
+#if defined(APP_DNSFORWARDER)
+void stop_dnsforwarder(void);
+void start_dnsforwarder(void);
+void restart_dnsforwarder(void);
 #endif
 #if defined(APP_ADBYBY)
 void stop_adbyby(void);
@@ -567,37 +558,51 @@ void start_adbyby(void);
 void restart_adbyby(void);
 void update_adb(void);
 #endif
+#if defined(APP_ADGUARDHOME)
+void stop_adguardhome(void);
+void start_adguardhome(void);
+void restart_adguardhome(void);
+#endif
 #if defined(APP_ALIDDNS)
 void stop_aliddns(void);
 void start_aliddns(void);
 void restart_aliddns(void);
-#endif
-#if defined(APP_FRP)
-void stop_frp(void);
-void start_frp(void);
-void restart_frp(void);
-#endif
-#if defined(APP_CADDY)
-void stop_caddy(void);
-void start_caddy(void);
-void restart_caddy(void);
-#endif
-#if defined(APP_WYY)
-void stop_wyy(void);
-void start_wyy(void);
-void restart_wyy(void);
 #endif
 #if defined(APP_ZEROTIER)
 void stop_zerotier(void);
 void start_zerotier(void);
 void restart_zerotier(void);
 #endif
-#if defined(APP_DNSFORWARDER)
-void stop_dnsforwarder(void);
-void start_dnsforwarder(void);
-void restart_dnsforwarder(void);
+#if defined(APP_DDNSTO)
+void stop_ddnsto(void);
+void start_ddnsto(void);
+void restart_ddnsto(void);
 #endif
-
+#if defined(APP_ALDRIVER)
+void stop_aldriver(void);
+void start_aldriver(void);
+void restart_aldriver(void);
+#endif
+#if defined(APP_SQM)
+void stop_sqm(void);
+void start_sqm(void);
+void restart_sqm(void);
+#endif
+#if defined(APP_WIREGUARD)
+void stop_wireguard(void);
+void start_wireguard(void);
+void restart_wireguard(void);
+#endif
+#if defined(APP_SMARTDNS)
+void stop_smartdns(void);
+void start_smartdns(void);
+void restart_smartdns(void);
+#endif
+#if defined(APP_FRP)
+void stop_frp(void);
+void start_frp(void);
+void restart_frp(void);
+#endif
 /* services_ex.c */
 int fill_dnsmasq_servers(void);
 int is_dns_dhcpd_run(void);
@@ -700,7 +705,6 @@ void stop_lpd(void);
 void start_p910nd(char *devlp);
 void stop_p910nd(void);
 void safe_remove_usb_device(int port, const char *dev_name);
-void power_control_usb_port(int port, int power_on);
 void restart_usb_printer_spoolers(void);
 void stop_usb_printer_spoolers(void);
 void try_start_usb_printer_spoolers(void);
@@ -733,16 +737,21 @@ int get_apcli_connected(const char *ifname);
 int check_regspec_code(const char *spec);
 
 /* watchdog.c */
-#if defined (BOARD_GPIO_BTN_WPS) || defined (BOARD_GPIO_BTN_FN1) || defined (BOARD_GPIO_BTN_FN2)
 void ez_event_short(int btn_id);
 void ez_event_long(int btn_id);
-#endif
 int  is_ntpc_updated(void);
 int  ntpc_updated_main(int argc, char *argv[]);
 int  watchdog_main(int argc, char *argv[]);
 int  start_watchdog(void);
 void notify_watchdog_time(void);
 void notify_watchdog_wifi(int is_5ghz);
+
+int  btn_main(int argc, char *argv[]);
+int  start_gpio_btn(void);
+int  get_state_led_pwr(void);
+void btn_reset_action(void);
+void btn_event_long(int btn_id);
+void btn_event_short(int btn_id);
 
 #if defined (USE_RT3352_MII)
 /* inicd */
@@ -753,11 +762,13 @@ int stop_inicd(void);
 
 #if defined (USE_SMP)
 /* smp.c */
-void set_cpu_affinity(int is_ap_mode);
+void set_cpu_affinity(void);
 void set_vpn_balancing(const char *vpn_ifname, int is_server);
+void set_pppoe_balancing(void);
 #else
 #define set_cpu_affinity(x)
 #define set_vpn_balancing(ptr,val)
+#define set_pppoe_balancing(x)
 #endif
 
 /* rstats.c */

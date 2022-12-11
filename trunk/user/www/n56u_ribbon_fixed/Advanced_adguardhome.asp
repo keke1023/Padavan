@@ -56,7 +56,7 @@ function applyRule(){
 }
 
 function showmenu(){
-showhide_div('sdnslink', found_app_smartdns());
+showhide_div('sdnslink', 0);
 }
 
 function done_validating(action){
@@ -116,7 +116,7 @@ function done_validating(action){
 				<div class="row-fluid">
 					<div class="span12">
 						<div class="box well grad_colour_dark_blue">
-							<h2 class="box_head round_top"><#menu5_28#> - <#menu5_29#></h2>
+							<h2 class="box_head round_top"><#menu5_33#> - <#menu5_33_1#></h2>
 							<div class="round_bottom">
 							<div>
                             <ul class="nav nav-tabs" style="margin-bottom: 10px;">
@@ -124,14 +124,14 @@ function done_validating(action){
                                     <a href="Advanced_smartdns.asp"><#menu5_24#></a>
                                 </li>
 								 <li class="active">
-                                    <a href="Advanced_adguardhome.asp"><#menu5_28#></a>
+                                    <a href="Advanced_adguardhome.asp"><#menu5_33#></a>
                                 </li>
                             </ul>
                         </div>
 								<div class="row-fluid">
 									<div id="tabMenu" class="submenuBlock"></div>
 									<div class="alert alert-info" style="margin: 10px;">
-									<p>AdGuard Home 是一款全网广告拦截与反跟踪软件。在您将其安装完毕后，它将保护您所有家用设备，同时您不再需要安装任何客户端软件。随着物联网与连接设备的兴起，掌控您自己的整个网络环境变得越来越重要。
+									<p>AdGuard Home 是一款全网广告拦截与反跟踪软件。在您将其安装完毕后，它将保护您所有家用设备，同时您不再需要安装任何客户端软件。随着物联网与连接设备的兴起，掌控您自己的整个网络环境变得越来越重要。默认用户名密码均为adguardhome，可在/etc/storage/adg.sh内修改。
 									</p>
 									AdGuard Home  主页<a href="https://adguard.com/" target="blank"><i><u>https://adguard.com/</u></i></a>
 									</div>

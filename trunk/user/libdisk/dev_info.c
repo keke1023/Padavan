@@ -52,7 +52,7 @@ int get_device_type_by_device(const char *device_name)
 
 char *get_blk_sd_path_by_device(const char *device_name, char *buf, int buf_size)
 {
-	char sysblock_n[] = "/sys/block/sda/device";
+	char sysblock_n[] = "/sys/block/sda";
 	int len;
 
 	if (strlen(device_name) < 3)

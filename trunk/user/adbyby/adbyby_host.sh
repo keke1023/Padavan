@@ -2,5 +2,4 @@
 #此hosts规则是加载到dnsmasq的。
 #yhost
 https://cdn.jsdelivr.net/gh/VeleSila/yhosts/hosts
-#tvbox
-https://dev.tencent.com/u/shaoxia1991/p/yhosts/git/raw/master/data/tvbox.txt
+

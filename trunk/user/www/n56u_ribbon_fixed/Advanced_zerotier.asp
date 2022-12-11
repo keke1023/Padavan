@@ -29,12 +29,13 @@ $j(document).ready(function() {
 
 	init_itoggle('zerotier_enable');
 	init_itoggle('zerotier_nat');
+	init_itoggle('zerotiermoon_enable');
 
 });
 
 </script>
 <script>
-
+<% zerotier_status(); %>
 <% login_state_hook(); %>
 
 var m_list = [<% get_nvram_list("ZeroConf", "ZeroList"); %>];
@@ -50,13 +51,17 @@ function initial(){
 	show_banner(2);
 	show_menu(5,17,0);
 showmenu();
+fill_status(zerotier_status());
 showMRULESList();
 	show_footer();
 
 }
 function showmenu(){
 showhide_div('allink', found_app_aliddns());
+showhide_div('ddlink', found_app_ddnsto());
+showhide_div('wilink', 1);
 }
+
 function applyRule(){
 //	if(validForm()){
 		showLoading();
@@ -71,6 +76,15 @@ function applyRule(){
 
 function done_validating(action){
 	refreshpage();
+}
+
+function fill_status(status_code){
+	var stext = "Unknown";
+	if (status_code == 0)
+		stext = "<#Stopped#>";
+	else if (status_code == 1)
+		stext = "<#Running#>";
+	$("zerotier_status").innerHTML = '<span class="label label-' + (status_code != 0 ? 'success' : 'warning') + '">' + stext + '</span>';
 }
 
 function markGroupRULES(o, c, b) {
@@ -186,7 +200,7 @@ function showMRULESList(){
 				<div class="row-fluid">
 					<div class="span12">
 						<div class="box well grad_colour_dark_blue">
-							<h2 class="box_head round_top"><#menu5_32#> - <#menu5_30#></h2>
+							<h2 class="box_head round_top"><#menu5_30#> - <#menu5_32#></h2>
 							<div class="round_bottom">
 							<div>
                             <ul class="nav nav-tabs" style="margin-bottom: 10px;">
@@ -195,6 +209,12 @@ function showMRULESList(){
                                 </li>
 								<li class="active">
                                     <a href="Advanced_zerotier.asp"><#menu5_32_1#></a>
+                                </li>
+				    				<li id="ddlink" style="display:none">
+                                    <a href="Advanced_ddnsto.asp"><#menu5_34_1#></a>
+                                </li>
+								<li id="wilink" style="display:none">
+                                    <a href="Advanced_wireguard.asp"><#menu5_35_1#></a>
                                 </li>
                             </ul>
                         </div>
@@ -206,34 +226,16 @@ function showMRULESList(){
 									</div>
 
 									<table width="100%" align="center" cellpadding="4" cellspacing="0" class="table">
-										<tr>
-											<th width="30%" style="border-top: 0 none;">启用ZeroTier客户端</th>
-											<td style="border-top: 0 none;">
-													<div class="main_itoggle">
-													<div id="zerotier_enable_on_of">
-														<input type="checkbox" id="zerotier_enable_fake" <% nvram_match_x("", "zerotier_enable", "1", "value=1 checked"); %><% nvram_match_x("", "zerotier_enable", "0", "value=0"); %>  />
-													</div>
-												</div>
-												<div style="position: absolute; margin-left: -10000px;">
-													<input type="radio" value="1" name="zerotier_enable" id="zerotier_enable_1" class="input" value="1" <% nvram_match_x("", "zerotier_enable", "1", "checked"); %> /><#checkbox_Yes#>
-													<input type="radio" value="0" name="zerotier_enable" id="zerotier_enable_0" class="input" value="0" <% nvram_match_x("", "zerotier_enable", "0", "checked"); %> /><#checkbox_No#>
-												</div>
-											</td>
-
-										</tr>
-
-<tr><th>ZeroTier World Network ID</th>
+									<tr> <th><#running_status#></th>
+                                            <td id="zerotier_status" colspan="3"></td>
+                                        </tr>
+										<tr><th>ZeroTier 客户端 ID</th>
 				<td>
 					<input type="text" class="input" name="zerotier_id" id="zerotier_id" style="width: 200px" value="<% nvram_get_x("","zerotier_id"); %>" />
 				</td>
-			</tr>
-<tr><th>ZeroTier Moon Network ID</th>
-				<td>
-					<input type="text" class="input" name="zerotier_moonid" id="zerotier_moonid" style="width: 200px" value="<% nvram_get_x("","zerotier_moonid"); %>" />
-				</td>
-			</tr>	
-			<tr>
-											<th width="30%" style="border-top: 0 none;">自动允许客户端NAT</th>
+											</tr>
+											<tr>
+											<th width="30%" style="border-top: 0 none;">允许客户端NAT</th>
 											<td style="border-top: 0 none;">
 													<div class="main_itoggle">
 													<div id="zerotier_nat_on_of">
@@ -248,8 +250,29 @@ function showMRULESList(){
 											</td>
 
 										</tr>
+											<tr>
+											<th width="30%" style="border-top: 0 none;">启用ZeroTier客户端</th>
+											<td style="border-top: 0 none;">
+													<div class="main_itoggle">
+													<div id="zerotier_enable_on_of">
+														<input type="checkbox" id="zerotier_enable_fake" <% nvram_match_x("", "zerotier_enable", "1", "value=1 checked"); %><% nvram_match_x("", "zerotier_enable", "0", "value=0"); %>  />
+													</div>
+												</div>
+												<div style="position: absolute; margin-left: -10000px;">
+													<input type="radio" value="1" name="zerotier_enable" id="zerotier_enable_1" class="input" value="1" <% nvram_match_x("", "zerotier_enable", "1", "checked"); %> /><#checkbox_Yes#>
+													<input type="radio" value="0" name="zerotier_enable" id="zerotier_enable_0" class="input" value="0" <% nvram_match_x("", "zerotier_enable", "0", "checked"); %> /><#checkbox_No#>
+												</div>
+											</td>
 
+										</tr>
+										
 
+<tr><th>ZeroTier Moon Network ID</th>
+				<td>
+					<input type="text" class="input" name="zerotier_moonid" id="zerotier_moonid" style="width: 200px" value="<% nvram_get_x("","zerotier_moonid"); %>" />
+				</td>
+			</tr>			
+										
 <tr>
 											<th width="30%" style="border-top: 0 none;">启用ZeroTier Moon服务器</th>
 											<td style="border-top: 0 none;">
@@ -277,7 +300,6 @@ function showMRULESList(){
 					<br>服务器启用后自动生成Moon服务器的ID，在加入Moon时请使用客户端zerotier-cli orbit <该ID> <该ID>。
 				</td>
 			</tr>
-										
 										<tr>
 											<th>zerotier官网</th>
 											<td>

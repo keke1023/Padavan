@@ -35,9 +35,9 @@ ifdef CONFIG_RTL8367
 OBJS += switch_rtl8367.o
 CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/rtl8367
 else
-ifdef CONFIG_MT7530_GSW
+ifdef CONFIG_RAETH
 OBJS += switch_mtk_esw.o
-CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/raeth
+CFLAGS += -I$(ROOTDIR)/$(LINUXDIR)/drivers/net/ethernet/raeth
 else
 ifdef CONFIG_RAETH_ESW
 OBJS += switch_mtk_esw.o
@@ -46,7 +46,6 @@ endif
 endif
 endif
 OBJS += dbapi.o
-
 all: $(OBJS) Makefile
 	$(CC) -o $(EXEC) $(OBJS) $(LDFLAGS)
 	$(STRIP) $(EXEC)

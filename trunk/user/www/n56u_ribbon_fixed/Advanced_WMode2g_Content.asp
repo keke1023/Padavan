@@ -44,7 +44,7 @@ function initial(){
 
  	if (typeof(support_2g_wid) === 'function'){
 		wid = support_2g_wid();
-		if (wid==7915){
+		if (wid==7915 || wid==7615){
 			document.form.rt_mode_x.remove(1);
 			document.form.rt_mode_x.remove(1);
 		}
