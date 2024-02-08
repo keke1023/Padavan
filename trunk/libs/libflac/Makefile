@@ -1,4 +1,4 @@
-SRC_NAME=flac-1.3.3
+SRC_NAME=flac-1.4.2
 SRC_URL=https://ftp.osuosl.org/pub/xiph/releases/flac/$(SRC_NAME).tar.xz
 
 all: download_test extract_test config_test
