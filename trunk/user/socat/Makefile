@@ -1,5 +1,5 @@
-SRC_NAME = socat-1.7.4.1
-SRC_URL = http://www.dest-unreach.org/socat/download/socat-1.7.4.1.tar.bz2
+SRC_NAME = socat-1.8.0.0
+SRC_URL = http://www.dest-unreach.org/socat/download/socat-1.8.0.0.tar.bz2
 THISDIR = $(shell pwd)
 
 all: download_test extract_test config_test
