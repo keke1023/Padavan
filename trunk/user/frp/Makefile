@@ -1,5 +1,5 @@
 THISDIR := $(shell pwd)
-FRP_VER := 0.46.1
+FRP_VER := 0.54.0
 FRP_URL_BASE := https://github.com/fatedier/frp/releases/download
 
 FRP_NAME := frp_$(FRP_VER)_linux_mipsle
