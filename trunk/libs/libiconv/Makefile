@@ -1,7 +1,19 @@
-SRC_NAME="libiconv-1.16"
+SRC_NAME=libiconv-1.17
+SRC_URL=https://ftp.gnu.org/gnu/libiconv/$(SRC_NAME).tar.gz
 
-all: config_test
+all: download_test extract_test config_test
 	$(MAKE) -j$(HOST_NCPU) -C $(SRC_NAME)
+
+download_test:
+	( if [ ! -f $(SRC_NAME).tgz ]; then \
+		wget -t5 --timeout=20 --no-check-certificate -O $(SRC_NAME).tar.gz $(SRC_URL); \
+	fi )
+
+extract_test:
+	( if [ ! -d $(SRC_NAME) ]; then \
+		tar -xf $(SRC_NAME).tar.gz; \
+		patch -d $(SRC_NAME) -p1 -i ../100-strip-charsets.patch; \
+	fi )
 
 config_test:
 	( if [ -f ./config_done ]; then \
