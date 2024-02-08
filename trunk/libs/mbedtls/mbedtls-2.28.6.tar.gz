@@ -1,0 +1,607 @@
+<!DOCTYPE html><html lang="en"><head><title>Mbed TLS</title><link rel="icon" type="image/x-icon" href="/favicon.ico"><meta property="description" content="Project implements cryptographic primitives, X.509 certificate manipulation and the SSL/TLS and DTLS protocols.
+"><meta name="viewport" content="width=device-width, initial-scale=1"><meta charset="utf-8"><script async src="https://www.googletagmanager.com/gtag/js?id=G-HV8QM82LKV"></script><script>(function(){const id = "G-HV8QM82LKV";
+
+window.dataLayer = window.dataLayer || [];
+function gtag() {
+    window.dataLayer.push(arguments);
+}
+gtag("js", new Date());
+gtag("config", id);
+})();</script><title>Mbed TLS</title><link rel="canonical" href="https://www.trustedfirmware.org/projects/mbed-tls/"><meta name="description" content="Project implements cryptographic primitives, X.509 certificate manipulation and the SSL/TLS and DTLS protocols.
+"><meta name="robots" content="index, follow"><meta property="og:title" content="Mbed TLS"><meta property="og:type" content="website"><meta property="og:image" content="https://www.trustedfirmware.org/images/social-media-image.png"><meta property="og:url" content="https://www.trustedfirmware.org/projects/mbed-tls/"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Mbed TLS"><meta name="twitter:image" content="https://www.trustedfirmware.org/images/social-media-image.png"><meta name="twitter:description" content="Project implements cryptographic primitives, X.509 certificate manipulation and the SSL/TLS and DTLS protocols.
+..."><meta name="twitter:creator" content="@LinaroOrg"><link rel="me" href="https://mastodon.org.uk/@LinaroLtd@mastodon.social"><meta content="https://www.trustedfirmware.org/images/social-media-image.png" property="twitter:image"><meta content="https://www.trustedfirmware.org/images/social-media-image.png" property="og:image"><meta content="Project implements cryptographic primitives, X.509 certificate manipulation and the SSL/TLS and DTLS protocols.
+" property="og:description"><script type="module">
+</script><style>.hero-background[data-astro-cid-3zjaldpd]{background-image:linear-gradient(rgba(0,0,0,.7),rgba(0,0,0,.7)),var(--backgroundUrl);background-position:center;-o-object-fit:cover;object-fit:cover}
+</style><link rel="stylesheet" href="/_astro/cookies.f2a76221.css" /><link rel="stylesheet" href="/_astro/global.04bc5c6e.css" /><link rel="stylesheet" href="/_astro/index.a64ec8ba.css" /><script src="/_astro/Cookies.astro_astro_type_script_index_0_lang.5267cf16.js" type="module"></script><script src="/_astro/BaseLayout.astro_astro_type_script_index_0_lang.fb091a6b.js" type="module"></script></head><body class="min-h-screen flex flex-col"><header class="flex flex-col lg:flex-row justify-around items-center bg-zinc-900"><div class="flex w-full lg:w-auto items-center justify-between px-8"><a href="/" class="text-lg"><img src="/_astro/TrustedFirmware-Logo_icon.23d65367_Z1CGhFD.webp" alt="Trusted Firmware Logo" width="60" height="60" loading="lazy" decoding="async"></a><div class="block lg:hidden"><button id="astronav-menu" aria-label="Toggle Menu"><svg fill="currentColor" class="w-4 h-4 text-white" width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><title>Toggle Menu</title><path class="astronav-close-icon astronav-toggle hidden" fill-rule="evenodd" clip-rule="evenodd" d="M18.278 16.864a1 1 0 01-1.414 1.414l-4.829-4.828-4.828 4.828a1 1 0 01-1.414-1.414l4.828-4.829-4.828-4.828a1 1 0 011.414-1.414l4.829 4.828 4.828-4.828a1 1 0 111.414 1.414l-4.828 4.829 4.828 4.828z"></path><path class="astronav-open-icon astronav-toggle" fill-rule="evenodd" d="M4 5h16a1 1 0 010 2H4a1 1 0 110-2zm0 6h16a1 1 0 010 2H4a1 1 0 010-2zm0 6h16a1 1 0 010 2H4a1 1 0 010-2z"></path></svg></button></div></div><nav class="astronav-items astronav-toggle hidden w-full lg:w-auto mt-2 lg:flex lg:mt-0 text-white font-medium"><ul class="flex flex-col lg:flex-row lg:gap-3 items-center"><li class="relative my-5"><menu class="astronav-dropdown group" aria-expanded="false"><div class="nav-hover transition"><button class="flex items-center gap-1 w-full lg:w-auto lg:px-3 py-2 text-inherit"><span>About</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3 mt-0.5 group-open:rotate-180"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path></svg></button></div><div class="astronav-dropdown dropdown-toggle hidden" aria-expanded="false"><div class="lg:absolute w-full lg:w-48 z-10 mt-1 lg:left-0 origin-top-left"><div class="lg:py-2 lg:bg-white lg:rounded-md lg:shadow lg:border flex flex-col"><a href="/about/" class=" px-3 py-1 lg:text-gray-600 lg:hover:text-white hover:bg-customturquoise">Overview</a><a href="/join/" class=" px-3 py-1 lg:text-gray-600 lg:hover:text-white hover:bg-customturquoise">Join</a><a href="/faq/" class=" px-3 py-1 lg:text-gray-600 lg:hover:text-white hover:bg-customturquoise">FAQ</a><a href="/coc/" class=" px-3 py-1 lg:text-gray-600 lg:hover:text-white hover:bg-customturquoise">Code of Conduct</a></div></div></div></menu></li><li class="relative my-5"><menu class="astronav-dropdown group" aria-expanded="false"><div class="nav-hover transition"><button class="flex items-center gap-1 w-full lg:w-auto lg:px-3 py-2 text-inherit"><span>News &amp; Blogs</span><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="3" stroke="currentColor" class="w-3 h-3 mt-0.5 group-open:rotate-180"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5"></path></svg></button></div><div class="astronav-dropdown dropdown-toggle hidden" aria-expanded="false"><div class="lg:absolute w-full lg:w-48 z-10 mt-1 lg:left-0 origin-top-left"><div class="lg:py-2 lg:bg-white lg:rounded-md lg:shadow lg:border flex flex-col"><a href="/news/" class=" px-3 py-1 lg:text-gray-600 lg:hover:text-white hover:bg-customturquoise">News</a><a href="/blog/" class=" px-3 py-1 lg:text-gray-600 lg:hover:text-white hover:bg-customturquoise">Blog</a><a href="/meetings/" class=" px-3 py-1 lg:text-gray-600 lg:hover:text-white hover:bg-customturquoise">Meetings</a></div></div></div></menu></li><div class="my-5 relative  "><div class="nav-hover transition"><a href="https://trusted-firmware-docs.readthedocs.io/en/latest/security_center/index.html" class="flex lg:px-3 py-2 text-inherit ">Security Center</a></div></div><div class="my-5 relative  "><div class="nav-hover transition"><a href="/contact/" class="flex lg:px-3 py-2 text-inherit ">Contact</a></div></div></ul></nav><script>(function(){const closeOnClick = false;
+
+["DOMContentLoaded", "astro:after-swap"].forEach((event) => {
+  document.addEventListener(event, addListeners);
+});
+
+// Function to clone and replace elements
+function cloneAndReplace(element) {
+  const clone = element.cloneNode(true);
+  element.parentNode.replaceChild(clone, element);
+}
+
+function addListeners() {
+  // Clean up existing listeners
+  const oldMenuButton = document.getElementById("astronav-menu");
+  if (oldMenuButton) {
+    cloneAndReplace(oldMenuButton);
+  }
+
+  const oldDropdownMenus = document.querySelectorAll(".astronav-dropdown");
+  oldDropdownMenus.forEach((menu) => {
+    cloneAndReplace(menu);
+  });
+
+  // Mobile nav toggle
+  const menuButton = document.getElementById("astronav-menu");
+  menuButton && menuButton.addEventListener("click", toggleMobileNav);
+
+  // Dropdown menus
+  const dropdownMenus = document.querySelectorAll(".astronav-dropdown");
+  dropdownMenus.forEach((menu) => {
+    const button = menu.querySelector("button");
+    button &&
+      button.addEventListener("click", (event) =>
+        toggleDropdownMenu(event, menu, dropdownMenus)
+      );
+
+    // Handle Submenu Dropdowns
+    const dropDownSubmenus = menu.querySelectorAll(
+      ".astronav-dropdown-submenu"
+    );
+
+    dropDownSubmenus.forEach((submenu) => {
+      const submenuButton = submenu.querySelector("button");
+      submenuButton &&
+        submenuButton.addEventListener("click", (event) => {
+          event.stopImmediatePropagation();
+          toggleSubmenuDropdown(event, submenu);
+        });
+    });
+  });
+
+  // Clicking away from dropdown will remove the dropdown class
+  document.addEventListener("click", closeAllDropdowns);
+
+  if (closeOnClick) {
+    handleCloseOnClick();
+  }
+}
+
+function toggleMobileNav() {
+  [...document.querySelectorAll(".astronav-toggle")].forEach((el) => {
+    el.classList.toggle("hidden");
+  });
+}
+
+function toggleDropdownMenu(event, menu, dropdownMenus) {
+  toggleMenu(menu);
+
+  // Close one dropdown when selecting another
+  Array.from(dropdownMenus)
+    .filter((el) => el !== menu && !menu.contains(el))
+    .forEach(closeMenu);
+
+  event.stopPropagation();
+}
+
+function toggleSubmenuDropdown(event, submenu) {
+  event.stopPropagation();
+  toggleMenu(submenu);
+
+  // Close sibling submenus at the same nesting level
+  const siblingSubmenus = submenu
+    .closest(".astronav-dropdown")
+    .querySelectorAll(".astronav-dropdown-submenu");
+  Array.from(siblingSubmenus)
+    .filter((el) => el !== submenu && !submenu.contains(el))
+    .forEach(closeMenu);
+}
+
+function closeAllDropdowns(event) {
+  const dropdownMenus = document.querySelectorAll(".dropdown-toggle");
+  const dropdownParent = document.querySelectorAll(
+    ".astronav-dropdown, .astronav-dropdown-submenu"
+  );
+  const isButtonInsideDropdown = [
+    ...document.querySelectorAll(
+      ".astronav-dropdown button, .astronav-dropdown-submenu button, #astronav-menu"
+    ),
+  ].some((button) => button.contains(event.target));
+  if (!isButtonInsideDropdown) {
+    dropdownMenus.forEach((d) => {
+      // console.log("I ran", d);
+      // if (!d.contains(event.target)) {
+      d.classList.remove("open");
+      d.removeAttribute("open");
+      d.classList.add("hidden");
+      // }
+    });
+    dropdownParent.forEach((d) => {
+      d.classList.remove("open");
+      d.removeAttribute("open");
+      d.setAttribute("aria-expanded", "false");
+    });
+  }
+}
+
+function toggleMenu(menu) {
+  menu.classList.toggle("open");
+  const expanded = menu.getAttribute("aria-expanded") === "true";
+  menu.setAttribute("aria-expanded", expanded ? "false" : "true");
+  menu.hasAttribute("open")
+    ? menu.removeAttribute("open")
+    : menu.setAttribute("open", "");
+
+  const dropdownToggle = menu.querySelector(".dropdown-toggle");
+  const dropdownExpanded = dropdownToggle.getAttribute("aria-expanded");
+  dropdownToggle.classList.toggle("hidden");
+  dropdownToggle.setAttribute(
+    "aria-expanded",
+    dropdownExpanded === "true" ? "false" : "true"
+  );
+}
+
+function closeMenu(menu) {
+  // console.log("closing", menu);
+  menu.classList.remove("open");
+  menu.removeAttribute("open");
+  menu.setAttribute("aria-expanded", "false");
+  const dropdownToggles = menu.querySelectorAll(".dropdown-toggle");
+  dropdownToggles.forEach((toggle) => {
+    toggle.classList.add("hidden");
+    toggle.setAttribute("aria-expanded", "false");
+  });
+}
+
+function handleCloseOnClick() {
+  const navMenuItems = document.querySelector(".astronav-items");
+  const navToggle = document.getElementById("astronav-menu");
+  const navLink = navMenuItems && navMenuItems.querySelectorAll("a");
+
+  const MenuIcons = navToggle.querySelectorAll(".astronav-toggle");
+
+  navLink &&
+    navLink.forEach((item) => {
+      item.addEventListener("click", () => {
+        navMenuItems?.classList.add("hidden");
+        MenuIcons.forEach((el) => {
+          el.classList.toggle("hidden");
+        });
+      });
+    });
+}
+})();</script></header><main><section class="hero-background h-56 sm:h-48" data-astro-cid-3zjaldpd style="--backgroundUrl: url(/_astro/TF_Banner_image.7a46bac9.jpg);"><div class="max-w-5xl flex gap-2 flex-row flex-wrap justify-between items-center mx-auto h-full px-10" data-astro-cid-3zjaldpd style="--backgroundUrl: url(/_astro/TF_Banner_image.7a46bac9.jpg);"><h1 class="text-inherit text-3xl text-white text-left font-bold py-4" data-astro-cid-3zjaldpd style="--backgroundUrl: url(/_astro/TF_Banner_image.7a46bac9.jpg);">Mbed TLS</h1><div class="flex justify-start aspect-square w-24  h-24" data-astro-cid-3zjaldpd style="--backgroundUrl: url(/_astro/TF_Banner_image.7a46bac9.jpg);"><div class="relative basis-full" data-astro-cid-3zjaldpd style="--backgroundUrl: url(/_astro/TF_Banner_image.7a46bac9.jpg);"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><g class="no-underline" href="/projects/undefined"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></g></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-xs">Mbed TLS</p></div></div></div></div></div></section><section class="max-w-5xl mx-auto mt-8 px-5 md:px-10 prose-xl"><div class="prose-a:text-blue-400"><p><strong>Project implements cryptographic primitives, X.509 certificate manipulation and the SSL/TLS and DTLS protocols. The project provides reference implementation of <a href="https://developer.arm.com/documentation/ihi0086/b">PSA Cryptography API Specification</a> by supporting the cryptographic operations via. PSA Crypto APIs. The project also supports the <a href="https://github.com/Mbed-TLS/mbedtls/blob/development/docs/proposed/psa-driver-interface.md">PSA Cryptoprocessor driver interface Specification</a> which defines an interface for cryptoprocessor drivers. The small code footprint makes the project suitable for embedded systems. It has many users, including TF-A, TF-M and OP-TEE.</strong></p>
+<p>Contribution guidelines can be found in the documentation.</p>
+<p>Please subscribe to the project email list to to participate in development discussions.</p>
+</div></section><section class="prose-lg max-w-5xl mx-auto my-8 px-5 md:px-10 flex flex-col md:flex-row items-start gap-4"><div class="w-full md:basis-1/2"><ul class="p-0 m-0"><a href="https://mbed-tls.readthedocs.io" class="hover:underline"><li class="bg-neutral-200 px-2 py-4 m-0 mb-4 flex flex-col xl:flex-row xl:items-center gap-2"><button class="uppercase font-bold text-center py-2 px-8 bg-black text-white m-0 no-underline hover:no-underline"><span class=" no-underline hover:no-underline">documentation</span></button><span class="m-0 text-center">Mbed TLS Documentation</span></li></a><a href="https://github.com/ARMmbed/mbedtls" class="hover:underline"><li class="bg-neutral-200 px-2 py-4 m-0 mb-4 flex flex-col xl:flex-row xl:items-center gap-2"><button class="uppercase font-bold text-center py-2 px-8 bg-black text-white m-0 no-underline hover:no-underline"><span class=" no-underline hover:no-underline">code</span></button><span class="m-0 text-center">View Source Code</span></li></a><a href="https://github.com/ARMmbed/mbedtls/pulls" class="hover:underline"><li class="bg-neutral-200 px-2 py-4 m-0 mb-4 flex flex-col xl:flex-row xl:items-center gap-2"><button class="uppercase font-bold text-center py-2 px-8 bg-black text-white m-0 no-underline hover:no-underline"><span class=" no-underline hover:no-underline">review</span></button><span class="m-0 text-center">GitHub review</span></li></a><a href="https://lists.trustedfirmware.org/mailman3/lists/mbed-tls.lists.trustedfirmware.org/" class="hover:underline"><li class="bg-neutral-200 px-2 py-4 m-0 mb-4 flex flex-col xl:flex-row xl:items-center gap-2"><button class="uppercase font-bold text-center py-2 px-8 bg-black text-white m-0 no-underline hover:no-underline"><span class=" no-underline hover:no-underline">subscribe</span></button><span class="m-0 text-center">Subscribe to the Mbed TLS mailing list</span></li></a></ul><ul class="p-0 m-0 w-full"><li class="m-0 mb-4 p-0 flex flex-col xl:flex-row xl:items-center gap-4 w-full"><a href="https://github.com/ARMmbed/mbedtls/blob/development/CONTRIBUTING.md" class="uppercase font-bold text-center py-4 transition duration-300 text-white m-0 w-full h-full bg-accent hover:bg-cyan-700">Contribute/Submit Code</a></li><li class="m-0 mb-4 p-0 flex flex-col xl:flex-row xl:items-center gap-4 w-full"><a href="/meetings/mbed-tls-technical-forum/" class="uppercase font-bold text-center py-4 transition duration-300 text-white m-0 w-full h-full bg-green-600 hover:bg-green-800">Join the Mbed TLS Tech Forum</a></li></ul></div><aside class="basis-1/2 bg-accentbg p-5 w-full"><h2 class="font-bold text-md m-0 mb-4">
+Other Trusted Firmware Projects
+</h2><section class="flex flex-wrap justify-center  "><div class="relative cursor-pointer basis-1/2 sm:basis-1/3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><a class="no-underline" href="/projects/tf-a"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></a></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-sm sm:text-lg md:text-sm">TF‑A</p></div></div></div><div class="relative cursor-pointer basis-1/2 sm:basis-1/3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><a class="no-underline" href="/projects/mcuboot"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></a></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-sm sm:text-lg md:text-sm">MCUboot</p></div></div></div><div class="relative cursor-pointer basis-1/2 sm:basis-1/3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><a class="no-underline" href="/projects/tf-m"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></a></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-sm sm:text-lg md:text-sm">TF‑M</p></div></div></div><div class="relative cursor-pointer basis-1/2 sm:basis-1/3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><a class="no-underline" href="/projects/tf-rmm"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></a></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-sm sm:text-lg md:text-sm">TF‑RMM</p></div></div></div><div class="relative cursor-pointer basis-1/2 sm:basis-1/3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><a class="no-underline" href="/projects/op-tee"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></a></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-sm sm:text-lg md:text-sm">OP‑TEE</p></div></div></div><div class="relative cursor-pointer basis-1/2 sm:basis-1/3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><a class="no-underline" href="/projects/hafnium"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></a></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-sm sm:text-lg md:text-sm">Hafnium</p></div></div></div><div class="relative cursor-pointer basis-1/2 sm:basis-1/3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><a class="no-underline" href="/projects/trusted-services"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></a></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-sm sm:text-lg md:text-sm">Trusted Services</p></div></div></div><div class="relative cursor-pointer basis-1/2 sm:basis-1/3"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 79.64 79.49"><defs><style>
+      .cls-1 {
+        fill: #11a9d4;
+        opacity: 0.8;
+      }
+      .cls-2,
+      .cls-3 {
+        fill: #fff;
+      }
+      .cls-3 {
+        font-size: 12.4px;
+        font-family: Lato-Bold, Lato;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+      }
+      .cls-4 {
+        letter-spacing: 0.02em;
+      }
+      .cls-5 {
+        letter-spacing: 0.03em;
+      }
+    </style></defs><g id="Layer_1" data-name="Layer 1"><path class="cls-2" d="M71.64,73.4H8.16a1.93,1.93,0,0,1-1.92-1.92V8A1.93,1.93,0,0,1,8.16,6.09H71.64A1.92,1.92,0,0,1,73.56,8V71.48A1.92,1.92,0,0,1,71.64,73.4ZM8.16,7.37A.64.64,0,0,0,7.52,8V71.48a.64.64,0,0,0,.64.64H71.64a.64.64,0,0,0,.64-.64V8a.64.64,0,0,0-.64-.64Z"></path><path class="cls-2" d="M33.12,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,33.12,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,33.12,6.83Z"></path><path class="cls-2" d="M46.38,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,46.38,0,.64.64,0,0,1,47,.64V6.19A.64.64,0,0,1,46.38,6.83Z"></path><path class="cls-2" d="M59.64,6.83A.64.64,0,0,1,59,6.19V.64a.64.64,0,0,1,1.28,0V6.19A.64.64,0,0,1,59.64,6.83Z"></path><path class="cls-2" d="M19.85,6.83a.64.64,0,0,1-.64-.64V.64A.64.64,0,0,1,19.85,0a.64.64,0,0,1,.64.64V6.19A.64.64,0,0,1,19.85,6.83Z"></path><path class="cls-2" d="M59.64,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,1.28,0v5.55A.64.64,0,0,1,59.64,79.49Z"></path><path class="cls-2" d="M19.85,79.49a.64.64,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.63.63,0,0,1,19.85,79.49Z"></path><path class="cls-2" d="M6.19,47H.64A.64.64,0,0,1,0,46.38a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,47Z"></path><path class="cls-2" d="M6.19,33.76H.64A.64.64,0,0,1,0,33.12a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,33.76Z"></path><path class="cls-2" d="M6.19,20.49H.64A.64.64,0,0,1,0,19.85a.64.64,0,0,1,.64-.64H6.19a.64.64,0,0,1,.64.64A.64.64,0,0,1,6.19,20.49Z"></path><path class="cls-2" d="M6.19,60.28H.64A.64.64,0,0,1,.64,59H6.19a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,47H73.46a.64.64,0,1,1,0-1.28H79A.64.64,0,0,1,79,47Z"></path><path class="cls-2" d="M79,33.76H73.46a.64.64,0,1,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,20.49H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M79,60.28H73.46a.64.64,0,0,1,0-1.28H79a.64.64,0,0,1,0,1.28Z"></path><path class="cls-2" d="M46.38,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,46.38,79.49Z"></path><a class="no-underline" href="/projects/open-ci"><g><rect class="cls-1 hover:scale-[1.17] origin-center ease-in-out transition duration-300" x="12.13" y="12.05" width="55.39" height="55.39"></rect><!-- <foreignObject
+          x="12.13"
+          y="12.05"
+          width="55.39"
+          height="55.39"
+          xmlns="http://www.w3.org/1999/xhtml"
+          class="pointer-events-none"
+        >
+          <div
+            class="relative no-underline bg-transparent flex justify-center items-center h-full"
+          >
+            <p
+              class:list={[
+                "text-center text-white break-words font-bold relative text-xs w-full max-w-full",
+              ]}
+            >
+              {
+                title.includes("(")
+                  ? title.replace(/(^.*\(|\).*$)/g, "")
+                  : title
+              }
+            </p>
+          </div></foreignObject
+        > --><path class="cls-2" d="M33.12,79.49a.63.63,0,0,1-.64-.64V73.3a.64.64,0,0,1,.64-.64.64.64,0,0,1,.64.64v5.55A.64.64,0,0,1,33.12,79.49Z"></path></g></a></g></svg><div class="absolute w-full h-full top-0 left-0 right-0 bottom-0 mx-auto my-auto flex items-center justify-center text-white p-12 pointer-events-none"><div class="relative"><p class="text-center break-words font-bold relative  w-full p-0 m-0 text-sm sm:text-lg md:text-sm">Open CI</p></div></div></div></section></aside></section><section class="max-w-5xl px-10 mx-auto my-24"><div class="border-t"><h2 class="text-3xl mt-8">Useful Links</h2><ul class="list-disc ml-6 text-xl"><li class="my-4"><a href="https://lists.trustedfirmware.org/mailman3/lists/psa-crypto.lists.trustedfirmware.org/" class="text-accent hover:underline">Subscribe to the PSA Crypto mailing list</a></li><li class="my-4"><a href="https://developer.trustedfirmware.org/w/mbed-tls/" class="text-accent hover:underline">Wiki pages</a></li></ul></div></section></main><footer class="justify-self-end mt-auto"><section class="bg-neutral-700 py-12 my-0"><div class="flex flex-col sm:flex-row justify-center align-center max-w-5xl mx-auto text-white gap-5"><div class="basis-1/2 max-w-md px-5"><p class="break-words mb-4">
+For general and membership enquiries: <a href="mailto:enquiries@trustedfirmware.org" class="text-customturquoise font-bold hover:underline">enquiries@trustedfirmware.org</a></p><p>Harston Mill</p><p>Royston Rd, Harston</p><p>Cambridge, United Kingdom</p><p>CB22 7GG</p></div><div class="basis-1/2 px-5"><h2 class="text-3xl mb-4">Latest News and Blogs</h2><ul><a class="hover:underline cursor-pointer" href="/blog/tf-optee-release-4-1-0"><li class="mb-2">Trusted Firmware OP TEE Release 4.1.0<p>Thursday, January 18, 2024</p></li></a><a class="hover:underline cursor-pointer" href="/blog/tf-a-v2-10-release"><li class="mb-2">Trusted Firmware-A v2.10 released!<p>Saturday, December 9, 2023</p></li></a><a class="hover:underline cursor-pointer" href="/blog/tf-m-v2-0-0"><li class="mb-2">Trusted Firmware-M v2.0.0 Released!<p>Tuesday, November 28, 2023</p></li></a><a class="hover:underline cursor-pointer" href="/blog/misra-white-paper"><li class="mb-2">MISRA Compliance Jumpstart<p>Monday, October 30, 2023</p></li></a></ul></div></div></section><section class="bg-neutral-900 text-white my-0 py-4 px-4"><div class="flex flex-wrap flex-row items-center justify-center gap-4"><a href="https://www.github.com/TrustedFirmware/website" class="flex gap-2"><svg viewBox="0 0 24 24" class="w-6 text-white hover:text-accent" astro-icon="mdi:github"><path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>View
+        on GitHub
+</a><!-- <a
+        href="https://www.github.com/TrustedFirmware/website/issues/new?title=Problem+with+_pages/homepage.md&body=Please+enter+some+details+about+the+bug/issue+so+we+can+promptly+resolve+it.+%0D%0AURL%3A++https://www.trustedfirmware.org/"
+        class="flex item-center no-underline text-white font-medium p-2 cursor-pointer hover:text-accent hover:underline hover:transition-all rounded-md"
+        >Report an Issue</a
+      > --><!--
+        <a
+          href="https://github.com/OpenAMP/website/blob/master/_pages/news_tags.sm"
+          class="flex item-center mb-[1rem] no-underline text-white font-medium p-2 cursor-pointer hover:text-accent hover:underline hover:transition-all rounded-md"
+        >
+          Edit on Github
+        </a>
+        --></div><ul class="flex flex-wrap flex-row items-center justify-center gap-4 my-6"><span>
+Copyright © 2024&nbsp;Linaro Limited</span><a href="/faq/" class="before:content-['•'] before:mr-4 hover:text-accent before:hover:text-white">FAQ</a><a href="/contact/" class="before:content-['•'] before:mr-4 hover:text-accent before:hover:text-white">Contact</a><div class="flex flex-row justify-center items-center flex-wrap h-full gap-8 ml-4"><a href="https://twitter.com/linaroorg" class="h-full"><svg viewBox="0 0 24 24" class="w-5 text-white hover:text-accent" astro-icon="mdi:twitter"><path fill="currentColor" d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z"/></svg></a><a href="https://www.facebook.com/LinaroOrg" class="h-full"><svg viewBox="0 0 24 24" class="w-5 text-white hover:text-accent" astro-icon="mdi:facebook"><path fill="currentColor" d="M12 2.04c-5.5 0-10 4.49-10 10.02 0 5 3.66 9.15 8.44 9.9v-7H7.9v-2.9h2.54V9.85c0-2.51 1.49-3.89 3.78-3.89 1.09 0 2.23.19 2.23.19v2.47h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.45 2.9h-2.33v7a10 10 0 0 0 8.44-9.9c0-5.53-4.5-10.02-10-10.02z"/></svg></a><a href="https://www.linkedin.com/company/1026961" class="h-full"><svg viewBox="0 0 24 24" class="w-5 text-white hover:text-accent" astro-icon="mdi:linkedin"><path fill="currentColor" d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg></a><a href="https://instagram.com/linaroorg"><svg viewBox="0 0 24 24" class="w-5 text-white hover:text-accent" astro-icon="mdi:instagram"><path fill="currentColor" d="M7.8 2h8.4C19.4 2 22 4.6 22 7.8v8.4a5.8 5.8 0 0 1-5.8 5.8H7.8C4.6 22 2 19.4 2 16.2V7.8A5.8 5.8 0 0 1 7.8 2m-.2 2A3.6 3.6 0 0 0 4 7.6v8.8C4 18.39 5.61 20 7.6 20h8.8a3.6 3.6 0 0 0 3.6-3.6V7.6C20 5.61 18.39 4 16.4 4H7.6m9.65 1.5a1.25 1.25 0 0 1 1.25 1.25A1.25 1.25 0 0 1 17.25 8 1.25 1.25 0 0 1 16 6.75a1.25 1.25 0 0 1 1.25-1.25M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg></a><a href="https://www.youtube.com/linaroorg"><svg viewBox="0 0 24 24" class="w-5 text-white hover:text-accent" astro-icon="mdi:youtube"><path fill="currentColor" d="m10 15 5.19-3L10 9v6m11.56-7.83c.13.47.22 1.1.28 1.9.07.8.1 1.49.1 2.09L22 12c0 2.19-.16 3.8-.44 4.83-.25.9-.83 1.48-1.73 1.73-.47.13-1.33.22-2.65.28-1.3.07-2.49.1-3.59.1L12 19c-4.19 0-6.8-.16-7.83-.44-.9-.25-1.48-.83-1.73-1.73-.13-.47-.22-1.1-.28-1.9-.07-.8-.1-1.49-.1-2.09L2 12c0-2.19.16-3.8.44-4.83.25-.9.83-1.48 1.73-1.73.47-.13 1.33-.22 2.65-.28 1.3-.07 2.49-.1 3.59-.1L12 5c4.19 0 6.8.16 7.83.44.9.25 1.48.83 1.73 1.73z"/></svg></a><a href="https://github.com/Linaro"><svg viewBox="0 0 24 24" class="w-5 text-white hover:text-accent" astro-icon="mdi:github"><path fill="currentColor" d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg></a></div><!-- {
+    data.map((row: any) => (
+      <ul class="flex flex-row flex-wrap justify-center gap-5">
+        {row.map((item: any) => {
+          const Component = item.url ? "a" : "p";
+          return (
+            <li>
+              <Component href={item.url}>{item.label}</Component>
+            </li>
+          );
+        })}
+      </ul>
+    ))
+  } --></ul><div class="flex flex-row justify-center my-4"><a href="/"><img src="/_astro/Linaro-logo-white.89e67561_Z1O423v.webp" class="w-[80px]" alt="logo" width="200" height="100" loading="lazy" decoding="async"></a></div></section></footer></body></html>
