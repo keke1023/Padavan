@@ -1,5 +1,5 @@
 THISDIR = $(shell pwd)
-go_version = 1.17.1
+go_version = 1.21.1
 # use host target
 CC        = gcc
 GCC       = gcc
