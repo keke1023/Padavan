@@ -8,7 +8,7 @@ xray_SED_ARGS += \
 	/\/\/ _ "xray.com\/core\/main\/jsonem"/s/\/\/ //;
 xray_SED_ARGS += \
 	s/_ "xray.com\/core\/main\/json"/\/\/ &/;
-xray_VERSION := 1.7.5
+xray_VERSION := 1.8.7
 xray_URL := https://codeload.github.com/xtls/xray-core/tar.gz/v$(xray_VERSION)
 
 all:download_xray build_extract build_xray
