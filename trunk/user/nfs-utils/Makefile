@@ -1,4 +1,4 @@
-SRC_NAME=nfs-utils-1.2.8
+SRC_NAME=nfs-utils-2.6.2
 
 CFLAGS += -ffunction-sections -fdata-sections -fvisibility=hidden
 LDFLAGS += -Wl,--gc-sections
@@ -15,7 +15,7 @@ config_test:
 
 configure:
 	( cd $(SRC_NAME) && \
-	./autogen.sh ; \
+	autoreconf -fi ; \
 	knfsd_cv_bsd_signals=no \
 	PKG_CONFIG_PATH=$(STAGEDIR)/lib/pkgconfig \
 	./configure \
